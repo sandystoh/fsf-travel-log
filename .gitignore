@@ -1,0 +1,8 @@
+/server/node_modules
+/server/package-lock.json
+/server/db/config.js
+
+/travel-app-client/node_modules
+/travel-app-client/package-lock.json
+/travel-app-client/src/environments/environment.ts
+/travel-app-client/src/environments/environment.prod.ts
