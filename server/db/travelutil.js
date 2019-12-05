@@ -14,7 +14,6 @@ const uploadJourneyImageToS3 = mydb.s3Upload('sandy-paf-2019', 'journeys');
                 f = status.file;
                 filepath = `${b.owner}/${f.filename}`;
             }
-            console.log('DATE', b.date);
             const connection = status.connection;
             const params = [b.title, b.owner, b.type, b.date, b.description];
             return insertJourney({params, connection})
