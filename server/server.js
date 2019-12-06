@@ -17,6 +17,7 @@ const app = express();
 app.use(morgan('tiny'));
 app.use(express.static(__dirname + '/public'));
 
+require('./routes/main')(app, conns);
 require('./routes/places')(app, conns);
 require('./routes/journeys')(app, conns);
 

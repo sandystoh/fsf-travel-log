@@ -40,13 +40,20 @@ module.exports = function(app, conns) {
     const getJourneyById = mydb.mkQuery(`Select * from journeys where id = ?`, conns.mysql);
     const getPlacesByJourneyId = mydb.mkQuery(`Select * from places where journey_id = ?`, conns.mysql);
     
-    // Get Journey by Journey ID - One to Many
+    // Get Journey by Journey ID - One to Many Places (Get all Child Places)
     app.get('/api/journey/:id', (req, resp) => {
         const id = req.params.id;
+        const alpha = 'ABCDEFGHIJKLMNOPQSTUVWXYZ';
         p0 = getJourneyById([id]);
         p1 = getPlacesByJourneyId([id]);
         Promise.all([p0, p1]).then(r => {
-            resp.status(200).json({journey: r[0].result, places: r[1].result})
+            const places = r[1].result.map(v => {
+                return {
+                    ...v,
+                    alpha: alpha[(v.journey_order-1) % 26]
+                }
+            });
+            resp.status(200).json({journey: r[0].result, places})
         })
         .catch(err => {
             resp.status(500).json({error: "Database Error "+ error});
