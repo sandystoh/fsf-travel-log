@@ -11,7 +11,41 @@ const sql = require('../db/sqlutil');
 const travel = require('../db/travelutil');
 
 module.exports = function(app, conns) {
+
+    // Get all Journeys for particular user (pagination: limit/offset)
+    app.get('/api/journeys/:user', (req, resp) => {
+        const limit = parseInt(req.query.limit) || 20;
+        const offset = parseInt(req.query.offset) || 0;
+        p0 = sql.countWhere(conns.mysql, 'journeys', `owner = ?`, [req.params.user]);
+        p1 = sql.selectWhere(conns.mysql, 'journeys', `owner = ?`, [req.params.user, limit, offset] );
+        
+        Promise.all([p0, p1]).then(r => {
+            const count = r[0].result[0].count;
+            resp.status(200).json({journeys: r[1].result, count}); 
+            // returns empty array + count 0 if none, handled by client
+         })
+         .catch(error => {
+             resp.status(500).json({error: "Database Error "+ error.error});
+         });
+    });
+
+    const getJourneyById = mydb.mkQuery(`Select * from journeys where id = ?`, conns.mysql);
+    const getPlacesByJourneyId = mydb.mkQuery(`Select * from places where journey_id = ?`, conns.mysql);
     
+    // Get Journey by Journey ID - One to Many
+    app.get('/api/journey/:id', (req, resp) => {
+        const id = req.params.id;
+        p0 = getJourneyById([id]);
+        p1 = getPlacesByJourneyId([id]);
+        Promise.all([p0, p1]).then(r => {
+            resp.status(200).json({journey: r[0].result, places: r[1].result})
+        })
+        .catch(err => {
+            resp.status(500).json({error: "Database Error "+ error});
+        });
+    });
+
+    // Add Journey
     app.post('/api/journeys', upload.single('journeyImage'),
         mydb.unlinkFileOnResponse(), 
         (req, resp) => {

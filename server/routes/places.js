@@ -12,8 +12,69 @@ const travel = require('../db/travelutil');
 
 module.exports = function(app, conns) {
 
+    const searchByUser = mydb.mkQuery(`Select p.*, j.title as journey_title from places p
+    left join journeys j on p.journey_id = j.id where p.owner = ? and (p.title like ? or j.title like ?) limit ? offset ?`, conns.mysql)
+    const countSearch = mydb.mkQuery(`Select count(*) as count from places p
+    left join journeys j on p.journey_id = j.id where p.owner = ? and (p.title like ? or j.title like ?)`, conns.mysql)
+    
+    // Search within a User's Journeys/Places for query string within titles
+    app.get('/api/search/:user', (req, resp) => {
+        const limit = parseInt(req.query.limit) || 20;
+        const offset = parseInt(req.query.offset) || 0;
+        let q = '';
+        if (req.query.q) q = `%${req.query.q}%`;
+        else resp.status(404).json({error: "Invalid Request"});
+        
+        p0 = countSearch([req.params.user, q, q])
+        p1 = searchByUser([req.params.user, q, q, limit, offset]);
+        
+        Promise.all([p0, p1]).then(r => {
+            const count = r[0].result[0].count;
+            resp.status(200).json({places: r[1].result, count}); 
+            // returns empty array + count 0 if none, handled by client
+         })
+         .catch(error => {
+             resp.status(500).json({error: "Database Error "+ error.error});
+         });
+    });  
+
+    const getPlacesByUser = mydb.mkQuery(`Select p.*, j.title as journey_title from places p
+    left join journeys j on p.journey_id = j.id where p.owner = ? limit ? offset ? `, conns.mysql)
+    
+    // Get all Places for particular user (pagination: limit/offset)
+    app.get('/api/places/:user', (req, resp) => {
+        const limit = parseInt(req.query.limit) || 20;
+        const offset = parseInt(req.query.offset) || 0;
+        p0 = sql.countWhere(conns.mysql, 'places', `owner = ?`, [req.params.user]);
+        p1 = getPlacesByUser([req.params.user, limit, offset]);
+        
+        Promise.all([p0, p1]).then(r => {
+            const count = r[0].result[0].count;
+            resp.status(200).json({places: r[1].result, count}); 
+            // returns empty array + count 0 if none, handled by client
+         })
+         .catch(error => {
+             resp.status(500).json({error: "Database Error "+ error.error});
+         });
+    });
+
+    const getPlaceById = mydb.mkQuery(`Select p.*, j.title as journey_title, j.num_places as journey_count from places p 
+    left join journeys j on p.journey_id = j.id where p.id = ?`, conns.mysql)
+    
+    // Get Place by Place ID - Join with Journey to get Journey Data (if applicable otherwise returns null)
+    app.get('/api/place/:id', // add token to read private
+    (req, resp) => {
+        return getPlaceById([req.params.id]).then(r => {
+            resp.status(200).json({place: r.result[0]});
+         })
+         .catch(error => {
+             resp.status(500).json({error: "Database Error "+ error});
+         });
+    });
+
+    // Add Place
     app.post('/api/places', upload.single('placeImage'),
-        mydb.unlinkFileOnResponse(), 
+        mydb.unlinkFileOnResponse(),  // add in token to edit
         (req, resp) => {
         const b = req.body;
         let f = null;

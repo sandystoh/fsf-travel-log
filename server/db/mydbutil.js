@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // MySQL Utils
-// Creates Transaction
+// Creates Transaction and Rollsback/Commits
 const mkTransaction = function(transaction, pool) {
     return status => {
         return new Promise((resolve, reject) => {
@@ -39,7 +39,7 @@ const mkTransaction = function(transaction, pool) {
     }
 } 
 
-// Transaction Query without releasing
+// MySQL Transaction Query without releasing
 const trQuery = function (sql) {
     return (status) => {
         conn = status.connection;
@@ -54,7 +54,7 @@ const trQuery = function (sql) {
     }
 }
 
-// original mkQuery
+// MySQL Query
 const mkQuery = function (sql, pool) {
     return (params) => {
         return new Promise((resolve, reject) => {
@@ -135,7 +135,7 @@ const mongoWrite = (m) => {
     return collection.insertOne(m.document);
 }
 
-// Mongo Insert One
+// Mongo Insert Many
 const mongoWriteMany = (m) => {
     // m = {client, db, collection, documents = [{<document>}, {<document>}]}
     const collection = m.client.db(m.db).collection(m.collection);
@@ -150,7 +150,7 @@ const mongoFind = (m) => {
 	return collection.find(m.find || {}).sort(m.sort || {}).skip(m.offset || 0).limit(m.limit || 0).project(m.project || {}).toArray();
 }
 
-// Mongo Find
+// Mongo Count
 const mongoCount = (m) => {
 	// m = mongo object = {client, db, collection, find, skip, limit, sort, project}
     const collection = m.client.db(m.db).collection(m.collection);
