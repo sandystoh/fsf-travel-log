@@ -19,6 +19,7 @@ create table journeys (
     description text,
     date datetime,
     num_places int default 0 not null,
+    image_url varchar(128),
     last_updated datetime default current_timestamp,
     active TINYINT(1) default 1,
 	primary key(id),
@@ -80,7 +81,7 @@ insert into users (username, password, email, display_name)
 values ('fred', sha2('fred', 256), 'fred@gmail.com', 'Fred');
 
 insert into journeys values
-('1', 'United States', 'sandystoh', 'BEEN', 'USA Trip 2016', '2016-07-01 00:00:00', '2', '2019-12-05 00:00:00', 1);
+('1', 'United States', 'sandystoh', 'BEEN', 'USA Trip 2016', '2016-07-01 00:00:00', '2', 'default/journey-image1', '2019-12-05 00:00:00', 1);
 
 insert into places values
 ('1', '1', '1', 'BEEN', 'Arches National Park', 'sandystoh', '2016-07-01 00:00:00', '38.73310000', '-109.59250000', 'US', '8', 'sandystoh/09692d0b0f05e8b3016fd79683acf5ff', 'Lovely Place!', 'Got Lost in the Desert!', '2019-12-05 13:39:16', 1),

@@ -2,7 +2,7 @@ const mydb = require('../db/mydbutil');
 const sql = require('../db/sqlutil');
 const uuid = require('uuid');
 
-const journeys_columns = "title, owner, type, date, description";
+const journeys_columns = "title, owner, type, date, description, image_url";
 const insertJourney = mydb.trQuery(sql.writeInsert('journeys', journeys_columns));
 const uploadJourneyImageToS3 = mydb.s3Upload('sandy-paf-2019', 'journeys');
     // Transaction with Journey (MySQL) + Image (S3)
@@ -15,7 +15,7 @@ const uploadJourneyImageToS3 = mydb.s3Upload('sandy-paf-2019', 'journeys');
                 filepath = `${b.owner}/${f.filename}`;
             }
             const connection = status.connection;
-            const params = [b.title, b.owner, b.type, b.date, b.description];
+            const params = [b.title, b.owner, b.type, b.date, b.description, filepath];
             return insertJourney({params, connection})
             .then(s => {
                 if(f) {
@@ -28,9 +28,42 @@ const uploadJourneyImageToS3 = mydb.s3Upload('sandy-paf-2019', 'journeys');
         }
     }
 
+const journeys_update_columns = "title, type, date, description, image_url, last_updated";
+const updateJourney = mydb.trQuery(sql.writeUpdate('journeys', journeys_update_columns, 'id = ?'));
+const deleteJourneyImageFromS3 = mydb.s3Delete('sandy-paf-2019', 'journeys');
+    // Transaction with Journey (MySQL) + Image (S3)
+    function editJourneys() {
+        return (status) => {
+            const b = status.body;
+            let f = null, filepath = 'default/journey-image1';
+            if (status.file) {
+                f = status.file;
+                filepath = `${b.owner}/${f.filename}`;
+            }
+            const connection = status.connection;
+            const params = [b.title, b.type, b.date, b.description, filepath, new Date(), b.id];
+            return updateJourney({params, connection})
+            .then(s => {
+                if(f) {
+                    s.file = f, s.filepath = filepath;
+                    s.s3 = status.conns.s3;
+                    return uploadJourneyImageToS3(s);
+                }
+                else return Promise.resolve();
+            })
+            .then(s => {
+                if(f && !b.image_url.startsWith('default')) {      
+                    return deleteJourneyImageFromS3({image_url: b.image_url, s3: status.conns.s3});
+                }
+                else return Promise.resolve();
+            }); 
+        }
+    }
+
+
 const getJourneyOrder = mydb.trQuery("select num_places as count from journeys where id = ?");
 const updateJourneyOrder = mydb.trQuery("update journeys set num_places = ? where id = ?");
-const places_columns = "journey_id, journey_order, type, title, owner, date, lat, lng, country, rating, image_url, description, private_notes";
+const places_columns = "journey_id, journey_order, type, title, owner, date, lat, lng, country, rating, image_url, description, private_notes, last_updated";
 const insertPlace = mydb.trQuery(sql.writeInsert('places', places_columns));
 const uploadPlaceImageToS3 = mydb.s3Upload('sandy-paf-2019', 'places');
 
@@ -45,20 +78,67 @@ const uploadPlaceImageToS3 = mydb.s3Upload('sandy-paf-2019', 'places');
             }
             const connection = status.connection;
             let journey_order = 0;
+
+            const journey_id = parseInt(b.journey_id);
+            if(journey_id !== 0)
             return getJourneyOrder({params:[b.journey_id], connection})
-            .then(r => {
-                journey_order = r.result[0].count + 1;
-                return updateJourneyOrder({params: [journey_order, b.journey_id], connection});
-            })
-            .then(r => {
-                const params = [b.journey_id, journey_order, b.type, b.title, b.owner, b.date, b.lat, b.lng, b.country, b.rating, filepath, b.description, b.private_notes];
-                return insertPlace({params, connection});
-            })
+                .then(r => {
+                    journey_order = r.result[0].count + 1;
+                    return updateJourneyOrder({params: [journey_order, b.journey_id], connection});
+                })
+                .then(r => {
+                    const params = [b.journey_id, journey_order, b.type, b.title, b.owner, b.date, b.lat, b.lng, b.country, b.rating, filepath, b.description, b.private_notes];
+                    return insertPlace({params, connection});
+                })
+                .then(s => {
+                    if(f) {
+                        s.file = f, s.filepath = filepath;
+                        s.s3 = status.conns.s3;
+                        return uploadPlaceImageToS3(s);
+                    }
+                    else return Promise.resolve();
+                });
+            else { // Not tagged to a Journey
+                const params = [0, 0, b.type, b.title, b.owner, b.date, b.lat, b.lng, b.country, b.rating, filepath, b.description, b.private_notes];
+                return insertPlace({params, connection})
+                .then(s => {
+                    if(f) {
+                        s.file = f, s.filepath = filepath;
+                        s.s3 = status.conns.s3;
+                        return uploadPlaceImageToS3(s);
+                    }
+                    else return Promise.resolve();
+                });
+            }
+        }
+    }
+
+const places_update_columns = "title, type, date, rating, description, image_url, private_notes, last_updated";
+const updatePlace = mydb.trQuery(sql.writeUpdate('places', places_update_columns, 'id = ?'));
+const deletePlaceImageFromS3 = mydb.s3Delete('sandy-paf-2019', 'places');
+    // Transaction with Journey (MySQL) + Image (S3)
+    function editPlaces() {
+        return (status) => {
+            const b = status.body;
+            let f = null, filepath = 'default/place-image1';
+            if (status.file) {
+                f = status.file;
+                filepath = `${b.owner}/${f.filename}`;
+            }
+            const connection = status.connection;
+            const params = [b.title, b.type, b.date, b.rating, b.description, filepath, b.private_notes, new Date(), b.id];
+            return updatePlace({params, connection})
             .then(s => {
                 if(f) {
                     s.file = f, s.filepath = filepath;
                     s.s3 = status.conns.s3;
                     return uploadPlaceImageToS3(s);
+                }
+                else return Promise.resolve();
+            })
+            .then(s => {
+                if(f && !b.image_url.startsWith('default')) {
+                    return deletePlaceImageFromS3({image_url: b.image_url, s3: status.conns.s3});
                 }
                 else return Promise.resolve();
             }); 
@@ -67,7 +147,8 @@ const uploadPlaceImageToS3 = mydb.s3Upload('sandy-paf-2019', 'places');
 
 const selectPlaceForDelete = mydb.trQuery(`Select * from places where id = ? for update`);
 const deactivatePlace = mydb.trQuery(`Update places set journey_order = 0, active = 0 where id = ?`);
-const updateOrder = mydb.trQuery('Update places set journey_order = journey_order-1 where journey_id = ? and journey_order > ? and active = 1')
+const updateOrder = mydb.trQuery('Update places set journey_order = journey_order-1 where journey_id = ? and journey_order > ? and active = 1');
+const updateJourneyCount = mydb.trQuery('Update journeys set num_places = num_places-1 where id = ?');
 
 // Transaction to Deactivate Place
     function rmPlaces() {
@@ -87,6 +168,10 @@ const updateOrder = mydb.trQuery('Update places set journey_order = journey_orde
                 if(journey_id == 0) return Promise.resolve(); // No need to adjust order
                 // Otherwise adjust journey_order
                 return updateOrder({params: [journey_id, journey_order], connection})
+            })
+            .then(r => {
+                if(journey_id == 0) return Promise.resolve();
+                return updateJourneyCount({params: [journey_id], connection})
             })
         }
     }
@@ -108,4 +193,4 @@ function rmJourneys() {
     }
 }
 
-module.exports = { mkPlaces, mkJourneys, rmPlaces, rmJourneys };
+module.exports = { mkJourneys, editJourneys, mkPlaces, editPlaces, rmPlaces, rmJourneys };

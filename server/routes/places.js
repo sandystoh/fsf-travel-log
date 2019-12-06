@@ -99,6 +99,24 @@ module.exports = function(app, conns) {
         });
     });
 
+    // Edit Place
+    app.post('/api/places/update', upload.single('newPlaceImage'),
+        mydb.unlinkFileOnResponse(), 
+        (req, resp) => {
+        const b = req.body;
+        let f = null;
+        if(req.file) { f = req.file }
+
+        const updatePlace = mydb.mkTransaction(travel.editPlaces(), conns.mysql);
+        updatePlace({body: b, file: f, conns: conns})  
+        .then(status => {
+            resp.status(201).json({message: `Record ${b.title} updated`});
+        })
+        .catch(err => {
+            resp.status(500).json({error: err.error});
+        });
+    });
+
     // Deactivate Place by Place ID 
     app.delete('/api/place/:id', // **** add token to write private
     (req, resp) => {

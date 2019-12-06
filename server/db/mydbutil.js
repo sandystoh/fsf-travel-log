@@ -128,6 +128,26 @@ const s3Upload = function(s3Bucket, s3Folder) {
     }
 }
 
+// S3 Delete
+const s3Delete = function(s3Bucket, s3Folder) {
+    return status => {
+        return new Promise((resolve, reject) => {
+            console.log(`${s3Folder}/${status.image_url}`);
+                const params = { 
+                    Bucket: s3Bucket, 
+                    Key: `${s3Folder}/${status.image_url}`
+                }; 
+                (status.s3).deleteObject(params, (error, result) => { 
+                    if(error) {
+                        console.log(error);
+                        return reject(error);
+                    }
+                    resolve();
+                });
+            });
+    }
+}
+
 // Mongo Insert One
 const mongoWrite = (m) => {
     // m = {client, db, collection, document}
@@ -214,7 +234,7 @@ const unlinkFileOnResponse = () => {
 
 module.exports = { 
     mkTransaction, trQuery, mkQuery, // MySQL
-    s3Upload, s3Get, // Digital Ocean S3
+    s3Upload, s3Get, s3Delete, // Digital Ocean S3
     mongoWrite, mongoWriteMany, mongoFind, mongoCount, mongoDistinct, mongoAggregate, // mongoDB
     logRequestsToMongo, unlinkFileOnResponse    // Utility Middleware
 };

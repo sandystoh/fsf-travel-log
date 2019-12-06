@@ -29,13 +29,12 @@ function writeInsert(table, columns) {
     return `insert into ${table} (${columns}) values (${numParams})`;
 }
 
-function update (table, columns, params) {
-    // const columns = columns.split(',');
-    const setParams = '';
-    for (let c of columns) {
-        // setParams +=
-    }
-    const f = mkQuery(`update ${table} set`)
+function writeUpdate (table, columns, where) {
+    const cols = columns.split(','); 
+    const setParams = cols.map(v => {
+        return `${v} = ?`;
+    })
+    return (`update ${table} set ${setParams} where ${where}`);
 }
 
-module.exports = { select, selectWhere, countWhere, insert, writeInsert };
+module.exports = { select, selectWhere, countWhere, insert, writeInsert, writeUpdate };

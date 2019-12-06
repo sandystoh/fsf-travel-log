@@ -80,6 +80,26 @@ module.exports = function(app, conns) {
         });
     });
 
+    // Edit Journey
+    app.post('/api/journeys/update', upload.single('newJourneyImage'),
+        mydb.unlinkFileOnResponse(), 
+        (req, resp) => {
+        const b = req.body;
+        let f = null;
+        if(req.file) { f = req.file }
+        // console.log('BODY: ', b);
+        // console.log('FILE: ', f);
+
+        const updateJourney = mydb.mkTransaction(travel.editJourneys(), conns.mysql);
+        updateJourney({body: b, file: f, conns: conns})  
+        .then(status => {
+            resp.status(201).json({message: `Record ${b.title} updated`});
+        })
+        .catch(err => {
+            resp.status(500).json({error: err.error});
+        });
+    });
+
     // Deactivate Journey by Journey ID 
     // http://localhost:3000/api/journey/1?remove_child=true -- need to state whether to remove children
     app.delete('/api/journey/:id', // **** add token to write private
