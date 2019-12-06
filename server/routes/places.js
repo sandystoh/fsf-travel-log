@@ -69,7 +69,7 @@ module.exports = function(app, conns) {
     left join journeys j on p.journey_id = j.id where p.id = ?`, conns.mysql)
     
     // Get Place by Place ID - Join with Journey to get Journey Data (if applicable otherwise returns null)
-    app.get('/api/place/:id', // add token to read private
+    app.get('/api/place/:id', // **** add token to read private
     (req, resp) => {
         return getPlaceById([req.params.id]).then(r => {
             resp.status(200).json({place: r.result[0]});
@@ -81,7 +81,7 @@ module.exports = function(app, conns) {
 
     // Add Place
     app.post('/api/places', upload.single('placeImage'),
-        mydb.unlinkFileOnResponse(),  // add in token to edit
+        mydb.unlinkFileOnResponse(),  // **** add in token to edit
         (req, resp) => {
         const b = req.body;
         let f = null;
@@ -97,6 +97,18 @@ module.exports = function(app, conns) {
         .catch(err => {
             resp.status(500).json({error: err.error});
         });
+    });
+
+    // Deactivate Place by Place ID 
+    app.delete('/api/place/:id', // **** add token to write private
+    (req, resp) => {
+        const removePlace = mydb.mkTransaction(travel.rmPlaces(), conns.mysql);
+        removePlace({id:req.params.id, conns}).then(r => {
+            resp.status(200).json({message: "Delete Successful"});
+            })
+            .catch(error => {
+                resp.status(500).json({error: "Database Error "+ error.error});
+            });
     });
 
 }

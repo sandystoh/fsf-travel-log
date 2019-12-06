@@ -62,7 +62,7 @@ const testConnections = (conns) => {
 				}
 			)
 		}
-	))
+	)) 
 	return (Promise.all(p))
 }
 

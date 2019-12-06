@@ -65,4 +65,47 @@ const uploadPlaceImageToS3 = mydb.s3Upload('sandy-paf-2019', 'places');
         }
     }
 
-module.exports = { mkPlaces, mkJourneys };
+const selectPlaceForDelete = mydb.trQuery(`Select * from places where id = ? for update`);
+const deactivatePlace = mydb.trQuery(`Update places set journey_order = 0, active = 0 where id = ?`);
+const updateOrder = mydb.trQuery('Update places set journey_order = journey_order-1 where journey_id = ? and journey_order > ? and active = 1')
+
+// Transaction to Deactivate Place
+    function rmPlaces() {
+        return (status) => {
+            const id = status.id;
+            const connection = status.connection;
+            let journey_id = 0;
+            let journey_order = 0;
+            return selectPlaceForDelete({params: [id], connection})
+            .then(r => {
+                if(!r.result[0].active) return Promise.reject({error:'Already Deleted'});
+                journey_id = r.result[0].journey_id;
+                journey_order = r.result[0].journey_order;
+                return deactivatePlace({params: [id], connection});
+            })
+            .then(r => {
+                if(journey_id == 0) return Promise.resolve(); // No need to adjust order
+                // Otherwise adjust journey_order
+                return updateOrder({params: [journey_id, journey_order], connection})
+            })
+        }
+    }
+
+const deactivateJourney = mydb.trQuery(`Update journeys set active = 0 where id = ?`);
+const deactivatePlacesByJourneyId = mydb.trQuery(`Update places set journey_order = 0, active = 0 where journey_id = ? and active = 1`);
+
+// Transaction to Deactivate Journey
+function rmJourneys() {
+    return (status) => {
+        const id = status.id;
+        const remove_child = status.remove_child === 'true';
+        const connection = status.connection;
+        return deactivateJourney({params: [id], connection})
+        .then(r => {
+            if(!remove_child) return Promise.resolve();
+            return deactivatePlacesByJourneyId({params: [id], connection});
+        })
+    }
+}
+
+module.exports = { mkPlaces, mkJourneys, rmPlaces, rmJourneys };

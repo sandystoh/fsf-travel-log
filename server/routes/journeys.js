@@ -38,7 +38,7 @@ module.exports = function(app, conns) {
     });
 
     const getJourneyById = mydb.mkQuery(`Select * from journeys where id = ?`, conns.mysql);
-    const getPlacesByJourneyId = mydb.mkQuery(`Select * from places where journey_id = ?`, conns.mysql);
+    const getPlacesByJourneyId = mydb.mkQuery(`Select * from places where journey_id = ? and active = 1`, conns.mysql);
     
     // Get Journey by Journey ID - One to Many Places (Get all Child Places)
     app.get('/api/journey/:id', (req, resp) => {
@@ -80,4 +80,16 @@ module.exports = function(app, conns) {
         });
     });
 
+    // Deactivate Journey by Journey ID 
+    // http://localhost:3000/api/journey/1?remove_child=true -- need to state whether to remove children
+    app.delete('/api/journey/:id', // **** add token to write private
+    (req, resp) => {
+        const removeJourney = mydb.mkTransaction(travel.rmJourneys(), conns.mysql);
+        removeJourney({id:req.params.id, remove_child: req.query.remove_child, conns}).then(r => {
+            resp.status(200).json({message: "Delete Successful"});
+            })
+            .catch(error => {
+                resp.status(500).json({error: "Database Error "+ error.error});
+            });
+    });
 }
