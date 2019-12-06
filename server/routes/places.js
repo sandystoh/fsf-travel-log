@@ -13,20 +13,25 @@ const travel = require('../db/travelutil');
 module.exports = function(app, conns) {
 
     const searchByUser = mydb.mkQuery(`Select p.*, j.title as journey_title from places p
-    left join journeys j on p.journey_id = j.id where p.owner = ? and (p.title like ? or j.title like ?) limit ? offset ?`, conns.mysql)
+    left join journeys j on p.journey_id = j.id where 
+    p.owner = ? and (p.title like ? or j.title like ?) and p.country like ?
+    limit ? offset ?`, conns.mysql)
     const countSearch = mydb.mkQuery(`Select count(*) as count from places p
-    left join journeys j on p.journey_id = j.id where p.owner = ? and (p.title like ? or j.title like ?)`, conns.mysql)
+    left join journeys j on p.journey_id = j.id 
+    where p.owner = ? and (p.title like ? or j.title like ?) and p.country like ?`, conns.mysql)
     
-    // Search within a User's Journeys/Places for query string within titles
+    // Search within a User's Journeys/Places for query string within titles (with country filter)
     app.get('/api/search/:user', (req, resp) => {
         const limit = parseInt(req.query.limit) || 20;
         const offset = parseInt(req.query.offset) || 0;
+        // matches exact string if country is provided, otherwise matches all countries
+        const country = req.query.country || '%'; 
         let q = '';
         if (req.query.q) q = `%${req.query.q}%`;
         else resp.status(404).json({error: "Invalid Request"});
         
-        p0 = countSearch([req.params.user, q, q])
-        p1 = searchByUser([req.params.user, q, q, limit, offset]);
+        p0 = countSearch([req.params.user, q, q, country])
+        p1 = searchByUser([req.params.user, q, q, country,limit, offset]);
         
         Promise.all([p0, p1]).then(r => {
             const count = r[0].result[0].count;
@@ -39,14 +44,15 @@ module.exports = function(app, conns) {
     });  
 
     const getPlacesByUser = mydb.mkQuery(`Select p.*, j.title as journey_title from places p
-    left join journeys j on p.journey_id = j.id where p.owner = ? limit ? offset ? `, conns.mysql)
+    left join journeys j on p.journey_id = j.id where p.owner = ? and country like ? limit ? offset ? `, conns.mysql)
     
-    // Get all Places for particular user (pagination: limit/offset)
+    // Get all Places for particular user (pagination: limit/offset)  (with country filter)
     app.get('/api/places/:user', (req, resp) => {
         const limit = parseInt(req.query.limit) || 20;
         const offset = parseInt(req.query.offset) || 0;
-        p0 = sql.countWhere(conns.mysql, 'places', `owner = ?`, [req.params.user]);
-        p1 = getPlacesByUser([req.params.user, limit, offset]);
+        const country = req.query.country || '%';
+        p0 = sql.countWhere(conns.mysql, 'places', `owner = ? and country like ?`, [req.params.user, country]);
+        p1 = getPlacesByUser([req.params.user, country, limit, offset]);
         
         Promise.all([p0, p1]).then(r => {
             const count = r[0].result[0].count;

@@ -12,14 +12,22 @@ const travel = require('../db/travelutil');
 
 module.exports = function(app, conns) {
 
-    // Get all Journeys for particular user (pagination: limit/offset)
+    const getJourneysByUser = mydb.mkQuery(`select * from journeys where owner = ? and id in (
+        select distinct(journey_id) from places where owner = ? and country like ?) limit ? offset ?`, conns.mysql)
+    const countJourneysByUser = mydb.mkQuery(`select count(*) as count from journeys where owner = ? and id in (
+        select distinct(journey_id) from places where owner = ? and country like ?)`, conns.mysql)
+
+    // Get all Journeys for particular user (pagination: limit/offset) (with country filter)
     app.get('/api/journeys/:user', (req, resp) => {
+        const user = req.params.user;
         const limit = parseInt(req.query.limit) || 20;
         const offset = parseInt(req.query.offset) || 0;
-        p0 = sql.countWhere(conns.mysql, 'journeys', `owner = ?`, [req.params.user]);
-        p1 = sql.selectWhere(conns.mysql, 'journeys', `owner = ?`, [req.params.user, limit, offset] );
-        
+        const country = req.query.country || '%';
+        p0 = countJourneysByUser([user, user, country] );
+        p1 = getJourneysByUser([user, user, country, limit, offset] );
+
         Promise.all([p0, p1]).then(r => {
+            console.log(r);
             const count = r[0].result[0].count;
             resp.status(200).json({journeys: r[1].result, count}); 
             // returns empty array + count 0 if none, handled by client
