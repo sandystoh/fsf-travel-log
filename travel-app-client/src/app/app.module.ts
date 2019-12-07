@@ -15,13 +15,15 @@ import { AuthService } from './services/auth.service';
 import { LoginComponent } from './components/login.component';
 import { PlacesListComponent } from './components/places-list.component';
 import { TravelService } from './services/travel.service';
+import { MapComponent } from './components/map.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     WelcomeComponent,
     LoginComponent,
-    PlacesListComponent
+    PlacesListComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,

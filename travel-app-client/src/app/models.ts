@@ -9,3 +9,8 @@ export interface User {
     displayName: string;
     token: string;
 }
+
+export interface MapResponse {
+    visitData: Object;
+    places: Object[];
+}

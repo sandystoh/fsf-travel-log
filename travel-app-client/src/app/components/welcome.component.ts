@@ -19,6 +19,10 @@ export class WelcomeComponent implements OnInit {
     console.log(">> in Welcome Component", this.user)
   }
 
+  getMap() {
+    this.router.navigate(['/map/'+this.user.username]);
+  }
+
   getPlacesList() {
     this.router.navigate(['/places/'+this.user.username]);
   }

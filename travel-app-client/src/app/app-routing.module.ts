@@ -4,11 +4,13 @@ import { WelcomeComponent } from './components/welcome.component';
 import { LoginComponent } from './components/login.component';
 import { AuthService } from './services/auth.service';
 import { PlacesListComponent } from './components/places-list.component';
+import { MapComponent } from './components/map.component';
 
 const ROUTES: Routes = [
   { path: 'login', component: LoginComponent},
   { path: '', component: WelcomeComponent, canActivate: [AuthService]},
   { path: 'places/:user', component: PlacesListComponent}, //, canActivate: [AuthService]},
+  { path: 'map/:user', component: MapComponent},
   { path: '**', redirectTo: '/', pathMatch: 'full' }
 ];
 // Feature Component Routes will be under localhost:4200/bgg/*
