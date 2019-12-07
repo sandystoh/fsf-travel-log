@@ -15,7 +15,7 @@ module.exports = function(app, conns, passport) {
     const GET_USER_DETAILS = 'select username, email, display_name from users where username = ?';
     const getUserDetails = mydb.mkQuery(GET_USER_DETAILS, conns.mysql);
 
-    app.post('/authenticate', 
+    app.post('/api/authenticate', 
     passport.authenticate('local', {
         failureRedirect: '/error.html'
         // ,session: false
@@ -43,7 +43,9 @@ module.exports = function(app, conns, passport) {
                     'application/json': () => {
                         resp.status(200).json({
                             token_type: 'Bearer',
-                            access_token: token
+                            access_token: token,
+                            username: rec.username,
+                            display_name: rec.display_name
                         })
                     },
                     'default': () => {

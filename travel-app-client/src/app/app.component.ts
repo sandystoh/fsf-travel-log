@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AuthService } from './services/auth.service';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-root',
@@ -6,5 +9,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'travel-app-client';
+
+  constructor(private authSvc: AuthService, private router: Router) {
+  }
+
 }
