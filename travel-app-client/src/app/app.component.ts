@@ -9,8 +9,21 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  isAuth = false;
+  displayName = '';
 
   constructor(private authSvc: AuthService, private router: Router) {
+    this.isAuthenticated();
   }
 
+  isAuthenticated() {
+    this.isAuth = this.authSvc.isAuthenticated();
+    if(this.isAuth) this.displayName = this.authSvc.getUser().displayName;
+  }
+
+  logout() {
+    this.authSvc.logout().then(() => {
+      this.isAuth = false;
+    });
+  }
 }

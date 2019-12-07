@@ -6,11 +6,13 @@
             <img src="assets/images/travel-icon.png" height="40px"> 
             <div>Globe Trotters</div>
           </div></a>
-          <div>
-              <button class="logout-btn" *ngIf="isAuth" mat-raised-button color="accent" (click)="logout()">Logout</button>
+          <div fxLayout="row" *ngIf="isAuth" fxLayoutAlign="center">
+            <div><mat-icon class="avatar-icon">account_circle</mat-icon></div>
+            <div class="smythe avatar"> {{ displayName }}</div> 
+            <div class="logout-btn" (click)="logout()"><mat-icon>exit_to_app</mat-icon></div>
           </div>
    </div>
   </mat-toolbar>
 
-  <router-outlet></router-outlet>
+  <router-outlet (activate)="isAuthenticated()"></router-outlet>
 </div>

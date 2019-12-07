@@ -36,7 +36,18 @@ a:visited {
 }
 
 .logout-btn {
-    margin-right: 30px;
+    cursor: pointer;
+    margin: 5px 0px;
+}
+
+.avatar {
+    margin: 0px 15px 0px 5px;
+}
+
+.avatar-icon {
+    color: #45b5fe;
+    font-size: 1.5rem;
+    margin: 5px 0px;
 }
 
 @media only screen and (max-width: 450px) {

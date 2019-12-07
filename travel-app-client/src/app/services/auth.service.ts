@@ -18,6 +18,10 @@ export class AuthService implements CanActivate {
     return (this.router.parseUrl('login'));
   }
 
+  isAuthenticated() {
+    return (!!this.token);
+  }
+
   getUser() {
     return ({username: this.username, displayName: this.displayName, token: this.token});
   }
@@ -43,6 +47,14 @@ export class AuthService implements CanActivate {
           return (error);
         })
     )
+  }
+
+  logout() {
+    return new Promise((resolve, reject) => {
+      // implement remove session here
+      this.token = null;
+      resolve();
+    })
   }
 
 }

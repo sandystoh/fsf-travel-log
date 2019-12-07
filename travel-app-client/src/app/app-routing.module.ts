@@ -7,7 +7,7 @@ import { PlacesListComponent } from './components/places-list.component';
 
 const ROUTES: Routes = [
   { path: 'login', component: LoginComponent},
-  { path: '', component: WelcomeComponent}, //, canActivate: [AuthService]},
+  { path: '', component: WelcomeComponent, canActivate: [AuthService]},
   { path: 'places/:user', component: PlacesListComponent}, //, canActivate: [AuthService]},
   { path: '**', redirectTo: '/', pathMatch: 'full' }
 ];
