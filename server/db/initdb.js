@@ -10,7 +10,8 @@ const loadConfig = (config) => {
 			accessKeyId: config.s3.accessKey,
 			secretAccessKey: config.s3.secret
 		}),
-		mongodb: new MongoClient(config.mongodb.url, { useUnifiedTopology: true })
+		mongodb: new MongoClient(config.mongodb.atlasurl, { useUnifiedTopology: true }),
+		secret: config.sessionSecret
 	}
 };
 
@@ -50,7 +51,7 @@ const testConnections = (conns) => {
 	p.push(new Promise(
 		(resolve, reject) => {
 			const params = {
-				Bucket: 'sandy-paf-2019',
+				Bucket: 'sandy-fsf-2019',
 				Key: 'hhog.png'
 			}
 			conns.s3.getObject(params,
