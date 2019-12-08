@@ -19,7 +19,7 @@
     cursor: pointer;
     text-decoration: none;
     color: #000;
-    font-size: 1.7rem;
+    font-size: 2rem;
     font-family: 'Smythe', sans-serif;
 }
 
@@ -51,7 +51,5 @@ a:visited {
 }
 
 @media only screen and (max-width: 450px) {
-    .block {
-        height: 150vh;
-    }
+
 }

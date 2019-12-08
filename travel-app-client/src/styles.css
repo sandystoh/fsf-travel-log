@@ -22,14 +22,24 @@ body {
 .headertext {
     background-image: linear-gradient(rgba(50,100,150,0.9), rgba(255,255,255,0));
     padding: 15px 0px;
-    font-size: 3rem;
+    font-size: 4rem;
     color: #fff;
     font-family: 'Smythe', sans-serif;   
     text-shadow: 2px 3px 3px #555;
     letter-spacing: 2px;
 }
 
+.muli {
+    font-family: 'Muli', sans-serif;
+}
+
 .smythe {
     font-family: 'Smythe', sans-serif;
     font-size: 1.5rem;
+}
+
+@media only screen and (max-width: 450px) {
+    .headertext {
+       font-size: 3rem;
+    }
 }

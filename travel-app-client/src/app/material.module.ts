@@ -36,7 +36,7 @@ import {
   MatStepperModule,
   MatTableModule,
   MatTabsModule,
-  MatToolbarModule,  // used
+  MatToolbarModule,
   MatTooltipModule,
   MatTreeModule,
   MAT_DATE_FORMATS

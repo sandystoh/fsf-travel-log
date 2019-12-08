@@ -16,6 +16,9 @@ import { LoginComponent } from './components/login.component';
 import { PlacesListComponent } from './components/places-list.component';
 import { TravelService } from './services/travel.service';
 import { MapComponent } from './components/map.component';
+import { PlacesFormComponent } from './components/places-form.component';
+import { AutocompleteComponent } from './components/helpers/autocomplete.component';
+import { PrimeNGModule } from './primeng.module';
 
 @NgModule({
   declarations: [
@@ -23,7 +26,9 @@ import { MapComponent } from './components/map.component';
     WelcomeComponent,
     LoginComponent,
     PlacesListComponent,
-    MapComponent
+    MapComponent,
+    PlacesFormComponent,
+    AutocompleteComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +38,8 @@ import { MapComponent } from './components/map.component';
     ReactiveFormsModule,
     HttpClientModule,
     MaterialModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    PrimeNGModule
   ],
   providers: [AuthService, TravelService],
   bootstrap: [AppComponent]

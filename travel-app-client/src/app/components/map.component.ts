@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TravelService } from '../services/travel.service';
 import { MapResponse } from '../models';
@@ -56,7 +56,9 @@ export class MapComponent implements OnInit {
         onMarkerClick: (event, index) => {
             // alter the weburl
             console.log(this.markers[index].weburl, index);
-            setTimeout(()=> { Array.from(document.getElementsByClassName("jvectormap-tip")).forEach((el) => { el.style.display = 'none' }); },100);
+            /*
+            setTimeout(()=> { Array.from(document.getElementsByClassName("jvectormap-tip")).forEach((el: ElementRef) => { el.style.display = 'none' }); },100);
+            */
             this.router.navigate([this.markers[index].weburl]);
         }
       }); 
@@ -74,7 +76,6 @@ export class MapComponent implements OnInit {
       {latLng: [36.86, -111.37], name: 'Antelope Canyon', weburl:'/location/fred/antelope'},
       {latLng: [34.97, 135.77], name: 'Fushimi Inari Shrine', weburl:'/location/fred/123'}
     ] */
-
 
   }
 

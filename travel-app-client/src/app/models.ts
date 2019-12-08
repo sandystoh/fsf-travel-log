@@ -14,3 +14,25 @@ export interface MapResponse {
     visitData: Object;
     places: Object[];
 }
+
+export interface Country {
+    name: string;
+    code: string;
+}
+
+export interface Place {
+    id?: number;
+    journey_id: number;
+    journey_order: number;
+    type: string; // BEEN, DREAM
+    title: string; // limit 256
+    owner: string // limit 128
+    date?: string; //date
+    lat?: number;
+    lng?: number;
+    country: string; // limit 2
+    rating?: number;
+    image_url?: string;
+    description: string; // limit 65535
+    private_notes?: string;
+}

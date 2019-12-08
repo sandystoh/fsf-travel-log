@@ -23,6 +23,10 @@ export class WelcomeComponent implements OnInit {
     this.router.navigate(['/map/'+this.user.username]);
   }
 
+  addPlace() {
+    this.router.navigate(['/places/add/'+this.user.username]);
+  }
+
   getPlacesList() {
     this.router.navigate(['/places/'+this.user.username]);
   }

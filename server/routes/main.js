@@ -17,7 +17,10 @@ module.exports = function(app, conns) {
         // m = mongo object = {client, db, collection, find, skip, limit, sort, project, count}
         mydb.mongoFind({client: conns.mongodb, db: 'travel', collection: 'countries'})
         .then(result => {
-            resp.status(200).json({countries: result});
+            const countries = result.map(v => {
+                return { name: v.name, code: v.code2l }
+            })
+            resp.status(200).json(countries);
         })
         .catch(err => {
             resp.status(500).json({error: err});
@@ -26,11 +29,11 @@ module.exports = function(app, conns) {
 
     const searchByUser = mydb.mkQuery(`Select p.*, j.title as journey_title from places p
     left join journeys j on p.journey_id = j.id where 
-    p.owner = ? and (p.title like ? or j.title like ?) and p.country like ?
+    p.owner = ? and (p.title like ? or p.full_location like ? or j.title like ?) and p.country like ?
     limit ? offset ?`, conns.mysql)
     const countSearch = mydb.mkQuery(`Select count(*) as count from places p
     left join journeys j on p.journey_id = j.id 
-    where p.owner = ? and (p.title like ? or j.title like ?) and p.country like ?`, conns.mysql)
+    where p.owner = ? and (p.title like ? or p.full_location like ? or j.title like ?) and p.country like ?`, conns.mysql)
     
     // Search within a User's Journeys/Places for query string within titles (with country filter)
     app.get('/api/search/:user', (req, resp) => {

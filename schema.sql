@@ -84,8 +84,8 @@ insert into journeys values
 ('1', 'United States', 'sandystoh', 'BEEN', 'USA Trip 2016', '2016-07-01 00:00:00', '2', 'default/journey-image1', '2019-12-05 00:00:00', 1);
 
 insert into places values
-('1', '1', '1', 'BEEN', 'Arches National Park', 'sandystoh', '2016-07-01 00:00:00', '38.73310000', '-109.59250000', 'US', '8', 'sandystoh/09692d0b0f05e8b3016fd79683acf5ff', 'Lovely Place!', 'Got Lost in the Desert!', '2019-12-05 13:39:16', 1),
-('2', '1', '2', 'BEEN', 'Bryce Canyon National Park', 'sandystoh', '2016-07-02 00:00:00', '37.59300000', '-112.18710000', 'US', '7', 'sandystoh/17d2a54258058e8da6e4d7cc177c13f6', 'Lovely Place!', 'Got Lost in the Desert!', '2019-12-05 14:51:18', 1)
+('1', '1', '1', 'BEEN', 'Arches National Park', 'sandystoh', '2019-07-05', '38.73310000', '-109.59250000', 'US', '8', 'sandystoh/09692d0b0f05e8b3016fd79683acf5ff', 'Lovely Place!', 'Got Lost in the Desert!', '2019-11-05', 1),
+('2', '1', '2', 'BEEN', 'Bryce Canyon National Park', 'sandystoh', '2019-07-06', '37.59300000', '-112.18710000', 'US', '7', 'sandystoh/17d2a54258058e8da6e4d7cc177c13f6', 'Lovely Place!', 'Got Lost in the Desert!', '2019-11-05', 1)
 
 
 -- Mongo
