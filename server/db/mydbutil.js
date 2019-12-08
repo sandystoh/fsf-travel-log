@@ -18,7 +18,7 @@ const mkTransaction = function(transaction, pool) {
                     } 
                     status.connection = conn;
                     transaction(status)
-                    .then(()=> {
+                    .then((status)=> {
                         conn.commit((err,result) => {
                             conn.release();
                             if (err) {
@@ -26,7 +26,7 @@ const mkTransaction = function(transaction, pool) {
                                 conn.rollback(() => conn.release()); 
                                 return reject({error: err, connection: conn});
                             }
-                            resolve({result, connection: conn});
+                            resolve({status, result, connection: conn});
                         });
                     }).catch(status => {
                         console.error('Rollback: ' + status.error);

@@ -2,4 +2,4 @@
 <input class="input"
 type="text" placeholder = "Search a Location"
 [(ngModel)]="autocompleteInput" #placetext 
-class="search-box">
+class="search-box" (click)="clearField()">

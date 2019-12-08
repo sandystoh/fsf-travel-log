@@ -2,7 +2,7 @@ import {Injectable, ElementRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { MapResponse, Country, Place } from '../models';
+import { MapResponse, Country, Place, Journey } from '../models';
 import { NgForm } from '@angular/forms';
 
 @Injectable()
@@ -45,16 +45,30 @@ export class TravelService {
     return this.http.get<Country[]>('/api/countries').toPromise();
   }
 
+  getJourneyList(username, type): Promise<Journey[]> {
+    const params = new HttpParams().set('type', type);
+    return this.http.get<Journey[]>('/api/journeys/list/' + username, {params}).toPromise();
+  }
+
   createPlace(save: Place, fileRef: ElementRef) {
     const formData = new FormData();
-    console.log('file in svc', fileRef.nativeElement.files[0])
     formData.set('placeImage', fileRef.nativeElement.files[0]);
 
     Object.keys(save).forEach(key => {
-      console.log(key, save[key])
       formData.set(key, save[key])}
       );
 
     return this.http.post<any>('/api/places', formData).toPromise();
+  }
+
+  createJourney(save: Journey, fileRef: ElementRef) {
+    const formData = new FormData();
+    formData.set('journeyImage', fileRef.nativeElement.files[0]);
+
+    Object.keys(save).forEach(key => {
+      formData.set(key, save[key])}
+      );
+
+    return this.http.post<any>('/api/journeys', formData).toPromise();
   }
 }

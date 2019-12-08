@@ -37,6 +37,21 @@ module.exports = function(app, conns) {
          });
     });
 
+    const getJourneySummaryByUser = mydb.mkQuery(`select id, title, date, num_places from journeys 
+    where owner = ? and type = ? and active = 1 order by title`, conns.mysql)
+
+    // Get all Journeys for particular user (pagination: limit/offset) (with country filter)
+    app.get('/api/journeys/list/:user', (req, resp) => {
+        const user = req.params.user;
+        const type = req.query.type;
+        getJourneySummaryByUser([user, type] ).then(r => {
+            resp.status(200).json(r.result);
+         })
+         .catch(error => {
+             resp.status(500).json({error: "Database Error "+ error.error});
+         });
+    });
+
     const getJourneyById = mydb.mkQuery(`Select * from journeys where id = ?`, conns.mysql);
     const getPlacesByJourneyId = mydb.mkQuery(`Select * from places where journey_id = ? and active = 1`, conns.mysql);
     
@@ -73,7 +88,7 @@ module.exports = function(app, conns) {
         const insertJourney = mydb.mkTransaction(travel.mkJourneys(), conns.mysql);
         insertJourney({body: b, file: f, conns: conns})  
         .then(status => {
-            resp.status(201).json({message: `Record ${b.title} inserted`});
+            resp.status(201).json({message: `Record ${b.title} inserted`, insertId: status.status});
         })
         .catch(err => {
             resp.status(500).json({error: err.error});

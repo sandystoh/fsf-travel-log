@@ -1,10 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormControl, Validators, NgForm } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Place, Country } from '../models';
+import { Place, Country, Journey } from '../models';
 import { TravelService } from '../services/travel.service';
 import * as moment from 'moment';
 import { AutocompleteComponent } from './helpers/autocomplete.component';
+import { MatDialog } from '@angular/material';
+import { JourneyFormComponent } from './journey-form.component';
+import { ResourceLoader } from '@angular/compiler';
 declare var google: any;
 
 @Component({
@@ -17,11 +20,12 @@ export class PlacesFormComponent implements OnInit {
   placeForm: FormGroup;
   owner: string;
   countries: Country[] = [];
+  journeys: Journey[] = [];
   today: any;
   lat: number;
   lng: number;
   full_location: '';
-  // @ViewChild('auto', {static: false}) private auto: AutocompleteComponent;
+  @ViewChild('auto', {static: false}) private auto: AutocompleteComponent;
   
   @ViewChild('imageFile', {static: false})
   imageFile: ElementRef;
@@ -31,22 +35,22 @@ export class PlacesFormComponent implements OnInit {
   message: string;
   
   constructor(private router:Router, private route:ActivatedRoute,
-              private travelSvc: TravelService) { }
+              private travelSvc: TravelService, public dialog: MatDialog) { }
 
   ngOnInit() {
     this.placeForm = this.createFormGroup();
     this.owner = this.route.snapshot.params['user'];
     this.today = moment();
     this.travelSvc.getCountryList().then(c => {
-      console.log('countries', c);
+      // console.log('countries', c);
       this.countries = c;
-    })
+    });
+    this.getJourneyList('BEEN'); 
   }
 
   get f() { return this.placeForm.controls; }
 
   createFormGroup() {
-    // also get journey_id, journey_order from journeys, lat/lng from google places
     return new FormGroup({
      title: new FormControl({value:'', disabled:true}, [Validators.required]),  // limit 256
      type: new FormControl('BEEN'),
@@ -59,6 +63,44 @@ export class PlacesFormComponent implements OnInit {
    });
  }
 
+ openJourneyDialog(): void {
+  const dialogRef = this.dialog.open(JourneyFormComponent, {
+    width: '85vw',
+    height: '80vh',
+    disableClose: false,
+    data: {owner: this.owner, type: this.placeForm.controls.type.value, fromPlacesForm: true}
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if(result) {
+      console.log('The dialog was closed', result,  this.f.type.value);
+      console.log('>>>', result.insertId);
+      this.getJourneyList(this.f.type.value).then(() => {
+            this.placeForm.patchValue({
+            journey: result.insertId
+          });
+      }); 
+    }
+  });
+}
+
+ getJourneyList(type) {
+  return this.travelSvc.getJourneyList(this.owner, type).then(r => {
+    // console.log('journeys', r);
+    this.journeys = r.map(v => {
+      if(v.date)
+        return {...v, month: moment(v.date).format('MMM'), year: moment(v.date).format('YYYY')}
+      return {...v}
+    });
+    return Promise.resolve();
+  })
+
+ }
+
+ changeType(e) {
+   this.getJourneyList(e.value);
+ }
+
  getPlace(p) {
    console.log('>>> ', p);
    this.f.title.setValue(p.name);
@@ -66,11 +108,6 @@ export class PlacesFormComponent implements OnInit {
    this.full_location = p.description;
    this.lat = p.geometry.location.lat();
    this.lng = p.geometry.location.lng();
-   console.log('latlng', this.lat, this.lng)
-   console.log('>> place name', p.name)
-   console.log('>> country', p.address_components.find(o => o.types.includes("country")).short_name)
-   console.log('>> latitude', p.geometry.location.lat())
-   console.log('>> longitude', p.geometry.location.lng())
  }
 
  preview(files) {
@@ -95,14 +132,22 @@ export class PlacesFormComponent implements OnInit {
   this.router.navigate(['/']);
 }
 
+reset() {
+  this.placeForm.reset();
+  this.auto.clearField();
+  this.placeForm.controls.type.setValue('BEEN');
+}
+
 onSubmit(form: NgForm) {
   const v = this.placeForm.getRawValue();
   console.log(this.imageFile.nativeElement.files[0]); // undefined if no file
   console.log(moment(v.date).toISOString());
   
+  const hasJourney = this.journeys.find(o => o.id === v.journey)
+
   const save: Place = {
     journey_id: v.journey || 0,
-    journey_order: 0, // calculate
+    journey_order: (hasJourney) ? hasJourney.num_places + 1 : 0,
     type: v.type,
     title: v.title,
     owner: this.owner,
@@ -121,19 +166,3 @@ onSubmit(form: NgForm) {
 }
 
 }
-
-/*
-journey_id int,
-journey_order int,
-type ENUM ('BEEN','DREAM') not null,
-title varchar(256) not null,
-owner varchar(128) not null,
-date datetime,
-lat DECIMAL(10, 8),
-lng DECIMAL(11, 8),
-country char(2),
-rating int,
-image_url varchar(128),
-description text,
-private_notes text
-*/

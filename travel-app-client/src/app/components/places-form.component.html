@@ -5,8 +5,8 @@
         
         <form [formGroup]="placeForm" (ngSubmit)="onSubmit(placeForm)">
             <div  fxLayout="column" fxLayoutGap="2vw">
-            Find Your Place:
-            <app-autocomplete #auto (setPlaceString)="getPlace($event)"></app-autocomplete>
+        Search Location *
+        <app-autocomplete #auto (setPlaceString)="getPlace($event)"></app-autocomplete>
         <mat-form-field class="full-width">
                 <input matInput placeholder="Place Name" formControlName="title">
                 <mat-hint *ngIf="placeForm.touched && !this.placeForm.getRawValue().title">
@@ -17,27 +17,40 @@
 
         <mat-form-field class="full-width">
             <mat-label>Country</mat-label>
-            <mat-select formControlName="country" name="food">
+            <mat-select formControlName="country" name="country">
               <mat-option *ngFor="let c of countries" [value]="c.code"> {{c.name}} </mat-option>
             </mat-select>
             <!-- <mat-hint *ngIf="placeForm.touched && !!f.country.hasError('required')">
                 Please input a Country</mat-hint> -->
           </mat-form-field>
-
-            <div class="center">
-            <mat-button-toggle-group formControlName="type"> 
+        
+        <div class="center">
+            <mat-button-toggle-group formControlName="type" (change)="changeType($event)"> 
                 <mat-button-toggle value="BEEN" class="smythe type-button">I Have Been Here!</mat-button-toggle>
                 <mat-button-toggle value="DREAM" class="smythe type-button">Dreaming About It!</mat-button-toggle>
             </mat-button-toggle-group></div>
-        
+
+        <br>
           <label for="placeImage">Upload an Image:</label>
-          <input placeholder="image" type="file" accept='image/*' (change)="preview(imageFile.files)" name="placeImage" id="artImage" class="muli" #imageFile>
+          <input placeholder="image" type="file" accept='image/*' (change)="preview(imageFile.files)" name="placeImage" id="placeImage" class="muli" #imageFile>
           <span style="color:red;" *ngIf="message">{{message}}</span>
           <img [src]="imgURL" width="100%" *ngIf="imgURL">
-          <br>
-        Fill in Details:
+        
+        <br>
+        Optional Details:
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="3vw">
+            <mat-form-field class="full-width">
+                <mat-label>Add to Journey (Optional)</mat-label>
+                <mat-select formControlName="journey" name="journey" placeholder="Journey">
+                  <mat-option *ngFor="let j of journeys" [value]="j.id"> {{(j.date) ? " (" + j.month + " " + j.year +") " + j.title : j.title}} </mat-option>
+                </mat-select>
+                <mat-hint style="color:#000">
+                    Only Journeys matching your BEEN/ DREAM type will be shown</mat-hint>  
+            </mat-form-field>
+            <button mat-mini-fab type="button" color="accent" (click)="openJourneyDialog()"><mat-icon>add_circle_outline</mat-icon></button>
+            </div>
         <mat-form-field class="full-width">
-            <input matInput readonly [matDatepicker]="date" (focus)="date.open()" [max]="today" placeholder="{{ f.type.value == 'BEEN' ? 'Date Visited' : 'Planned Date'}}" formControlName="date" >
+            <input matInput readonly [matDatepicker]="date" (focus)="date.open()" placeholder="{{ f.type.value == 'BEEN' ? 'Date Visited' : 'Planned Date'}}" formControlName="date" >
             <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
             <button mat-button *ngIf="f.date.value" matSuffix mat-icon-button (click)="f.date.setValue('')">
                 <mat-icon>close</mat-icon>
@@ -60,7 +73,8 @@
         </mat-form-field>
         
         <div fxLayout="row column" fxLayoutAlign="space-evenly" fxLayoutGap="2vw">
-        <button mat-raised-button color="warn" type="reset">Reset</button>
+        <button mat-raised-button color="warn" type="button" (click)="cancel()">Cancel</button>
+        <button mat-raised-button color="primary" type="button" (click)="reset()">Reset</button>
         <button mat-raised-button color="accent" type="submit" [disabled]="!this.placeForm.getRawValue().title">Create</button>
     </div>
         </div>

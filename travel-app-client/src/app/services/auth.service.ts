@@ -53,6 +53,7 @@ export class AuthService implements CanActivate {
     return new Promise((resolve, reject) => {
       // implement remove session here
       this.token = null;
+      this.router.navigate(['/login']);
       resolve();
     })
   }

@@ -35,4 +35,21 @@ export interface Place {
     image_url?: string;
     description: string; // limit 65535
     private_notes?: string;
+    last_updated?: string;
+    active?: Boolean;
+}
+
+export interface Journey {
+    id?: number;
+    title: string;
+    owner: string;
+    type: string;
+    description?: string;
+    date?: string;
+    num_places: number;
+    image_url?: string;
+    last_updated?: string;
+    active?: Boolean;
+    month?: string;
+    year?: string;
 }

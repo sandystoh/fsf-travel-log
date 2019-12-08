@@ -81,11 +81,14 @@ insert into users (username, password, email, display_name)
 values ('fred', sha2('fred', 256), 'fred@gmail.com', 'Fred');
 
 insert into journeys values
-('1', 'United States', 'sandystoh', 'BEEN', 'USA Trip 2016', '2016-07-01 00:00:00', '2', 'default/journey-image1', '2019-12-05 00:00:00', 1);
+('1', 'United States', 'sandystoh', 'BEEN', 'USA Trip 2016', null, '2', 'default/journey-image1', '2019-12-05 00:00:00', 1),
+('2', 'New Zealand', 'sandystoh', 'BEEN', 'NZ Trip 2017', '2017-01-01 00:00:00', '2', 'default/journey-image1', '2019-12-05 00:00:00', 1);
 
 insert into places values
-('1', '1', '1', 'BEEN', 'Arches National Park', 'sandystoh', '2019-07-05', '38.73310000', '-109.59250000', 'US', '8', 'sandystoh/09692d0b0f05e8b3016fd79683acf5ff', 'Lovely Place!', 'Got Lost in the Desert!', '2019-11-05', 1),
-('2', '1', '2', 'BEEN', 'Bryce Canyon National Park', 'sandystoh', '2019-07-06', '37.59300000', '-112.18710000', 'US', '7', 'sandystoh/17d2a54258058e8da6e4d7cc177c13f6', 'Lovely Place!', 'Got Lost in the Desert!', '2019-11-05', 1)
+('1', '1', '1', 'BEEN', 'Arches National Park', 'sandystoh', '2016-07-05', '38.73310000', '-109.59250000', 'US', '8', 'default/place-image1', 'Lovely Place!', 'Got Lost in the Desert!', '2019-11-05', 1),
+('2', '1', '2', 'BEEN', 'Bryce Canyon National Park', 'sandystoh', '2016-07-06', '37.59300000', '-112.18710000', 'US', '7', 'default/place-image1', 'Lovely Place 2!', 'Got Lost in the Desert!', '2019-11-05', 1),
+('3', '2', '1', 'BEEN', 'Auckland', 'sandystoh', '2017-01-06', '-36.8485', '174.7633', 'NZ', '6', 'default/place-image1', 'Lovely Place 3!', 'Got Lost in the City!', '2019-11-05', 1),
+('4', '2', '1', 'BEEN', 'Mata Mata', 'sandystoh', '2017-01-06', '-37.8109', '175.7765', 'NZ', '6', 'default/place-image1', 'Lovely Place 4!', 'Got Lost in the Hobbit Holes!', '2019-11-05', 1)
 
 
 -- Mongo

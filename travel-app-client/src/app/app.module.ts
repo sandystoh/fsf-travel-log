@@ -19,6 +19,8 @@ import { MapComponent } from './components/map.component';
 import { PlacesFormComponent } from './components/places-form.component';
 import { AutocompleteComponent } from './components/helpers/autocomplete.component';
 import { PrimeNGModule } from './primeng.module';
+import { JourneyFormComponent } from './components/journey-form.component';
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { PrimeNGModule } from './primeng.module';
     PlacesListComponent,
     MapComponent,
     PlacesFormComponent,
-    AutocompleteComponent
+    AutocompleteComponent,
+    JourneyFormComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +44,12 @@ import { PrimeNGModule } from './primeng.module';
     FlexLayoutModule,
     PrimeNGModule
   ],
-  providers: [AuthService, TravelService],
+  entryComponents: [
+    JourneyFormComponent
+  ],
+  providers: [AuthService, TravelService,
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -4,7 +4,7 @@ const uuid = require('uuid');
 
 const journeys_columns = "title, owner, type, date, description, image_url";
 const insertJourney = mydb.trQuery(sql.writeInsert('journeys', journeys_columns));
-const uploadJourneyImageToS3 = mydb.s3Upload('sandy-paf-2019', 'journeys');
+const uploadJourneyImageToS3 = mydb.s3Upload('sandy-fsf-2019', 'journeys');
     // Transaction with Journey (MySQL) + Image (S3)
     function mkJourneys() {
         return (status) => {
@@ -15,15 +15,19 @@ const uploadJourneyImageToS3 = mydb.s3Upload('sandy-paf-2019', 'journeys');
                 filepath = `${b.owner}/${f.filename}`;
             }
             const connection = status.connection;
+            b.date = (b.date !== 'null') ? b.date : null;
             const params = [b.title, b.owner, b.type, b.date, b.description, filepath];
             return insertJourney({params, connection})
             .then(s => {
+                s.insertId = s.result.insertId;
                 if(f) {
                     s.file = f, s.filepath = filepath;
                     s.s3 = status.conns.s3;
-                    return uploadJourneyImageToS3(s);
+                    return uploadJourneyImageToS3(s).then(r => {
+                        return Promise.resolve(s.insertId);
+                    });
                 }
-                else return Promise.resolve();
+                else return Promise.resolve(s.insertId);
             }); 
         }
     }
@@ -116,7 +120,7 @@ const uploadPlaceImageToS3 = mydb.s3Upload('sandy-fsf-2019', 'places');
 
 const places_update_columns = "title, type, date, rating, description, image_url, private_notes, last_updated";
 const updatePlace = mydb.trQuery(sql.writeUpdate('places', places_update_columns, 'id = ?'));
-const deletePlaceImageFromS3 = mydb.s3Delete('sandy-paf-2019', 'places');
+const deletePlaceImageFromS3 = mydb.s3Delete('sandy-fsf-2019', 'places');
     // Transaction with Journey (MySQL) + Image (S3)
     function editPlaces() {
         return (status) => {

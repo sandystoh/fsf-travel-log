@@ -26,7 +26,7 @@ export class AutocompleteComponent implements OnInit, AfterViewInit {
 
   private getPlaceAutocomplete() {
     const autocomplete = new google.maps.places.Autocomplete(this.placetext.nativeElement,
-        {});
+        {fields:['address_component', 'formatted_address', 'geometry', 'name'] });
     autocomplete.addListener('place_changed', () => {
       this.ngZone.run(() => {
         const place = autocomplete.getPlace();
@@ -37,7 +37,6 @@ export class AutocompleteComponent implements OnInit, AfterViewInit {
   }
 
   clearField() {
-    console.log('Place Name Changed - Search Cleared');
     this.autocompleteInput = '';
   }
 
