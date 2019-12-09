@@ -13,7 +13,7 @@ create table users (
 -- drop table journeys;
 create table journeys (
 	id int auto_increment not null,
-    title varchar(256) not null,
+    title varchar(128) not null,
     owner varchar(128) not null,
     type ENUM ('BEEN','DREAM') not null,
     description text,
@@ -46,7 +46,7 @@ create table places (
     journey_id int,
     journey_order int,
     type ENUM ('BEEN','DREAM') not null,
-    title varchar(256) not null,
+    title varchar(128) not null,
     owner varchar(128) not null,
 	date datetime,
     lat DECIMAL(10, 8),

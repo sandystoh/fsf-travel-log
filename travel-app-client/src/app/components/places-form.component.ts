@@ -52,7 +52,7 @@ export class PlacesFormComponent implements OnInit {
 
   createFormGroup() {
     return new FormGroup({
-     title: new FormControl({value:'', disabled:true}, [Validators.required]),  // limit 256
+     title: new FormControl({value:'', disabled:true}, [Validators.required]),  // limit 128
      type: new FormControl('BEEN'),
      journey: new FormControl(''),
      country: new FormControl({value:'', disabled:true}, [Validators.required]),
@@ -149,7 +149,7 @@ onSubmit(form: NgForm) {
     journey_id: v.journey || 0,
     journey_order: (hasJourney) ? hasJourney.num_places + 1 : 0,
     type: v.type,
-    title: v.title,
+    title: (v.title.length > 100) ? v.title.substr(0, 95) + '...' : v.title,
     owner: this.owner,
     date: moment(v.date).format("YYYY-MM-DD HH:mm:ss"),
     lat: this.lat,

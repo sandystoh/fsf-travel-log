@@ -128,6 +128,33 @@ const s3Upload = function(s3Bucket, s3Folder) {
     }
 }
 
+// S3 Upload from File Path
+const s3UploadFilePath = function(s3Bucket, s3Folder) {
+    return status => {
+        return new Promise((resolve, reject) => {
+            fs.readFile(status.path, (err, imgFile) => {
+                if (err) {
+                    console.log(err);
+                    return reject({error: err});
+                }
+                const params = { 
+                    Bucket: s3Bucket, 
+                    Key: `${s3Folder}/${status.filepath}`, 
+                    Body: imgFile, ContentType: 'image/jpeg',
+                    ACL: 'public-read'
+                }; 
+                (status.s3).putObject(params, (error, result) => { 
+                    if(error) {
+                        console.log(error);
+                        return reject(error);
+                    }
+                    resolve();
+                });
+            });
+        })
+    }
+}
+
 // S3 Delete
 const s3Delete = function(s3Bucket, s3Folder) {
     return status => {
@@ -234,7 +261,7 @@ const unlinkFileOnResponse = () => {
 
 module.exports = { 
     mkTransaction, trQuery, mkQuery, // MySQL
-    s3Upload, s3Get, s3Delete, // Digital Ocean S3
+    s3Upload, s3Get, s3Delete, s3UploadFilePath,// Digital Ocean S3
     mongoWrite, mongoWriteMany, mongoFind, mongoCount, mongoDistinct, mongoAggregate, // mongoDB
     logRequestsToMongo, unlinkFileOnResponse    // Utility Middleware
 };

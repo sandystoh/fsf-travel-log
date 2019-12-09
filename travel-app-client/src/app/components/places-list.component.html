@@ -1,1 +1,18 @@
+<div class="place-bg">
 <div class="headertext">Places I've Been</div>
+
+<div fxLayout="row column" fxLayoutAlign="space-evenly">
+    <div *ngFor="let p of places">
+        <mat-card class="place-card-b" [style.background]="p.url">
+            <div class="overlay"></div>
+            <div class="card-title">{{p.title}}</div>
+            <div class="card-info">{{p.country_name}}</div> 
+            <div class="card-subtitle" *ngIf="p.journey_id !== 0"><a href="#"><div class="info-title">Journey</div> {{p.journey_title}}</a></div>
+            <div class="icon-area" fxLayoutAlign="space-evenly">
+                <div><span *ngFor="let h of ' '.repeat(p.rating).split('')" class="licon icon-love"></span></div>
+                <div><span class="licon icon-dat"></span>{{p.date | date: "mediumDate"}}</div>
+            </div>
+        </mat-card>
+    </div>
+</div>
+  

@@ -1,3 +1,5 @@
+import { SafeStyle } from '@angular/platform-browser';
+
 export interface LoginResponse {
     access_token: string;
     username: string;
@@ -20,6 +22,11 @@ export interface Country {
     code: string;
 }
 
+export interface PlacesResponse {
+    places: Place[];
+    count: number;
+}
+
 export interface Place {
     id?: number;
     journey_id: number;
@@ -37,6 +44,10 @@ export interface Place {
     private_notes?: string;
     last_updated?: string;
     active?: Boolean;
+
+    url?: SafeStyle;
+    journey_title?: string;
+    country_name?: string;
 }
 
 export interface Journey {

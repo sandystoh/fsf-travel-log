@@ -1,6 +1,9 @@
 const mydb = require('../db/mydbutil');
 const sql = require('../db/sqlutil');
 const uuid = require('uuid');
+const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
 
 const journeys_columns = "title, owner, type, date, description, image_url";
 const insertJourney = mydb.trQuery(sql.writeInsert('journeys', journeys_columns));
@@ -70,6 +73,7 @@ const updateJourneyOrder = mydb.trQuery("update journeys set num_places = ? wher
 const places_columns = "journey_id, journey_order, type, title, owner, date, lat, lng, country, rating, image_url, description, private_notes";
 const insertPlace = mydb.trQuery(sql.writeInsert('places', places_columns));
 const uploadPlaceImageToS3 = mydb.s3Upload('sandy-fsf-2019', 'places');
+const uploadPlaceThumbnailToS3 = mydb.s3UploadFilePath('sandy-fsf-2019', 'places/thumbnails');
 
 // Transaction with Place (MySQL) + Image (S3)
     function mkPlaces() {
@@ -84,8 +88,8 @@ const uploadPlaceImageToS3 = mydb.s3Upload('sandy-fsf-2019', 'places');
             let journey_order = 0;
 
             const journey_id = parseInt(b.journey_id);
-            if(journey_id !== 0)
-            return getJourneyOrder({params:[b.journey_id], connection})
+            if(journey_id !== 0) {
+                return getJourneyOrder({params:[b.journey_id], connection})
                 .then(r => {
                     journey_order = r.result[0].count + 1;
                     return updateJourneyOrder({params: [journey_order, b.journey_id], connection});
@@ -99,10 +103,20 @@ const uploadPlaceImageToS3 = mydb.s3Upload('sandy-fsf-2019', 'places');
                     if(f) {
                         s.file = f, s.filepath = filepath;
                         s.s3 = status.conns.s3;
-                        return uploadPlaceImageToS3(s);
+                        return sharp(f.path).resize(500).toFormat("jpeg").jpeg({ quality: 90 }).toBuffer()
+                        .then( data => {
+                            fs.writeFileSync(path.join(__dirname,'..',`/resized/${f.filename}.jpg`), data);
+                            s2 = {path: path.join(__dirname,'..',`/resized/${f.filename}.jpg`), filepath, s3: status.conns.s3}
+                            return uploadPlaceThumbnailToS3(s2);
+                        })
+                        .then(() => {
+                            fs.unlink(path.join(__dirname,'..',`/resized/${f.filename}.jpg`),()=>{ });
+                            return uploadPlaceImageToS3(s);
+                        })
                     }
                     else return Promise.resolve();
                 });
+            }
             else { // Not tagged to a Journey
                 const params = [0, 0, b.type, b.title, b.owner, b.date, b.lat, b.lng, b.country, b.rating, filepath, b.description, b.private_notes];
                 return insertPlace({params, connection})
@@ -110,7 +124,16 @@ const uploadPlaceImageToS3 = mydb.s3Upload('sandy-fsf-2019', 'places');
                     if(f) {
                         s.file = f, s.filepath = filepath;
                         s.s3 = status.conns.s3;
-                        return uploadPlaceImageToS3(s);
+                        return sharp(f.path).resize(500).toFormat("jpeg").jpeg({ quality: 90 }).toBuffer()
+                        .then( data => {
+                            fs.writeFileSync(path.join(__dirname,'..',`/resized/${f.filename}.jpg`), data);
+                            s2 = {path: path.join(__dirname,'..',`/resized/${f.filename}.jpg`), filepath, s3: status.conns.s3}
+                            return uploadPlaceThumbnailToS3(s2);
+                        })
+                        .then(() => {
+                            fs.unlink(path.join(__dirname,'..',`/resized/${f.filename}.jpg`),()=>{ });
+                            return uploadPlaceImageToS3(s);
+                        })
                     }
                     else return Promise.resolve();
                 });

@@ -2,7 +2,7 @@ import {Injectable, ElementRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { MapResponse, Country, Place, Journey } from '../models';
+import { MapResponse, Country, Place, Journey, PlacesResponse } from '../models';
 import { NgForm } from '@angular/forms';
 
 @Injectable()
@@ -27,13 +27,13 @@ export class TravelService {
     );
   }
 
-  getPlaces(username): Promise<string[]> {
+  getPlaces(username): Promise<PlacesResponse> {
     const token = this.authSvc.getUser().token;
     console.log(">>> token", token)
     const headers = new HttpHeaders()
       .set('Authorization', `Bearer ${token}`)
     return (
-      this.http.get<string[]>('/api/places/'+ username, { headers })
+      this.http.get<PlacesResponse>('/api/places/'+ username, { headers })
         .toPromise()
         .catch(error => {
           return (Promise.reject(error))
