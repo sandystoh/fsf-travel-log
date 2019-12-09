@@ -13,13 +13,14 @@
     background: linear-gradient(to bottom, rgba(50,50,50,0.5), rgba(50,50,50,0.3));
 }
 
-::ng-deep .mat-form-field, ::ng-deep .mat-form-field-label  {
+::ng-deep .search-form .mat-form-field, ::ng-deep .search-form .mat-form-field-label  {
   min-width: 280px;
   color: #fff !important;
   font-family: 'Muli', sans-serif;
   font-size: 1.1rem;
 }
-::ng-deep .mat-form-field-ripple, ::ng-deep .mat-focused .mat-form-field-appearance-legacy .mat-form-field-underline , ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+::ng-deep .search-form .mat-form-field-ripple, ::ng-deep .search-form .mat-focused .mat-form-field-appearance-legacy .mat-form-field-underline , 
+::ng-deep .search-form .mat-form-field-appearance-legacy .mat-form-field-underline {
   background-color: #fff !important;
 }
 

@@ -15,7 +15,7 @@
  }
  
  .add-bg{
-     background-color: linear-gradient(to bottom, rgba(50,50,50,0.5), rgba(50,50,50,0));
+     background: linear-gradient(to bottom, rgba(50,50,50,0.5), rgba(50,50,50,0.5));
      width: 100vw;
      padding-bottom: 30px;
  }
