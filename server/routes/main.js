@@ -29,15 +29,15 @@ module.exports = function(app, conns) {
 
     const searchByUser = mydb.mkQuery(`Select p.*, j.title as journey_title from places p
     left join journeys j on p.journey_id = j.id where 
-    p.owner = ? and (p.title like ? or p.full_location like ? or j.title like ?) and p.country like ?
+    p.owner = ? and (p.title like ? or j.title like ?) and p.country like ? order by title
     limit ? offset ?`, conns.mysql)
     const countSearch = mydb.mkQuery(`Select count(*) as count from places p
     left join journeys j on p.journey_id = j.id 
-    where p.owner = ? and (p.title like ? or p.full_location like ? or j.title like ?) and p.country like ?`, conns.mysql)
+    where p.owner = ? and (p.title like ? or j.title like ?) and p.country like ?`, conns.mysql)
     
     // Search within a User's Journeys/Places for query string within titles (with country filter)
-    app.get('/api/search/:user', (req, resp) => {
-        const limit = parseInt(req.query.limit) || 20;
+    app.get('/api/places/search/:user', (req, resp) => {
+        const limit = parseInt(req.query.limit) || 12;
         const offset = parseInt(req.query.offset) || 0;
         // matches exact string if country is provided, otherwise matches all countries
         const country = req.query.country || '%'; 

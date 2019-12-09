@@ -99,6 +99,7 @@ export class PlacesFormComponent implements OnInit {
 
  changeType(e) {
    this.getJourneyList(e.value);
+   if(e.value == 'DREAM') this.f.date.setValue(null);
  }
 
  getPlace(p) {
@@ -161,7 +162,7 @@ onSubmit(form: NgForm) {
   };
   this.travelSvc.createPlace(save, this.imageFile).then((r) => {
     console.log(r);
-    // this.router.navigate(['/places/' + this.owner]); 
+    this.router.navigate(['/places/' + this.owner]); 
   }).catch(err => console.log(err)); 
 }
 

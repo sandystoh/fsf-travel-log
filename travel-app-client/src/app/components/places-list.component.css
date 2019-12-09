@@ -6,11 +6,25 @@
     background-repeat: no-repeat;
     background-size: cover;
     min-height: calc(100vh - 40px);
+    padding-bottom: 30px;
 }
 
 .place-area{
     background: linear-gradient(to bottom, rgba(50,50,50,0.5), rgba(50,50,50,0.3));
-    padding-bottom: 30px;
+}
+
+::ng-deep .mat-form-field, ::ng-deep .mat-form-field-label  {
+  min-width: 280px;
+  color: #fff !important;
+  font-family: 'Muli', sans-serif;
+  font-size: 1.1rem;
+}
+::ng-deep .mat-form-field-ripple, ::ng-deep .mat-focused .mat-form-field-appearance-legacy .mat-form-field-underline , ::ng-deep .mat-form-field-appearance-legacy .mat-form-field-underline {
+  background-color: #fff !important;
+}
+
+.results-area {
+  margin-top: 30px;
 }
 
 .place-card-b {
@@ -107,7 +121,7 @@
     color: #ddd;
 }
 
-.card-title:hover, .card-subtitle a:hover {
+ .card-subtitle a:hover {
   color: #BDA26B;
 }
 
@@ -143,6 +157,36 @@
     width: 100%;
 }
 
+.button-area {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.count-area {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0px 20px;
+  color: #fff;
+  text-shadow: 2px 2px 4px #000000;
+}
+
+.mat-raised-button {
+  border: 2px solid #fff;
+  background: rgba(255,193,7,0.7);
+  font-weight: 700;
+  font-family: 'Muli', sans-serif;
+  margin-right: 10px;
+}
+
+.mat-raised-button:hover:not([disabled]) {
+  background: rgba(255,255,255,0.4);
+  background: rgba(255,193,7,1);
+  border: 2px solid #ffc107;
+  border: 2px solid #fff;
+}
+
+
+/* below icons and some styling inspired by https://codepen.io/nodws/pen/ZpZjpQ?editors=0100#0 */
 .licon{
   position:relative;  
    width:23px;
@@ -199,6 +243,10 @@
 
     .card-title {
       bottom: 110px;
+    }
+
+    .count-area {
+      display:none;
     }
    }
  

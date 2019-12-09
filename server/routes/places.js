@@ -17,7 +17,7 @@ module.exports = function(app, conns) {
     
     // Get all Places for particular user (pagination: limit/offset)  (with country filter)
     app.get('/api/places/:user', (req, resp) => {
-        const limit = parseInt(req.query.limit) || 20;
+        const limit = parseInt(req.query.limit) || 12;
         const offset = parseInt(req.query.offset) || 0;
         const country = req.query.country || '%';
         p0 = sql.countWhere(conns.mysql, 'places', `owner = ? and country like ?`, [req.params.user, country]);
@@ -27,6 +27,20 @@ module.exports = function(app, conns) {
             const count = r[0].result[0].count;
             resp.status(200).json({places: r[1].result, count}); 
             // returns empty array + count 0 if none, handled by client
+         })
+         .catch(error => {
+             resp.status(500).json({error: "Database Error "+ error.error});
+         });
+    });
+
+    const getPlaceTitlesByUser = mydb.mkQuery(`Select title from places p where p.owner = ? and active = 1
+    order by title`, conns.mysql)
+     
+    // Get all Places for particular user - names only for autocomplete
+    app.get('/api/places/titles/:user', (req, resp) => {
+        getPlaceTitlesByUser([req.params.user]).then(r => {
+            const titles = r.result.map(v => v.title);
+            resp.status(200).json(titles);
          })
          .catch(error => {
              resp.status(500).json({error: "Database Error "+ error.error});
