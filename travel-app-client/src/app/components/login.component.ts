@@ -32,7 +32,6 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.invalidLogin = false;
     const val = this.loginForm.value;
-    console.log(val);
     this.authSvc.authenticate(val.username, val.password).then((r) => {
       if (r) {
         this.router.navigate(['/']);

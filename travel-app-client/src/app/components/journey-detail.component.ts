@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TravelService } from '../services/travel.service';
-import { Place } from '../models';
+import { Place, Journey } from '../models';
 import { DomSanitizer } from '@angular/platform-browser';
 
+
 @Component({
-  selector: 'app-place-detail',
-  templateUrl: './place-detail.component.html',
-  styleUrls: ['./place-detail.component.css']
+  selector: 'app-journey-detail',
+  templateUrl: './journey-detail.component.html',
+  styleUrls: ['./journey-detail.component.css']
 })
-export class PlaceDetailComponent implements OnInit {
+export class JourneyDetailComponent implements OnInit {
 
   id: number;
-  place: Place;
+  journey: Journey;
   
   constructor(private router: Router, private route: ActivatedRoute,
               private travelSvc: TravelService, private sanitizer: DomSanitizer) { }
@@ -27,15 +28,15 @@ export class PlaceDetailComponent implements OnInit {
   }
 
   getPlace(id) {
-    this.travelSvc.getPlaceById(id).then(r => {
+    this.travelSvc.getJourneyById(id).then(r => {
       console.log(r);
-      this.place = r;
+      this.journey = r.journey;
     }).then(() => {
       // let url_string = `../../assets/images/placeholder.jpeg`;
-      this.place.url = '';
-      if(this.place.image_url !== null && this.place.image_url != '')  {
-        let url_string = `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/places/${this.place.image_url}`;
-        this.place.url = this.sanitizer.bypassSecurityTrustStyle(`url(${url_string}) no-repeat`);
+      this.journey.url = '';
+      if(this.journey.image_url !== null && this.journey.image_url != '')  {
+        let url_string = `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/places/${this.journey.image_url}`;
+        this.journey.url = this.sanitizer.bypassSecurityTrustStyle(`url(${url_string}) no-repeat`);
       }
     }); 
   }

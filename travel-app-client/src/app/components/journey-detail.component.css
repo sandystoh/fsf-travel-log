@@ -16,11 +16,6 @@
     background-position: center !important;
 }
 
-.journey-link:hover {
-    cursor: pointer;
-    color: #BDA26B;
-}
-
 .place-detail {
     padding: 15px;
     min-width: 450px;
@@ -38,7 +33,7 @@
     color: #fff;
 }
 
-.detail-country:after, .detail-journey:after, .place-description:before {
+.detail-title:after, .detail-journey:after, .place-description:before {
     content: " ";
     display: block; 
     width: 50%;

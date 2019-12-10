@@ -1,5 +1,5 @@
 <div class="detail-area">
-<div fxLayout="column" fxLayoutAlign="center center">
+<div fxLayout="column" fxLayoutAlign="center center" *ngIf="place">
     <div class="place-detail">
         <div class="detail-title">{{place.title}}</div>
         <div class="detail-country detail-gold">{{place.country_name}}</div>
@@ -11,7 +11,7 @@
             <button type="button" [disabled]="place.next_id == 0" [routerLink]="['/place',place.next_id]" mat-icon-button>
                 <mat-icon>arrow_forward</mat-icon></button>
             </div>
-            <span class="detail-white">{{place.journey_title}}</span>
+            <span class="detail-white journey-link" [routerLink]="['/journey', place.journey_id]">{{place.journey_title}}</span>
         </div>
         <div fxLayoutAlign="center center" fxLayoutGap="2vw">
         <div><span class="detail-gold"><mat-icon *ngFor="let h of ' '.repeat(place.rating).split('')" class="small">favorite</mat-icon></span></div>

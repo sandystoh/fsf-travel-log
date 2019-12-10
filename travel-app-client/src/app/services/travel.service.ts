@@ -2,7 +2,7 @@ import {Injectable, ElementRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { MapResponse, Country, Place, Journey, PlacesResponse } from '../models';
+import { MapResponse, Country, Place, Journey, PlacesResponse, JourneyResponse } from '../models';
 import { NgForm } from '@angular/forms';
 
 @Injectable()
@@ -88,6 +88,10 @@ export class TravelService {
       );
 
     return this.http.post<any>('/api/places', formData).toPromise();
+  }
+
+  getJourneyById(id) {
+    return this.http.get<JourneyResponse>('/api/journey/' + id).toPromise();
   }
 
   createJourney(save: Journey, fileRef: ElementRef) {

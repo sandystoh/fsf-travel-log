@@ -1,0 +1,13 @@
+<mat-card class="place-card-b" [routerLink]="['/place/'+p.id]" [style.background]="p.url">
+    <div class="overlay"></div>
+    <div class="card-title">{{p.title}}</div>
+    <div class="card-info">{{p.country_name}}</div> 
+    <div class="card-subtitle mobile" *ngIf="p.journey_id !== 0"><div class="info-title">Journey</div><span class="white"> {{p.journey_title}}</span></div>
+    <div class="card-subtitle web" *ngIf="p.journey_id !== 0"><div class="info-title">Journey</div><a [routerLink]="['/journey',p.journey_id]">{{p.journey_title}}</a></div>
+    <div class="icon-area" fxLayoutAlign="space-evenly">
+        <span *ngIf="p.type == 'BEEN'" class="detail-gold" title="BEEN"><mat-icon>cloud_done</mat-icon></span>
+        <span *ngIf="p.type == 'DREAM'" class="detail-gold" title="DREAM"><mat-icon>cloud_queue</mat-icon></span>
+        <div><span *ngFor="let h of ' '.repeat(p.rating).split('')" class="licon icon-love"></span></div>
+        <div><span class="licon icon-dat"></span>{{p.date | date: "mediumDate"}}</div>
+    </div>
+</mat-card>

@@ -53,6 +53,11 @@ export interface Place {
     prev_id?: number;
 }
 
+export interface JourneyResponse {
+    places: Place[];
+    journey: Journey;
+}
+
 export interface Journey {
     id?: number;
     title: string;
@@ -66,4 +71,6 @@ export interface Journey {
     active?: Boolean;
     month?: string;
     year?: string;
+
+    url?: SafeStyle;
 }

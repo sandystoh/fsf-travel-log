@@ -1,18 +1,19 @@
 <div class="fixed-bg">
-  <mat-toolbar>
-    <div class="full_width" fxLayout="row" fxLayoutAlign="space-between">
-      <a class="home"  [routerLink]="['/welcome']">
-          <div fxLayout="row" fxLayoutAlign="flex-start center" fxLayoutGap="1vw">
-            <img src="assets/images/travel-icon.png" height="40px"> 
-            <div>Globe Trotters</div>
-          </div></a>
-          <div fxLayout="row" *ngIf="isAuth" fxLayoutAlign="center">
-            <div><mat-icon class="avatar-icon">account_circle</mat-icon></div>
-            <div class="smythe avatar"> {{ displayName }}</div> 
-            <div class="logout-btn" (click)="logout()"><mat-icon>exit_to_app</mat-icon></div>
-          </div>
-   </div>
-  </mat-toolbar>
-
-  <router-outlet (activate)="isAuthenticated()"></router-outlet>
+        <mat-toolbar>
+            <div class="full_width" fxLayout="row" fxLayoutAlign="space-between">
+              <a class="home"  [routerLink]="['/welcome']">
+                  <div fxLayout="row" fxLayoutAlign="flex-start center" fxLayoutGap="1vw">
+                    <img src="assets/images/travel-icon.png" height="40px"> 
+                    <div>Globe Trotters</div>
+                  </div></a>
+                  <div fxLayout="row" *ngIf="isAuth" fxLayoutAlign="center">
+                    <div><mat-icon class="avatar-icon">account_circle</mat-icon></div>
+                    <div class="smythe avatar"> {{ displayName }}</div> 
+                    <div class="logout-btn" (click)="logout()"><mat-icon>exit_to_app</mat-icon></div>
+                  </div>
+           </div>
+          </mat-toolbar>
+          <router-outlet (activate)="isAuthenticated()"></router-outlet>
 </div>
+    
+

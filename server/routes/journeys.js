@@ -68,7 +68,7 @@ module.exports = function(app, conns) {
                     alpha: alpha[(v.journey_order-1) % 26]
                 }
             });
-            resp.status(200).json({journey: r[0].result, places})
+            resp.status(200).json({journey: r[0].result[0], places})
         })
         .catch(err => {
             resp.status(500).json({error: "Database Error "+ error});

@@ -1,0 +1,19 @@
+<div class="detail-area">
+        <div fxLayout="column" fxLayoutAlign="center center" *ngIf="journey">
+            <div class="place-detail">
+                <div class="detail-gold">Journey</div>
+                <div class="detail-title">{{journey.title}}</div>
+                <div fxLayoutAlign="center center" fxLayoutGap="2vw">
+                <span *ngIf="journey.type == 'BEEN'" class="detail-gold" title="BEEN"><mat-icon>cloud_done</mat-icon></span>
+                <span *ngIf="journey.type == 'DREAM'" class="detail-gold" title="DREAM"><mat-icon>cloud_queue</mat-icon></span>
+                <div><span class="licon icon-dat"></span>{{journey.date | date: "mediumDate"}}</div>
+            </div>
+            </div>
+            <div [style.background]="journey.url" *ngIf="journey.url" class="place-image"></div>
+            <div class="place-description">
+                <div class="description-title detail-gold" *ngIf="journey.type == 'BEEN'">Memories</div>
+                <div class="detail-gold" *ngIf="journey.type == 'SEEN'">Dreams</div>
+                {{journey.description}}
+            </div>
+        </div>
+        </div>

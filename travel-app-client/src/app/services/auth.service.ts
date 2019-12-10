@@ -9,20 +9,25 @@ export class AuthService implements CanActivate {
   token: string = null;
   username: string = null;
   displayName: string = null;
+  authenticated = false;
 
   constructor(private router: Router, private http: HttpClient) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): UrlTree| boolean {
+    this.token = localStorage.getItem('travel-token');
     if (this.token)
       return (true)
     return (this.router.parseUrl('login'));
   }
 
   isAuthenticated() {
-    return (!!this.token);
+      return (!!localStorage.getItem('travel-token'));
   }
 
   getUser() {
+    this.token = localStorage.getItem('travel-token');
+    this.username = localStorage.getItem('travel-username');
+    this.displayName = localStorage.getItem('travel-name');
     return ({username: this.username, displayName: this.displayName, token: this.token});
   }
 
@@ -38,9 +43,12 @@ export class AuthService implements CanActivate {
         .then((result: LoginResponse) => {
           console.info('>> returned: ', result)
           this.token = result.access_token;
-          this.username = result.username;
-          this.displayName = result.display_name;
-          return (result);
+          localStorage.setItem('travel-token', this.token);
+          localStorage.setItem('travel-username', result.username);
+          localStorage.setItem('travel-name', result.display_name);
+          this.authenticated = this.isAuthenticated();
+
+          return this.authenticated;
         })
         .catch(error => {
           this.token = null;
@@ -53,7 +61,11 @@ export class AuthService implements CanActivate {
     return new Promise((resolve, reject) => {
       // implement remove session here
       this.token = null;
-      this.router.navigate(['/login']);
+      localStorage.clear();
+      this.authenticated = this.isAuthenticated();
+      if (!this.authenticated) {
+        this.router.navigate(['/login']);
+      }
       resolve();
     })
   }

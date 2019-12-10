@@ -13,7 +13,7 @@ const travel = require('../db/travelutil');
 module.exports = function(app, conns) {
 
     const getPlacesByUser = mydb.mkQuery(`Select p.*, j.title as journey_title from places p
-    left join journeys j on p.journey_id = j.id where p.owner = ? and country like ? limit ? offset ? `, conns.mysql)
+    left join journeys j on p.journey_id = j.id where p.owner = ? and country like ? order by title limit ? offset ? `, conns.mysql)
     
     // Get all Places for particular user (pagination: limit/offset)  (with country filter)
     app.get('/api/places/:user', (req, resp) => {

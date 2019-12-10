@@ -8,12 +8,14 @@ import { MapComponent } from './components/map.component';
 import { PlacesFormComponent } from './components/places-form.component';
 import { AutocompleteComponent } from './components/helpers/autocomplete.component';
 import { PlaceDetailComponent } from './components/place-detail.component';
+import { JourneyDetailComponent } from './components/journey-detail.component';
 
 const ROUTES: Routes = [
   { path: 'login', component: LoginComponent},
   { path: '', component: WelcomeComponent, canActivate: [AuthService]},
   { path: 'places/:user', component: PlacesListComponent},
   { path: 'place/:id', component: PlaceDetailComponent},
+  { path: 'journey/:id', component: JourneyDetailComponent},
   { path: 'places/add/:user', component: PlacesFormComponent}, //, canActivate: [AuthService]},
   { path: 'map/:user', component: MapComponent},
   { path: 'auto', component: AutocompleteComponent},

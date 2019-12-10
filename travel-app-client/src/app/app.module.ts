@@ -22,6 +22,8 @@ import { PrimeNGModule } from './primeng.module';
 import { JourneyFormComponent } from './components/journey-form.component';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material';
 import { PlaceDetailComponent } from './components/place-detail.component';
+import { JourneyDetailComponent } from './components/journey-detail.component';
+import { PlaceCardComponent } from './components/helpers/place-card.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { PlaceDetailComponent } from './components/place-detail.component';
     PlacesFormComponent,
     AutocompleteComponent,
     JourneyFormComponent,
-    PlaceDetailComponent
+    PlaceDetailComponent,
+    JourneyDetailComponent,
+    PlaceCardComponent
   ],
   imports: [
     BrowserModule,
