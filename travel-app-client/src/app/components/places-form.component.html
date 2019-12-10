@@ -36,7 +36,7 @@
                         <mat-icon>close</mat-icon>
                       </button>
                     <mat-datepicker #date></mat-datepicker>
-                    <mat-hint *ngIf="placeForm.touched && !!f.date">
+                    <mat-hint *ngIf="!!f.title.value && !f.date.value">
                             Please enter a date visited (or best guess!)</mat-hint>
             </mat-form-field>
         <br>

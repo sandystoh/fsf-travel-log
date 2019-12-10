@@ -187,51 +187,21 @@
   border: 2px solid #fff;
 }
 
+.mobile {
+  display: none;
+}
 
-/* below icons and some styling inspired by https://codepen.io/nodws/pen/ZpZjpQ?editors=0100#0 */
-.licon{
-  position:relative;  
-   width:23px;
-   height:15px;
-   display:inline-block;
-   vertical-align:middle;
+.web {
+  display: block;
 }
-.licon:before{
-  content:"";
-   background:url(../../assets/images/licons.svg?) -2px -6px no-repeat;
-   background-size:250px;
-   width:26px;
-   height:20px;
-   display:inline-block;
-   vertical-align:middle;
-   position:absolute;
-   top:-3px;
-   left:0;
-}
-.icon-white{
-   filter: brightness(10);
-}
-.icon-black{
-   filter: brightness(0);
-   opacity:0.6
-}
-.icon-like:before{
-  background-position: -183px -6px;
 
+.white {
+  color: #fff;
 }
-.icon-com:before{
-  background-position: -63px -4px;
 
-}
-.icon-love:before{
-    background-position: -124px -7px;
-  }
-.icon-dat:before{
-  background-position: -94px -7px;
-}
-.icon-tag:before{
-  background-position: -33px -6px;
 
+.detail-gold {
+  color: #BDA26B;
 }
 
 @media only screen and (max-width: 450px) {
@@ -249,6 +219,14 @@
 
     .count-area {
       display:none;
+    }
+
+    .mobile {
+      display: block;
+    }
+    
+    .web {
+      display: none;
     }
    }
  
