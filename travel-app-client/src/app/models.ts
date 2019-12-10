@@ -43,11 +43,14 @@ export interface Place {
     description: string; // limit 65535
     private_notes?: string;
     last_updated?: string;
-    active?: Boolean;
+    active?: number;
 
     url?: SafeStyle;
     journey_title?: string;
+    journey_count?: number;
     country_name?: string;
+    next_id?: number;
+    prev_id?: number;
 }
 
 export interface Journey {

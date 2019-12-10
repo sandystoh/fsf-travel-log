@@ -18,7 +18,7 @@ module.exports = function(app, conns) {
         mydb.mongoFind({client: conns.mongodb, db: 'travel', collection: 'countries'})
         .then(result => {
             const countries = result.map(v => {
-                return { name: v.name, code: v.code2l }
+                return { name: v.name, code: v.code, continent: v.continent }
             })
             resp.status(200).json(countries);
         })

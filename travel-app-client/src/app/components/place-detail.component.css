@@ -1,0 +1,53 @@
+.detail-area {
+    background-color: rgb(66, 62, 59);
+    height: 100%;
+    min-height: 100vh;
+    padding: 30px;
+}
+
+.place-image {
+    min-width: 300px;
+    max-height: 500px;
+}
+
+.place-detail {
+    color: #fff;
+    font-family: "Smythe", sans-serif;
+    font-size: 1.3rem;
+    padding: 15px;
+    min-width: 450px;
+}
+
+.detail-title {
+    font-size: 3rem;
+}
+
+.detail-title:after {
+    content: " ";
+    display: block; 
+    width: 50%;
+    height: 2px;
+    margin: 20px auto;
+    border: 0;
+    background: #BDA26B;
+    transition:all 0.2s
+  }
+
+@media only screen and (max-width: 450px) {
+    .detail-area {
+        padding: 30px 0px;
+    }
+
+    .place-image {
+        width: 100vw;
+    }
+
+    .place-detail {
+        min-width: unset;
+        width: 100vw;
+    }
+
+    .detail-title {
+    }
+    
+}

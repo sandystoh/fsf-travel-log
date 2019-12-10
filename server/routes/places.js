@@ -81,17 +81,51 @@ module.exports = function(app, conns) {
 
     const getPlaceById = mydb.mkQuery(`Select p.*, j.title as journey_title, j.num_places as journey_count from places p 
     left join journeys j on p.journey_id = j.id where p.id = ?`, conns.mysql)
+    const getPlaceIdByJourneyOrder = mydb.mkQuery(`Select p.id from places p 
+      where p.journey_id = ? and p.journey_order = ?`, conns.mysql)
     
     // Get Place by Place ID - Join with Journey to get Journey Data (if applicable otherwise returns null)
     app.get('/api/place/:id', // **** add token to read private
     (req, resp) => {
-        return getPlaceById([req.params.id]).then(r => {
-            resp.status(200).json({place: r.result[0]});
+        let place;
+        return getPlaceById([req.params.id])
+        .then(r => {
+            place = JSON.parse(JSON.stringify(r.result[0]));
+            place.next_id =0, place.prev_id=0;
+            console.log('PLACE', place);
+            if(place.journey_id !== 0 && place.journey_order < place.journey_count)
+                return getPlaceIdByJourneyOrder([place.journey_id, place.journey_order + 1]);
+            else return Promise.resolve();
+        })
+        .then(r => {
+            if(r) place.next_id = r.result[0].id;
+            if(place.journey_id !== 0 && place.journey_order > 1)
+                return getPlaceIdByJourneyOrder([place.journey_id, place.journey_order - 1]);
+            else return Promise.resolve();
+        }).then(r => {
+            if(r) place.prev_id = r.result[0].id;
+            console.log('PLACE2', place);
+            mydb.mongoFind({client: conns.mongodb, db: 'travel', collection: 'countries',  find: {code: `${place.country}` } })
+            .then(r => {
+                place.country_name = r[0].name;
+                resp.status(200).json(place);
+            }).catch(error => {
+                resp.status(500).json({error: "Database Error "+ error});
+            });
          })
          .catch(error => {
              resp.status(500).json({error: "Database Error "+ error});
          });
     });
+
+    getId = (param) => {
+        let id = 0;
+        return getPlaceIdByJourneyOrder(param).then(r => {
+            console.log(r.result[0].id);
+            id = r.result[0].id;
+            return id;
+        });
+    }
 
     // Add Place
     app.post('/api/places', upload.single('placeImage'),

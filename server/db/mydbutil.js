@@ -193,7 +193,7 @@ const mongoWriteMany = (m) => {
 const mongoFind = (m) => {
 	// m = mongo object = {client, db, collection, find, skip, limit, sort, project}
     const collection = m.client.db(m.db).collection(m.collection);
-    console.log(m);
+    // console.log(m);
 	return collection.find(m.find || {}).sort(m.sort || {}).skip(m.offset || 0).limit(m.limit || 0).project(m.project || {}).toArray();
 }
 

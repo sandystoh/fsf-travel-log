@@ -90,9 +90,12 @@ export class PlacesListComponent implements OnInit {
   getPlaces() {
     this.travelSvc.getPlaces(this.username, this.increment, this.offset).then(r => {
       console.log(r);
-      this.places = r.places.map(v => { return {
+      this.places = r.places.map(v => {
+        let url_string = `../../assets/images/placeholder.jpeg`;
+        if(v.image_url !== null && v.image_url != '') url_string = `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/places/thumbnails/${v.image_url}`;
+        return {
         ...v,
-        url: this.sanitizer.bypassSecurityTrustStyle(`url(https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/places/thumbnails/${v.image_url}) no-repeat`),
+        url: this.sanitizer.bypassSecurityTrustStyle(`url(${url_string}) no-repeat`),
         country_name: this.countries.find(o => o.code === v.country).name } 
       });
       this.numResults = r.count;

@@ -30,7 +30,7 @@
 
 <div *ngIf="!isLoading && !isError" class="results-area" fxLayout="row column" fxLayoutAlign="space-evenly">
     <div *ngFor="let p of places">
-        <mat-card class="place-card-b" [style.background]="p.url">
+        <mat-card class="place-card-b" [routerLink]="['/place/'+p.id]" [style.background]="p.url">
             <div class="overlay"></div>
             <div class="card-title">{{p.title}}</div>
             <div class="card-info">{{p.country_name}}</div> 

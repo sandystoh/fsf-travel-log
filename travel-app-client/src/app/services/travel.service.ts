@@ -75,6 +75,10 @@ export class TravelService {
     return this.http.get<Journey[]>('/api/journeys/list/' + username, {params}).toPromise();
   }
 
+  getPlaceById(id) {
+    return this.http.get<Place>('/api/place/' + id).toPromise();
+  }
+
   createPlace(save: Place, fileRef: ElementRef) {
     const formData = new FormData();
     formData.set('placeImage', fileRef.nativeElement.files[0]);
