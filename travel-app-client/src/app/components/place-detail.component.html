@@ -2,7 +2,15 @@
 <div fxLayout="column" fxLayoutAlign="center center">
     <div class="place-detail">
         <div class="detail-title">{{place.title}}</div>
-        
+        <div class="detail-country detail-gold">{{place.country_name}}</div>
+        <div class="detail-journey detail-gold">
+            <div fxLayoutAlign="center center" fxLayoutGap="2vw">
+            <button type="button" mat-icon-button><mat-icon>arrow_back</mat-icon></button>
+            <span>Journey</span>
+            <button type="button" mat-icon-button><mat-icon>arrow_forward</mat-icon></button>
+            </div>
+            <span class="detail-white">{{place.journey_title}}</span>
+        </div>
     </div>
     <div><img src="../../assets/images/placeholder.jpeg" class="place-image"></div>
 

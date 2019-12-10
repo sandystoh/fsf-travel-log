@@ -22,7 +22,15 @@
     font-size: 3rem;
 }
 
-.detail-title:after {
+.detail-gold {
+   color: #BDA26B;
+}
+
+.detail-white {
+    color: #fff;
+}
+
+.detail-country:after, .detail-journey:after {
     content: " ";
     display: block; 
     width: 50%;
