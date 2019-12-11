@@ -11,7 +11,8 @@ const loadConfig = (config) => {
 			secretAccessKey: config.s3.secret
 		}),
 		mongodb: new MongoClient(config.mongodb.atlasurl, { useUnifiedTopology: true }),
-		secret: config.sessionSecret
+		secret: config.sessionSecret,
+		gmaps: config.gmaps.key
 	}
 };
 

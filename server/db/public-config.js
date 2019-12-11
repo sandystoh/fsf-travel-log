@@ -6,7 +6,7 @@ module.exports = {
 		port: process.env.DB_PORT,
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
-		database: 'mynews',
+		database: 'travel',
 		connectionLimit: 4,
 		ssl: {
             ca: fs.readFileSync(process.env.DB_CA)

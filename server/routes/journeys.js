@@ -4,6 +4,8 @@ const multer = require('multer');
 const upload = multer({ dest: path.join(__dirname, '..', '/uploads') });
 const uuid = require('uuid');
 const fs = require('fs');
+const moment = require('moment');
+const request = require('request-promise');
 
 const db = require('../db/dbutil');
 const mydb = require('../db/mydbutil');
@@ -53,11 +55,12 @@ module.exports = function(app, conns) {
     });
 
     const getJourneyById = mydb.mkQuery(`Select * from journeys where id = ?`, conns.mysql);
-    const getPlacesByJourneyId = mydb.mkQuery(`Select * from places where journey_id = ? and active = 1`, conns.mysql);
+    const getPlacesByJourneyId = mydb.mkQuery(`Select * from places where journey_id = ? and active = 1 order by journey_order`, conns.mysql);
     
     // Get Journey by Journey ID - One to Many Places (Get all Child Places)
     app.get('/api/journey/:id', (req, resp) => {
         const id = req.params.id;
+
         const alpha = 'ABCDEFGHIJKLMNOPQSTUVWXYZ';
         p0 = getJourneyById([id]);
         p1 = getPlacesByJourneyId([id]);
@@ -70,9 +73,96 @@ module.exports = function(app, conns) {
             });
             resp.status(200).json({journey: r[0].result[0], places})
         })
-        .catch(err => {
+        .catch(error => {
             resp.status(500).json({error: "Database Error "+ error});
         });
+    });
+
+    const checkNeedToRefresh = mydb.mkQuery(`Select refresh_map as refresh from journeys where id = ?`, conns.mysql);
+    const checkMapAvailable = mydb.s3CheckExists('sandy-fsf-2019', 'journeys/maps');
+    const uploadMapToS3 = mydb.s3UploadRawFile('sandy-fsf-2019', 'journeys/maps');
+
+    // Get Journey Map from Google Maps or S3
+    app.get('/api/journey/map/:id',
+        (req, resp, next) => {
+            const id = req.params.id;
+            checkNeedToRefresh([id])
+            .then(r => { 
+                const refresh = r.result[0].refresh;
+                // journey has been changed (flag to refresh is set)
+                if(refresh) return next(); 
+                // Otherwise check if available
+                return checkMapAvailable(`${id}.png`, conns.s3)
+                .then(r => {
+                    if (!r.exists || moment().diff(moment(r.data.LastModified), 'days') >= 30)
+                        return next();
+                    resp.redirect(301, `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/journeys/maps/${id}.png`)
+                })
+            })
+            .catch((e) => { console.log(e); return next(); });
+        },
+        (req, resp) => {
+            console.log('Map is not available on s3 or is out of date...');
+            const id = req.params.id;
+            getPlacesByJourneyId([id]).then(r => {
+                let waypoints = r.result;
+                const alpha = 'ABCDEFGHIJKLMNOPQSTUVWXYZ';
+                let w = waypoints.map(v => {
+                    return { ...v, alpha: alpha[(v.journey_order-1) % 26] }
+                });
+                const qs = `size=600x400&format=png&key=${conns.gmaps}`
+                let markers = '';
+                let path = '&path=weight:3';
+                for (let i = 0; i < w.length; i++){
+                    markers += `&markers=size:med|color:yellow|label:${w[i].alpha}|${w[i].lat},${w[i].lng}`
+                    path += `|${w[i].lat},${w[i].lng}`
+                }
+                return request.get(`https://maps.googleapis.com/maps/api/staticmap?${qs}${markers}${path}`,{ encoding: null });
+            })
+            .then(r =>{
+                console.log(r);
+                const mapFile = r;
+                uploadMapToS3({key: id, s3: conns.s3, file: mapFile})
+                .then(r => {
+                    resp.redirect(301, `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/journeys/maps/${id}`)
+                }).catch(e => resp.status(500).json({error: "Error "+ e}))
+                // return resp.status(200).type('image/png').send(mapFile);
+            }).catch(e => resp.status(500).json({error: "Error "+ e}))
+            // return resp.json({message: 'in next'})
+            
+            /* Map Format
+            https://maps.googleapis.com/maps/api/staticmap?size=600x400
+            &markers=size:med|color:yellow|label:A|-36.8485,174.7633&
+            markers=size:small|color:yellow|-37.8109,175.7765|-38.1368,176.2497
+            &markers=size:med|color:yellow|label:O|-41.2865,174.7762
+            &path=weight:3|-36.8485,174.7633|-37.8109,175.7765|-38.1368,176.2497|-41.2865,174.7762
+            &key=AIzaSyBkxKnpyG9eJwk0XvQkW2-xiobbZ_Rtenk
+            */
+
+            /*
+                .then(result => {
+                    if (!result)
+                        return resp.status(404).json({ error });
+                    const mapFile = result;
+                    const params = { 
+                        Bucket: 'sandy-paf-2019', 
+                        Key: `bnbmaps/${id}`, 
+                        Body: mapFile, ContentType: 'image/png',
+                        ContentLength: mapFile.size, ACL: 'public-read',
+                        Metadata: { uploadDate: moment().toISOString() }
+                    }; 
+                    conns.s3.putObject(params, (error, result) => { 
+                        if(error) {
+                            console.log(error);
+                        }
+                        console.log('Map Successfully Uploaded to S3', result);
+                        resp.status(200).type('image/png').send(mapFile);
+                    });
+                }) 
+                .catch(err => {
+                        resp.status(500).json({error: err});
+                }); 
+            */
     });
 
     // Add Journey

@@ -72,6 +72,27 @@ const mkQuery = function (sql, pool) {
     }
 }
 
+// Check if Image exists on S3
+const s3CheckExists = (s3Bucket, s3Folder) => {
+    return (key, conn) => {
+        const params = {
+            Bucket: s3Bucket,
+            Key: `${s3Folder}/${key}`
+        }
+        return new Promise((resolve, reject) => {
+            conn.headObject(params, (error, result) => {
+                if (error) {
+                    console.log('IN CHECK', error.statusCode, params, key);
+                    if (error.statusCode == 404)
+                        return resolve({ exists: false });
+                    else return reject(error);
+                }
+                resolve({ exists: true, data: result });
+            })
+        })
+    }
+}  
+
 // S3 Download
 const s3Get = function(s3Bucket, s3Folder) {
     return status => {
@@ -150,6 +171,27 @@ const s3UploadFilePath = function(s3Bucket, s3Folder) {
                     }
                     resolve();
                 });
+            });
+        })
+    }
+}
+
+// S3 Upload from Raw File
+const s3UploadRawFile = function(s3Bucket, s3Folder) {
+    return status => {
+        return new Promise((resolve, reject) => {
+            const params = { 
+                Bucket: s3Bucket, 
+                Key: `${s3Folder}/${status.key}`, 
+                Body: status.file, ContentType: 'image/jpeg',
+                ACL: 'public-read'
+            }; 
+            (status.s3).putObject(params, (error, result) => { 
+                if(error) {
+                    console.log(error);
+                    return reject(error);
+                }
+                resolve();
             });
         })
     }
@@ -261,7 +303,7 @@ const unlinkFileOnResponse = () => {
 
 module.exports = { 
     mkTransaction, trQuery, mkQuery, // MySQL
-    s3Upload, s3Get, s3Delete, s3UploadFilePath,// Digital Ocean S3
+    s3Upload, s3Get, s3Delete, s3UploadFilePath, s3UploadRawFile, s3CheckExists, // Digital Ocean S3
     mongoWrite, mongoWriteMany, mongoFind, mongoCount, mongoDistinct, mongoAggregate, // mongoDB
     logRequestsToMongo, unlinkFileOnResponse    // Utility Middleware
 };

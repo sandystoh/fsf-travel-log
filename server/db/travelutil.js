@@ -67,7 +67,6 @@ const deleteJourneyImageFromS3 = mydb.s3Delete('sandy-fsf-2019', 'journeys');
         }
     }
 
-
 const getJourneyOrder = mydb.trQuery("select num_places as count from journeys where id = ?");
 const updateJourneyOrder = mydb.trQuery("update journeys set num_places = ? where id = ?");
 const places_columns = "journey_id, journey_order, type, title, owner, date, lat, lng, country, rating, image_url, description, private_notes";
