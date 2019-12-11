@@ -1,0 +1,77 @@
+<div class="add-bg">
+        <div class="headertext">Edit a Place</div>
+        <div class="place-form">
+            <mat-card class="place-card">
+                
+                <form [formGroup]="placeForm" (ngSubmit)="onSubmit(placeForm)">
+                    <div  fxLayout="column" fxLayoutGap="2vw">
+                
+                <div class="center">
+                    <mat-button-toggle-group formControlName="type" (change)="changeType($event)"> 
+                        <mat-button-toggle value="BEEN" class="smythe type-button">I Have Been Here!</mat-button-toggle>
+                        <mat-button-toggle value="DREAM" class="smythe type-button">Dreaming About It!</mat-button-toggle>
+                    </mat-button-toggle-group></div>
+                    <mat-form-field class="full-width">
+                        <input matInput placeholder="Place Name" formControlName="title">
+                        <mat-hint *ngIf="placeForm.touched && !this.placeForm.getRawValue().title">
+                            Please enter a Location Name</mat-hint>
+                        <mat-error *ngIf="placeForm.touched && !!f.title.hasError('maxlength')">
+                                Place Name should not exceed 120 characters</mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="full-width" *ngIf="f.type.value == 'BEEN'">
+                            <input matInput readonly [matDatepicker]="date" (focus)="date.open()" placeholder="{{ f.type.value == 'BEEN' ? 'Date Visited' : 'Planned Date'}}" formControlName="date" >
+                            <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+                            <button mat-button *ngIf="f.date.value" matSuffix mat-icon-button (click)="f.date.setValue('')">
+                                <mat-icon>close</mat-icon>
+                              </button>
+                            <mat-datepicker #date></mat-datepicker>
+                            <mat-hint *ngIf="!!f.title.value && !f.date.value">
+                                    Please enter a date visited (or best guess!)</mat-hint>
+                    </mat-form-field>
+                <br>
+                  <label for="placeImage">Change/Upload Image:</label>
+                  <input placeholder="image" type="file" accept='image/*' (change)="preview(imageFile.files)" name="placeImage" id="placeImage" class="muli" #imageFile>
+                  <span style="color:red;" *ngIf="message">{{message}}</span>
+                  <img [src]="imgURL" width="100%" *ngIf="imgURL">
+                
+                <br>
+                Fill in Details:
+                <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="3vw">
+                    <mat-form-field class="full-width">
+                        <mat-label>Journey</mat-label>
+                        <mat-select formControlName="journey_id" name="journey" placeholder="Journey">
+                        <mat-option value="0">Untag from Journey</mat-option>
+                          <mat-option *ngFor="let j of journeys" [value]="j.id"> {{(j.date) ? j.title + " (" + j.month + " " + j.year +")" : j.title}} </mat-option>
+                        </mat-select>
+                        <mat-hint style="color:#000">
+                            Only Journeys matching your BEEN/ DREAM type will be shown</mat-hint>  
+                    </mat-form-field>
+                    <button mat-mini-fab type="button" color="accent" (click)="openJourneyDialog()"><mat-icon>add_circle_outline</mat-icon></button>
+                    </div>
+                
+                <div fxLayout="row" fxLayoutAlign="flex-start center" fxLayoutGap="2vw">
+                    <span class="muli" style="font-size:1rem">Rating: </span>
+                    <p-rating formControlName="rating" stars=5 iconOnClass="pi pi-star"></p-rating>
+                </div>
+        
+                <mat-form-field  class="full-width">
+                    <textarea matInput rows="5" placeholder="{{ f.type.value == 'BEEN' ? 'Share your Experience' : 'Make Plans'}}" formControlName="description"></textarea>
+                </mat-form-field>
+                <mat-form-field  class="full-width">
+                    <textarea matInput rows="5" placeholder="Private Notes" formControlName="private"></textarea>
+                    <mat-hint style="color:#000">
+                        This field is only viewable to you</mat-hint>  
+                </mat-form-field>
+                
+                <div fxLayout="row column" fxLayoutAlign="space-evenly" fxLayoutGap="2vw">
+                <button mat-raised-button color="warn" type="button" (click)="cancel()">Cancel</button>
+                <button mat-raised-button color="accent" type="submit" 
+                [disabled]="(f.type.value == 'BEEN' && !f.date.value) || !this.placeForm.getRawValue().title">Edit</button>
+            </div>
+                </div>
+                </form>
+            </mat-card>
+        </div>
+        </div>
+        
+        

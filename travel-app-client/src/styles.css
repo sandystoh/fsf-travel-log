@@ -83,6 +83,24 @@ body {
     background-position: -33px -6px;
   
   }
+  
+  .box-area {
+    border: 1px solid #555;
+    padding: 10px;
+    margin: 5px;
+    max-width: 150px;
+    margin: 5px auto;
+  }
+
+  .box-area:hover {
+    cursor: pointer;
+    background: #555;
+  }
+
+  .action-buttons {
+    width: 95vw;
+    max-width: 900px;
+  }
 
 @media only screen and (max-width: 450px) {
     .headertext {

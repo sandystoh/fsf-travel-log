@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const sharp = require('sharp');
 
 // MySQL Utils
 // Creates Transaction and Rollsback/Commits
@@ -130,20 +131,30 @@ const s3Upload = function(s3Bucket, s3Folder) {
                     console.log(err);
                     return reject({error: err});
                 }
-                const params = { 
-                    Bucket: s3Bucket, 
-                    Key: `${s3Folder}/${status.filepath}`, 
-                    Body: imgFile, ContentType: file.mimetype,
-                    ContentLength: file.size, ACL: 'public-read',
-                    Metadata: metadata
-                }; 
-                (status.s3).putObject(params, (error, result) => { 
-                    if(error) {
-                        console.log(error);
-                        return reject(error);
-                    }
-                    resolve();
-                });
+
+                const uploadResized = s3UploadRawFile(s3Bucket,s3Folder)
+                sharp(file.path).resize(500).toFormat("jpeg").jpeg({ quality: 90 }).toBuffer()
+                .then(result => {
+                    console.log("Upload Resized Image...")
+                    return uploadResized({file: result, key: `thumbnails/${status.filepath}`, s3: status.s3})
+                })
+                .then(() => {
+                    console.log("Upload Full Image...")
+                    const params = { 
+                        Bucket: s3Bucket, 
+                        Key: `${s3Folder}/${status.filepath}`, 
+                        Body: imgFile, ContentType: file.mimetype,
+                        ContentLength: file.size, ACL: 'public-read',
+                        Metadata: metadata
+                    }; 
+                    (status.s3).putObject(params, (error, result) => { 
+                        if(error) {
+                            console.log(error);
+                            return reject(error);
+                        }
+                        resolve();
+                    });
+                })
             });
         })
     }

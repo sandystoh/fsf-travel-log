@@ -86,6 +86,7 @@ module.exports = function(app, conns) {
     const checkNeedToRefresh = mydb.mkQuery(`Select refresh_map as refresh from journeys where id = ?`, conns.mysql);
     const checkMapAvailable = mydb.s3CheckExists('sandy-fsf-2019', 'journeys/maps');
     const uploadMapToS3 = mydb.s3UploadRawFile('sandy-fsf-2019', 'journeys/maps');
+    const refreshedMap = mydb.mkQuery(`Update journeys set refresh_map = 0 where id = ?`, conns.mysql);
 
     // Get Journey Map from Google Maps or S3
     app.get('/api/journey/map/:id',
@@ -128,6 +129,7 @@ module.exports = function(app, conns) {
                 console.log(r);
                 const mapFile = r;
                 uploadMapToS3({key: id, s3: conns.s3, file: mapFile})
+                .then(() => { return refreshedMap([id])})
                 .then(r => {
                     resp.redirect(301, `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/journeys/maps/${id}`)
                 }).catch(e => resp.status(500).json({error: "Error "+ e}))

@@ -92,19 +92,17 @@ module.exports = function(app, conns) {
         .then(r => {
             place = JSON.parse(JSON.stringify(r.result[0]));
             place.next_id =0, place.prev_id=0;
-            console.log('PLACE', place);
             if(place.journey_id !== 0 && place.journey_order < place.journey_count)
                 return getPlaceIdByJourneyOrder([place.journey_id, place.journey_order + 1]);
-            else return Promise.resolve();
+            else return Promise.resolve(false);
         })
         .then(r => {
             if(r) place.next_id = r.result[0].id;
             if(place.journey_id !== 0 && place.journey_order > 1)
                 return getPlaceIdByJourneyOrder([place.journey_id, place.journey_order - 1]);
-            else return Promise.resolve();
+            else return Promise.resolve(false);
         }).then(r => {
             if(r) place.prev_id = r.result[0].id;
-            console.log('PLACE2', place);
             mydb.mongoFind({client: conns.mongodb, db: 'travel', collection: 'countries',  find: {code: `${place.country}` } })
             .then(r => {
                 place.country_name = r[0].name;
@@ -146,22 +144,26 @@ module.exports = function(app, conns) {
             resp.status(500).json({error: err.error});
         });
     });
+    
+    const updatePlace = mydb.mkTransaction(travel.editPlaces(), conns.mysql);
 
     // Edit Place
-    app.post('/api/places/update', upload.single('newPlaceImage'),
+    app.post('/api/places/update', upload.single('placeImage'),
         mydb.unlinkFileOnResponse(), 
         (req, resp) => {
         const b = req.body;
         let f = null;
         if(req.file) { f = req.file }
 
-        const updatePlace = mydb.mkTransaction(travel.editPlaces(), conns.mysql);
-        updatePlace({body: b, file: f, conns: conns})  
-        .then(status => {
-            resp.status(201).json({message: `Record ${b.title} updated`});
-        })
-        .catch(err => {
-            resp.status(500).json({error: err.error});
+        getPlaceById([req.body.id])
+        .then(r => {
+            updatePlace({body: b, file: f, conns: conns, old: r.result[0]})  
+            .then(status => {
+                resp.status(201).json({message: `Record ${b.title} updated`});
+            })
+            .catch(err => {
+                resp.status(500).json({error: err.error});
+            });
         });
     });
 

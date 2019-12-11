@@ -3,13 +3,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { WelcomeComponent } from './components/welcome.component';
 import { LoginComponent } from './components/login.component';
 import { AuthService } from './services/auth.service';
-import { PlacesListComponent } from './components/places-list.component';
+import { PlacesListComponent } from './components/places/places-list.component';
 import { MapComponent } from './components/map.component';
-import { PlacesFormComponent } from './components/places-form.component';
+import { PlacesFormComponent } from './components/places/places-form.component';
 import { AutocompleteComponent } from './components/helpers/autocomplete.component';
-import { PlaceDetailComponent } from './components/place-detail.component';
-import { JourneyDetailComponent } from './components/journey-detail.component';
-import { JourneysListComponent } from './components/journeys-list.component';
+import { PlaceDetailComponent } from './components/places/place-detail.component';
+import { JourneyDetailComponent } from './components/journeys/journey-detail.component';
+import { JourneysListComponent } from './components/journeys/journeys-list.component';
+import { PlacesEditComponent } from './components/places/places-edit.component';
 
 const ROUTES: Routes = [
   { path: 'login', component: LoginComponent},
@@ -19,6 +20,7 @@ const ROUTES: Routes = [
   { path: 'journeys/:user', component: JourneysListComponent},
   { path: 'journey/:id', component: JourneyDetailComponent},
   { path: 'places/add/:user', component: PlacesFormComponent}, //, canActivate: [AuthService]},
+  { path: 'places/edit/:user/:id', component: PlacesEditComponent}, //, canActivate: [AuthService]},
   { path: 'map/:user', component: MapComponent},
   { path: 'auto', component: AutocompleteComponent},
   { path: '**', redirectTo: '/', pathMatch: 'full' }

@@ -88,11 +88,10 @@ const deleteJourneyImageFromS3 = mydb.s3Delete('sandy-fsf-2019', 'journeys');
     }
 
 const getJourneyOrder = mydb.trQuery("select num_places as count from journeys where id = ?");
-const updateJourneyOrder = mydb.trQuery("update journeys set num_places = ? where id = ?");
+const updateJourneyOrder = mydb.trQuery("update journeys set num_places = ?, refresh_map = 1 where id = ?");
 const places_columns = "journey_id, journey_order, type, title, location_name, owner, date, lat, lng, country, rating, image_url, description, private_notes";
 const insertPlace = mydb.trQuery(sql.writeInsert('places', places_columns));
 const uploadPlaceImageToS3 = mydb.s3Upload('sandy-fsf-2019', 'places');
-const uploadPlaceThumbnailToS3 = mydb.s3UploadFilePath('sandy-fsf-2019', 'places/thumbnails');
 
 // Transaction with Place (MySQL) + Image (S3)
     function mkPlaces() {
@@ -122,16 +121,7 @@ const uploadPlaceThumbnailToS3 = mydb.s3UploadFilePath('sandy-fsf-2019', 'places
                     if(f) {
                         s.file = f, s.filepath = filepath;
                         s.s3 = status.conns.s3;
-                        return sharp(f.path).resize(500).toFormat("jpeg").jpeg({ quality: 90 }).toBuffer()
-                        .then( data => {
-                            fs.writeFileSync(path.join(__dirname,'..',`/resized/${f.filename}.jpg`), data);
-                            s2 = {path: path.join(__dirname,'..',`/resized/${f.filename}.jpg`), filepath, s3: status.conns.s3}
-                            return uploadPlaceThumbnailToS3(s2);
-                        })
-                        .then(() => {
-                            fs.unlink(path.join(__dirname,'..',`/resized/${f.filename}.jpg`),()=>{ });
-                            return uploadPlaceImageToS3(s);
-                        })
+                        return uploadPlaceImageToS3(s);
                     }
                     else return Promise.resolve();
                 });
@@ -143,16 +133,7 @@ const uploadPlaceThumbnailToS3 = mydb.s3UploadFilePath('sandy-fsf-2019', 'places
                     if(f) {
                         s.file = f, s.filepath = filepath;
                         s.s3 = status.conns.s3;
-                        return sharp(f.path).resize(500).toFormat("jpeg").jpeg({ quality: 90 }).toBuffer()
-                        .then( data => {
-                            fs.writeFileSync(path.join(__dirname,'..',`/resized/${f.filename}.jpg`), data);
-                            s2 = {path: path.join(__dirname,'..',`/resized/${f.filename}.jpg`), filepath, s3: status.conns.s3}
-                            return uploadPlaceThumbnailToS3(s2);
-                        })
-                        .then(() => {
-                            fs.unlink(path.join(__dirname,'..',`/resized/${f.filename}.jpg`),()=>{ });
-                            return uploadPlaceImageToS3(s);
-                        })
+                        return uploadPlaceImageToS3(s);
                     }
                     else return Promise.resolve();
                 });
@@ -160,20 +141,35 @@ const uploadPlaceThumbnailToS3 = mydb.s3UploadFilePath('sandy-fsf-2019', 'places
         }
     }
 
-const places_update_columns = "title, type, date, rating, description, image_url, private_notes, last_updated";
+const places_update_columns = "title, journey_id, journey_order, type, date, rating, description, image_url, private_notes, last_updated";
 const updatePlace = mydb.trQuery(sql.writeUpdate('places', places_update_columns, 'id = ?'));
 const deletePlaceImageFromS3 = mydb.s3Delete('sandy-fsf-2019', 'places');
+const deletePlaceThumbnailFromS3 = mydb.s3Delete('sandy-fsf-2019', 'places/thumbnails');
     // Transaction with Journey (MySQL) + Image (S3)
     function editPlaces() {
-        return (status) => {
+        return async (status) => {
+            console.log('OLD FILE', status.old)
+            console.log('NEW FILE', status.body)
+            const connection = status.connection;
             const b = status.body;
             let f = null, filepath = '';
             if (status.file) {
+                // Change Image
                 f = status.file;
                 filepath = `${b.owner}/${f.filename}`;
+            } else {
+                // Retain old image
+                if(status.old.image_url !== '') filepath = status.old.image_url;
             }
-            const connection = status.connection;
-            const params = [b.title, b.type, b.date, b.rating, b.description, filepath, b.private_notes, new Date(), b.id];
+
+            let changeJourney = false;
+            if (parseInt(b.journey_id) !== status.old.journey_id) {
+                if (parseInt(b.journey_id) == 0) { b.journey_order = 0;  }
+                else await getJourneyOrder({params:[parseInt(b.journey_id)], connection})
+                .then(r => { changeJourney = true; b.journey_order =  r.result[0].count + 1;})
+            } else { b.journey_order = status.old.journey_order;}
+            
+            const params = [b.title, b.journey_id, b.journey_order, b.type, b.date, b.rating, b.description, filepath, b.private_notes, new Date(), b.id];
             return updatePlace({params, connection})
             .then(s => {
                 if(f) {
@@ -184,18 +180,35 @@ const deletePlaceImageFromS3 = mydb.s3Delete('sandy-fsf-2019', 'places');
                 else return Promise.resolve();
             })
             .then(s => {
-                if(f && !b.image_url.startsWith('default')) {
-                    return deletePlaceImageFromS3({image_url: b.image_url, s3: status.conns.s3});
+                if(f && !status.old.image_url == '') {
+                    return deletePlaceImageFromS3({image_url: status.old.image_url, s3: status.conns.s3})
+                    .then(() => {
+                        deletePlaceThumbnailFromS3({image_url: status.old.image_url, s3: status.conns.s3});
+                    })
                 }
                 else return Promise.resolve();
-            }); 
+            })
+            .then(r => {
+                if(parseInt(b.journey_id) !== status.old.journey_id) {
+                     // Otherwise adjust journey_order for old journey
+                    return updateOrder({params: [status.old.journey_id, status.old.journey_order], connection})
+                    .then(() => { return updateJourneyCount({params: [status.old.journey_id], connection})})
+                }  
+                return Promise.resolve(); // No need to adjust order
+            })
+            .then(r => {
+                if(changeJourney) {
+                    return updateJourneyOrder({params: [b.journey_order, b.journey_id], connection});
+                }  
+                return Promise.resolve(); // No need to adjust order
+            })
         }
     }
 
 const selectPlaceForDelete = mydb.trQuery(`Select * from places where id = ? for update`);
 const deactivatePlace = mydb.trQuery(`Update places set journey_order = 0, active = 0 where id = ?`);
 const updateOrder = mydb.trQuery('Update places set journey_order = journey_order-1 where journey_id = ? and journey_order > ? and active = 1');
-const updateJourneyCount = mydb.trQuery('Update journeys set num_places = num_places-1 where id = ?');
+const updateJourneyCount = mydb.trQuery('Update journeys set num_places = num_places-1, refresh_map = 1 where id = ?');
 
 // Transaction to Deactivate Place
     function rmPlaces() {

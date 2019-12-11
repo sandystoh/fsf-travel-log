@@ -13,21 +13,22 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WelcomeComponent } from './components/welcome.component';
 import { AuthService } from './services/auth.service';
 import { LoginComponent } from './components/login.component';
-import { PlacesListComponent } from './components/places-list.component';
+import { PlacesListComponent } from './components/places/places-list.component';
 import { TravelService } from './services/travel.service';
 import { MapComponent } from './components/map.component';
-import { PlacesFormComponent } from './components/places-form.component';
+import { PlacesFormComponent } from './components/places/places-form.component';
 import { AutocompleteComponent } from './components/helpers/autocomplete.component';
 import { PrimeNGModule } from './primeng.module';
-import { JourneyFormComponent } from './components/journey-form.component';
+import { JourneyFormComponent } from './components/journeys/journey-form.component';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material';
-import { PlaceDetailComponent } from './components/place-detail.component';
-import { JourneyDetailComponent } from './components/journey-detail.component';
+import { PlaceDetailComponent } from './components/places/place-detail.component';
+import { JourneyDetailComponent } from './components/journeys/journey-detail.component';
 import { PlaceCardComponent } from './components/helpers/place-card.component';
-import { JourneysListComponent } from './components/journeys-list.component';
+import { JourneysListComponent } from './components/journeys/journeys-list.component';
 import { JourneyCardComponent } from './components/helpers/journey-card.component';
 import { PlaceReorderComponent } from './components/helpers/place-reorder.component';
 import { JourneyMapComponent } from './components/helpers/journey-map.component';
+import { PlacesEditComponent } from './components/places/places-edit.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { JourneyMapComponent } from './components/helpers/journey-map.component'
     JourneysListComponent,
     JourneyCardComponent,
     PlaceReorderComponent,
-    JourneyMapComponent
+    JourneyMapComponent,
+    PlacesEditComponent
   ],
   imports: [
     BrowserModule,

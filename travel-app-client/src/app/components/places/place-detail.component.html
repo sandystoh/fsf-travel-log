@@ -1,0 +1,40 @@
+<div class="detail-area">
+<div fxLayout="column" fxLayoutAlign="center center" *ngIf="place">
+    <div class="place-detail">
+        <div class="detail-title">{{place.title}}</div>
+        <div class="detail-country detail-gold">{{place.country_name}}</div>
+        <div *ngIf="place.journey_id != 0" class="detail-journey detail-gold">
+            <div fxLayoutAlign="center center" fxLayoutGap="2vw">
+            <button type="button" [disabled]="place.prev_id == 0" [routerLink]="['/place',place.prev_id]" mat-icon-button>
+                <mat-icon>arrow_back</mat-icon></button>
+            <span>Journey by {{place.owner}}</span>
+            <button type="button" [disabled]="place.next_id == 0" [routerLink]="['/place',place.next_id]" mat-icon-button>
+                <mat-icon>arrow_forward</mat-icon></button>
+            </div>
+            <span class="detail-white journey-link" [routerLink]="['/journey', place.journey_id]">{{place.journey_title}}</span>
+        </div>
+        <div fxLayoutAlign="center center" fxLayoutGap="2vw">
+        <div><span class="detail-gold"><mat-icon *ngFor="let h of ' '.repeat(place.rating).split('')" class="small">favorite</mat-icon></span></div>
+        <span *ngIf="place.type == 'BEEN'" class="detail-gold" title="BEEN"><mat-icon>cloud_done</mat-icon></span>
+        <span *ngIf="place.type == 'DREAM'" class="detail-gold" title="DREAM"><mat-icon>cloud_queue</mat-icon></span>
+        <div><span class="licon icon-dat"></span>{{place.date | date: "mediumDate"}}</div>
+        </div>
+        <div class="action-buttons" fxLayout="row column" fxLayoutAlign="space-evenly center">
+        <div class="detail-white box-area" *ngIf="user.username == place.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
+        [routerLink]="['/places/edit', place.owner, place.id]">
+        <mat-icon>add_box</mat-icon><span>Edit Place</span>
+        </div>
+    </div>
+    </div>
+    <div [style.background]="place.url" *ngIf="place.url" class="place-image"></div>
+    <div class="place-description">
+        <div class="description-title detail-gold" *ngIf="place.type == 'BEEN'">Memories</div>
+        <div class="detail-gold" *ngIf="place.type == 'SEEN'">Dreams</div>
+        {{place.description}}
+    </div>
+    <div class="place-description" *ngIf="place.private_notes">
+            <div class="description-title detail-gold" >Private Notes</div>
+            {{place.private_notes}}
+    </div>
+</div>
+</div>

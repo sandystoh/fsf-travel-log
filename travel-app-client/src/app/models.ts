@@ -30,7 +30,7 @@ export interface PlacesResponse {
 export interface Place {
     id?: number;
     journey_id: number;
-    journey_order: number;
+    journey_order?: number;
     type: string; // BEEN, DREAM
     title: string; // limit 128
     location_name: string; // limit 256

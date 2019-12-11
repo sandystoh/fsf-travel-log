@@ -77,6 +77,17 @@ export class TravelService {
     return this.http.post<any>('/api/places', formData).toPromise();
   }
 
+  editPlace(editedPlace, fileRef: ElementRef) {
+    const formData = new FormData();
+    formData.set('placeImage', fileRef.nativeElement.files[0]);
+
+    Object.keys(editedPlace).forEach(key => {
+      formData.set(key, editedPlace[key])}
+      );
+
+    return this.http.post<any>('/api/places/update', formData).toPromise();
+  }
+
   getPlaceTitles(username): Promise<String[]> {
     return this.http.get<String[]>('/api/places/titles/'+username).toPromise();
   } 
