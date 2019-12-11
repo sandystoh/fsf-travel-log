@@ -45,9 +45,9 @@ module.exports = function(app, conns) {
     });
 
     const getJourneySummaryByUser = mydb.mkQuery(`select id, title, date, num_places from journeys 
-    where owner = ? and type = ? and active = 1 order by title`, conns.mysql)
+    where owner = ? and type = ? and active = 1 and num_places < 25 order by title`, conns.mysql)
 
-    // Get all Journeys for particular user (pagination: limit/offset) (with country filter)
+    // Get all Journeys for particular user for Add Place Form
     app.get('/api/journeys/list/:user', (req, resp) => {
         const user = req.params.user;
         const type = req.query.type;

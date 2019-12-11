@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Place } from 'src/app/models';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
@@ -9,18 +9,25 @@ export interface DialogData {
 @Component({
   selector: 'app-journey-map',
   templateUrl: './journey-map.component.html',
-  styleUrls: ['./journey-map.component.css']
+  styleUrls: ['./journey-map.component.css'],
+  host: {
+    '(window:resize)': 'onResize()'
+  }
 })
-export class JourneyMapComponent implements OnInit {
+export class JourneyMapComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('mapContainer', {static: false}) gmap: ElementRef;
-  map: google.maps.Map;
+  map: any;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef:MatDialogRef<JourneyMapComponent>,) { }
 
   ngOnInit() {
     console.log(this.data.places);
-    this.initMap();
+  }
+
+  ngAfterViewInit(){
+    this.dialogRef.afterOpened().subscribe(() => {
+      this.initMap();      
+    })
   }
 
   initMap() {
@@ -50,12 +57,16 @@ export class JourneyMapComponent implements OnInit {
       var journey = new google.maps.Polyline({
         path: this.data.places,
         geodesic: true,
-        strokeColor: '#FF0000',
+        strokeColor: '#FFFFFF',
         strokeOpacity: 1.0,
         strokeWeight: 2
       });
     
       journey.setMap(map);
+    }
+
+    onResize() {
+      google.maps.event.trigger(this.map, "resize");
     }
 
     closeDialog() {

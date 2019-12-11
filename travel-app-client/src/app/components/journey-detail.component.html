@@ -17,7 +17,7 @@
         </div>
         <div *ngIf="places.length" class="description-title detail-gold">Map of Places</div>
         <div class="action-buttons" fxLayout="row column" fxLayoutAlign="space-evenly center">
-            <div class="detail-white box-area" *ngIf="user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
+            <div class="detail-white box-area" *ngIf="user.username == journey.owner && journey.num_places < 25" fxLayoutGap="1vw" fxLayoutAlign="center"
                 [routerLink]="['/places/add', journey.owner]" [queryParams]="{journey: journey.id}">
                 <mat-icon>add_box</mat-icon><span>Add Place</span>
             </div>
