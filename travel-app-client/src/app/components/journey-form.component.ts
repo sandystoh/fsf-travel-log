@@ -42,9 +42,10 @@ export class JourneyFormComponent implements OnInit {
 
   createFormGroup() {
     return new FormGroup({
-     title: new FormControl('', [Validators.required, Validators.maxLength(250)]),  // limit 256
+     title: new FormControl('', [Validators.required, Validators.maxLength(120)]),  // limit 128
      type: new FormControl({value:'BEEN'}),
      date: new FormControl(''),
+     end_date: new FormControl(''),
      description: new FormControl(''), // limit 65535 characters
    });
  } 

@@ -130,38 +130,13 @@ module.exports = function(app, conns) {
             }).catch(e => resp.status(500).json({error: "Error "+ e}))
             // return resp.json({message: 'in next'})
             
-            /* Map Format
+            /* Static Map Format
             https://maps.googleapis.com/maps/api/staticmap?size=600x400
             &markers=size:med|color:yellow|label:A|-36.8485,174.7633&
             markers=size:small|color:yellow|-37.8109,175.7765|-38.1368,176.2497
             &markers=size:med|color:yellow|label:O|-41.2865,174.7762
             &path=weight:3|-36.8485,174.7633|-37.8109,175.7765|-38.1368,176.2497|-41.2865,174.7762
             &key=AIzaSyBkxKnpyG9eJwk0XvQkW2-xiobbZ_Rtenk
-            */
-
-            /*
-                .then(result => {
-                    if (!result)
-                        return resp.status(404).json({ error });
-                    const mapFile = result;
-                    const params = { 
-                        Bucket: 'sandy-paf-2019', 
-                        Key: `bnbmaps/${id}`, 
-                        Body: mapFile, ContentType: 'image/png',
-                        ContentLength: mapFile.size, ACL: 'public-read',
-                        Metadata: { uploadDate: moment().toISOString() }
-                    }; 
-                    conns.s3.putObject(params, (error, result) => { 
-                        if(error) {
-                            console.log(error);
-                        }
-                        console.log('Map Successfully Uploaded to S3', result);
-                        resp.status(200).type('image/png').send(mapFile);
-                    });
-                }) 
-                .catch(err => {
-                        resp.status(500).json({error: err});
-                }); 
             */
     });
 

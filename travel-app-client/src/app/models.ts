@@ -32,7 +32,8 @@ export interface Place {
     journey_id: number;
     journey_order: number;
     type: string; // BEEN, DREAM
-    title: string; // limit 256
+    title: string; // limit 128
+    location_name: string; // limit 256
     owner: string // limit 128
     date?: string; //date
     lat?: number;

@@ -8,8 +8,8 @@
         Search Location *
         <app-autocomplete #auto (setPlaceString)="getPlace($event)"></app-autocomplete>
         <mat-form-field class="full-width">
-                <input matInput placeholder="Place Name" formControlName="title">
-                <mat-hint *ngIf="placeForm.touched && !this.placeForm.getRawValue().title">
+                <input matInput placeholder="Location" formControlName="location_name">
+                <mat-hint *ngIf="placeForm.touched && !this.placeForm.getRawValue().location_name">
                     Please choose a Location above</mat-hint>
                 <!-- <mat-error *ngIf="placeForm.touched && !!f.title.hasError('maxlength')">
                         Title should not exceed 250 characters</mat-error> -->
@@ -29,6 +29,13 @@
                 <mat-button-toggle value="BEEN" class="smythe type-button">I Have Been Here!</mat-button-toggle>
                 <mat-button-toggle value="DREAM" class="smythe type-button">Dreaming About It!</mat-button-toggle>
             </mat-button-toggle-group></div>
+            <mat-form-field class="full-width">
+                <input matInput placeholder="Place Name" formControlName="title">
+                <mat-hint *ngIf="placeForm.touched && !this.placeForm.getRawValue().title">
+                    Please enter a Location Name</mat-hint>
+                <mat-error *ngIf="placeForm.touched && !!f.title.hasError('maxlength')">
+                        Place Name should not exceed 120 characters</mat-error>
+            </mat-form-field>
             <mat-form-field class="full-width" *ngIf="f.type.value == 'BEEN'">
                     <input matInput readonly [matDatepicker]="date" (focus)="date.open()" placeholder="{{ f.type.value == 'BEEN' ? 'Date Visited' : 'Planned Date'}}" formControlName="date" >
                     <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
@@ -51,7 +58,7 @@
             <mat-form-field class="full-width">
                 <mat-label>Add to Journey (Optional)</mat-label>
                 <mat-select formControlName="journey" name="journey" placeholder="Journey">
-                  <mat-option *ngFor="let j of journeys" [value]="j.id"> {{(j.date) ? " (" + j.month + " " + j.year +") " + j.title : j.title}} </mat-option>
+                  <mat-option *ngFor="let j of journeys" [value]="j.id"> {{(j.date) ? j.title + " (" + j.month + " " + j.year +")" : j.title}} </mat-option>
                 </mat-select>
                 <mat-hint style="color:#000">
                     Only Journeys matching your BEEN/ DREAM type will be shown</mat-hint>  

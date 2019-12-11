@@ -7,8 +7,6 @@ import * as moment from 'moment';
 import { AutocompleteComponent } from './helpers/autocomplete.component';
 import { MatDialog } from '@angular/material';
 import { JourneyFormComponent } from './journey-form.component';
-import { ResourceLoader } from '@angular/compiler';
-declare var google: any;
 
 @Component({
   selector: 'app-places-form',
@@ -52,7 +50,8 @@ export class PlacesFormComponent implements OnInit {
 
   createFormGroup() {
     return new FormGroup({
-     title: new FormControl({value:'', disabled:true}, [Validators.required]),  // limit 128
+     location_name: new FormControl({value:'', disabled:true}, [Validators.required]),  // limit 128
+     title: new FormControl('', [Validators.required, Validators.maxLength(120)]),
      type: new FormControl('BEEN'),
      journey: new FormControl(''),
      country: new FormControl({value:'', disabled:true}, [Validators.required]),
@@ -105,6 +104,7 @@ export class PlacesFormComponent implements OnInit {
  getPlace(p) {
    console.log('>>> ', p);
    this.f.title.setValue(p.name);
+   this.f.location_name.setValue(p.name);
    this.f.country.setValue(p.address_components.find(o => o.types.includes("country")).short_name)
    this.full_location = p.description;
    this.lat = p.geometry.location.lat();
@@ -150,7 +150,8 @@ onSubmit(form: NgForm) {
     journey_id: v.journey || 0,
     journey_order: (hasJourney) ? hasJourney.num_places + 1 : 0,
     type: v.type,
-    title: (v.title.length > 100) ? v.title.substr(0, 95) + '...' : v.title,
+    title: v.title,
+    location_name: (v.location_name.length > 128) ? v.title.substr(0, 95) + '...' : v.title,
     owner: this.owner,
     date: moment(v.date).format("YYYY-MM-DD HH:mm:ss"),
     lat: this.lat,

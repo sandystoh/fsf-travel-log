@@ -31,4 +31,8 @@ export class WelcomeComponent implements OnInit {
     this.router.navigate(['/places/'+this.user.username]);
   }
 
+  getJourneysList() {
+    this.router.navigate(['/journeys/'+this.user.username]);
+  }
+
 }

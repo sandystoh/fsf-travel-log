@@ -24,6 +24,7 @@ import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material';
 import { PlaceDetailComponent } from './components/place-detail.component';
 import { JourneyDetailComponent } from './components/journey-detail.component';
 import { PlaceCardComponent } from './components/helpers/place-card.component';
+import { JourneysListComponent } from './components/journeys-list.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { PlaceCardComponent } from './components/helpers/place-card.component';
     JourneyFormComponent,
     PlaceDetailComponent,
     JourneyDetailComponent,
-    PlaceCardComponent
+    PlaceCardComponent,
+    JourneysListComponent
   ],
   imports: [
     BrowserModule,

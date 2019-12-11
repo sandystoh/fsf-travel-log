@@ -12,7 +12,7 @@ const uploadJourneyImageToS3 = mydb.s3Upload('sandy-fsf-2019', 'journeys');
     function mkJourneys() {
         return (status) => {
             const b = status.body;
-            let f = null, filepath = 'default/journey-image1';
+            let f = null, filepath = '';
             if (status.file) {
                 f = status.file;
                 filepath = `${b.owner}/${f.filename}`;
@@ -42,7 +42,7 @@ const deleteJourneyImageFromS3 = mydb.s3Delete('sandy-fsf-2019', 'journeys');
     function editJourneys() {
         return (status) => {
             const b = status.body;
-            let f = null, filepath = 'default/journey-image1';
+            let f = null, filepath = '';
             if (status.file) {
                 f = status.file;
                 filepath = `${b.owner}/${f.filename}`;
@@ -69,7 +69,7 @@ const deleteJourneyImageFromS3 = mydb.s3Delete('sandy-fsf-2019', 'journeys');
 
 const getJourneyOrder = mydb.trQuery("select num_places as count from journeys where id = ?");
 const updateJourneyOrder = mydb.trQuery("update journeys set num_places = ? where id = ?");
-const places_columns = "journey_id, journey_order, type, title, owner, date, lat, lng, country, rating, image_url, description, private_notes";
+const places_columns = "journey_id, journey_order, type, title, location_name, owner, date, lat, lng, country, rating, image_url, description, private_notes";
 const insertPlace = mydb.trQuery(sql.writeInsert('places', places_columns));
 const uploadPlaceImageToS3 = mydb.s3Upload('sandy-fsf-2019', 'places');
 const uploadPlaceThumbnailToS3 = mydb.s3UploadFilePath('sandy-fsf-2019', 'places/thumbnails');
@@ -78,7 +78,7 @@ const uploadPlaceThumbnailToS3 = mydb.s3UploadFilePath('sandy-fsf-2019', 'places
     function mkPlaces() {
         return (status) => {
             const b = status.body;
-            let f = null, filepath = 'default/place-image1';
+            let f = null, filepath = '';
             if (status.file) {
                 f = status.file;
                 filepath = `${b.owner}/${f.filename}`;
@@ -94,7 +94,7 @@ const uploadPlaceThumbnailToS3 = mydb.s3UploadFilePath('sandy-fsf-2019', 'places
                     return updateJourneyOrder({params: [journey_order, b.journey_id], connection});
                 })
                 .then(r => {
-                    const params = [b.journey_id, journey_order, b.type, b.title, b.owner, b.date, b.lat, b.lng, b.country, 
+                    const params = [b.journey_id, journey_order, b.type, b.title, b.location_name, b.owner, b.date, b.lat, b.lng, b.country, 
                         b.rating, filepath, b.description, b.private_notes];
                     return insertPlace({params, connection});
                 })
@@ -117,7 +117,7 @@ const uploadPlaceThumbnailToS3 = mydb.s3UploadFilePath('sandy-fsf-2019', 'places
                 });
             }
             else { // Not tagged to a Journey
-                const params = [0, 0, b.type, b.title, b.owner, b.date, b.lat, b.lng, b.country, b.rating, filepath, b.description, b.private_notes];
+                const params = [0, 0, b.type, b.title, b.location_name, b.owner, b.date, b.lat, b.lng, b.country, b.rating, filepath, b.description, b.private_notes];
                 return insertPlace({params, connection})
                 .then(s => {
                     if(f) {
@@ -147,7 +147,7 @@ const deletePlaceImageFromS3 = mydb.s3Delete('sandy-fsf-2019', 'places');
     function editPlaces() {
         return (status) => {
             const b = status.body;
-            let f = null, filepath = 'default/place-image1';
+            let f = null, filepath = '';
             if (status.file) {
                 f = status.file;
                 filepath = `${b.owner}/${f.filename}`;
