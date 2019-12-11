@@ -1,0 +1,14 @@
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+::ng-deep .mat-dialog-container {
+    padding: 0px !important;
+}
+
+.close-button {
+    position: absolute;
+    top: 80px;
+    right: 50px;
+}

@@ -81,5 +81,5 @@ export interface Journey {
     year?: string;
 
     url?: SafeStyle;
-    duration: number;
+    duration?: number;
 }

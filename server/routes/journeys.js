@@ -95,7 +95,7 @@ module.exports = function(app, conns) {
             .then(r => { 
                 const refresh = r.result[0].refresh;
                 // journey has been changed (flag to refresh is set)
-                if(refresh) return next(); 
+                if(!refresh) return next(); 
                 // Otherwise check if available
                 return checkMapAvailable(`${id}.png`, conns.s3)
                 .then(r => {

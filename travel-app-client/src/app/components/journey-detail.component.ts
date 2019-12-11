@@ -4,6 +4,8 @@ import { TravelService } from '../services/travel.service';
 import { Place, Journey, User } from '../models';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AuthService } from '../services/auth.service';
+import { JourneyMapComponent } from './helpers/journey-map.component';
+import { MatDialog } from '@angular/material';
 
 
 @Component({
@@ -19,7 +21,7 @@ export class JourneyDetailComponent implements OnInit {
   user: User;
   
   constructor(private router: Router, private route: ActivatedRoute, private authSvc: AuthService,
-              private travelSvc: TravelService, private sanitizer: DomSanitizer) { }
+              private travelSvc: TravelService, private sanitizer: DomSanitizer, public dialog: MatDialog) { }
 
   ngOnInit() {
     this.user = this.authSvc.getUser();
@@ -44,6 +46,15 @@ export class JourneyDetailComponent implements OnInit {
         this.journey.url = this.sanitizer.bypassSecurityTrustStyle(`url(${url_string}) no-repeat`);
       }
     }); 
+  }
+
+  openJourneyMapDialog() {
+    const dialogRef = this.dialog.open(JourneyMapComponent, {
+      width: '95vw',
+      height: '95vh',
+      disableClose: false,
+      data: {places: this.places}
+    });
   }
 
   sanitize(style) {

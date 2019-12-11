@@ -21,7 +21,8 @@
                 [routerLink]="['/places/add', journey.owner]" [queryParams]="{journey: journey.id}">
                 <mat-icon>add_box</mat-icon><span>Add Place</span>
             </div>
-            <div class="detail-white box-area" *ngIf="places.length" fxLayoutGap="1vw" fxLayoutAlign="center">
+            <div class="detail-white box-area" *ngIf="places.length" fxLayoutGap="1vw" fxLayoutAlign="center"
+                (click)="openJourneyMapDialog()">
                 <mat-icon>map</mat-icon><span>Full Map</span></div>
             <div class="detail-white box-area" *ngIf="places.length" fxLayoutGap="1vw" fxLayoutAlign="center">
                 <mat-icon>compare_arrows</mat-icon><span>Reorder Places</span></div>
