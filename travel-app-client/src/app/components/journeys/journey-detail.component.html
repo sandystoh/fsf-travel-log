@@ -6,8 +6,14 @@
             <div fxLayoutAlign="center center" fxLayoutGap="2vw">
             <span *ngIf="journey.type == 'BEEN'" class="detail-gold" title="BEEN"><mat-icon>cloud_done</mat-icon></span>
             <span *ngIf="journey.type == 'DREAM'" class="detail-gold" title="DREAM"><mat-icon>cloud_queue</mat-icon></span>
-            <div><span class="licon icon-dat"></span>{{journey.date | date: "mediumDate"}}</div>
+            <div><span class="licon icon-dat"></span>{{journey.date | date: "mediumDate"}}
+                <span *ngIf="journey.end_date"> - {{ journey.end_date | date: "mediumDate"}}</span></div>
         </div>
+        <div class="action-buttons" fxLayout="row column" fxLayoutAlign="space-evenly center">
+                <div class="detail-white box-area" *ngIf="user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
+                (click)="openJourneyEditDialog()">
+                <mat-icon>add_box</mat-icon><span>Edit Journey</span>
+            </div>
         </div>
         <div [style.background]="journey.url" *ngIf="journey.url" class="place-image"></div>
         <div class="place-description" *ngIf="journey.description !== ''">
@@ -37,7 +43,7 @@
                     <span class="legend-title">{{p.title}}</span>
                     <div class="star-area" fxLayout="column" fxLayoutAlign="space-evenly">
                         <div><span *ngFor="let h of ' '.repeat(p.rating).split('')" class="licon icon-love"></span></div>
-                        <div><span class="detail-gold">{{p.date | date: "mediumDate"}}</span></div>
+                        <div *ngIf="p.date != '0000-00-00 00:00:00'"><span class="detail-gold">{{p.date | date: "mediumDate"}}</span></div>
                     </div>
     
                     </div>

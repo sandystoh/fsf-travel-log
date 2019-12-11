@@ -168,7 +168,7 @@ module.exports = function(app, conns) {
     });
 
     // Edit Journey
-    app.post('/api/journeys/update', upload.single('newJourneyImage'),
+    app.post('/api/journeys/update', upload.single('journeyImage'),
         mydb.unlinkFileOnResponse(), 
         (req, resp) => {
         const b = req.body;

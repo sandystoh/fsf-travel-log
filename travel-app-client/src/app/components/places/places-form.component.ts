@@ -168,7 +168,7 @@ onSubmit(form: NgForm) {
   };
   this.travelSvc.createPlace(save, this.imageFile).then((r) => {
     console.log(r);
-    this.router.navigate(['/places/' + this.owner]); 
+    this.router.navigate(['/place/' + r.insertId]); 
   }).catch(err => console.log(err)); 
 }
 

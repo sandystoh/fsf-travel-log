@@ -73,13 +73,15 @@ export interface Journey {
     description?: string;
     date?: string;
     end_date?: string; //date
-    num_places: number;
+    num_places?: number;
     image_url?: string;
     last_updated?: string;
     active?: Boolean;
     month?: string;
     year?: string;
 
+    old_type?: string;
+    place_ids?: string;
     url?: SafeStyle;
     duration?: number;
 }

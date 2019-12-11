@@ -6,7 +6,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
 import { JourneyMapComponent } from '../helpers/journey-map.component';
 import { MatDialog } from '@angular/material';
-
+import { JourneyFormComponent } from '../journeys/journey-form.component';
+import { JourneyEditComponent } from './journey-edit.component';
 
 @Component({
   selector: 'app-journey-detail',
@@ -29,11 +30,11 @@ export class JourneyDetailComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = +params['id'];
       console.log(this.id);
-      this.getPlace(this.id);
+      this.getJourney(this.id);
    });
   }
 
-  getPlace(id) {
+  getJourney(id) {
     this.travelSvc.getJourneyById(id).then(r => {
       console.log(r);
       this.places = r.places
@@ -48,6 +49,19 @@ export class JourneyDetailComponent implements OnInit {
     }); 
   }
 
+  openJourneyEditDialog(): void {
+    const dialogRef = this.dialog.open(JourneyEditComponent, {
+      width: '85vw',
+      height: '80vh',
+      disableClose: false,
+      data: {owner: this.journey.owner, journey: this.journey, places: this.places, fromPlacesForm: false}
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      this.getJourney(this.id);
+    });
+  }
+
   openJourneyMapDialog() {
     const dialogRef = this.dialog.open(JourneyMapComponent, {
       width: '95vw',
@@ -59,5 +73,5 @@ export class JourneyDetailComponent implements OnInit {
 
   sanitize(style) {
     return this.sanitizer.bypassSecurityTrustStyle(style);
-}
+  }
 }

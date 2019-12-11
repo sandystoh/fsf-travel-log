@@ -8,6 +8,6 @@
         <span *ngIf="p.type == 'BEEN'" class="detail-gold" title="BEEN"><mat-icon>cloud_done</mat-icon></span>
         <span *ngIf="p.type == 'DREAM'" class="detail-gold" title="DREAM"><mat-icon>cloud_queue</mat-icon></span>
         <div><span *ngFor="let h of ' '.repeat(p.rating).split('')" class="licon icon-love"></span></div>
-        <div><span class="licon icon-dat"></span>{{p.date | date: "mediumDate"}}</div>
+        <div *ngIf="p.date != '0000-00-00 00:00:00'"><span class="licon icon-dat"></span>{{p.date | date: "mediumDate"}}</div>
     </div>
 </mat-card>

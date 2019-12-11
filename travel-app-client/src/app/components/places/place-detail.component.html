@@ -17,12 +17,12 @@
         <div><span class="detail-gold"><mat-icon *ngFor="let h of ' '.repeat(place.rating).split('')" class="small">favorite</mat-icon></span></div>
         <span *ngIf="place.type == 'BEEN'" class="detail-gold" title="BEEN"><mat-icon>cloud_done</mat-icon></span>
         <span *ngIf="place.type == 'DREAM'" class="detail-gold" title="DREAM"><mat-icon>cloud_queue</mat-icon></span>
-        <div><span class="licon icon-dat"></span>{{place.date | date: "mediumDate"}}</div>
+        <div *ngIf="place.date != '0000-00-00 00:00:00'"><span class="licon icon-dat"></span>{{place.date | date: "mediumDate"}}</div>
         </div>
         <div class="action-buttons" fxLayout="row column" fxLayoutAlign="space-evenly center">
-        <div class="detail-white box-area" *ngIf="user.username == place.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
-        [routerLink]="['/places/edit', place.owner, place.id]">
-        <mat-icon>add_box</mat-icon><span>Edit Place</span>
+            <div class="detail-white box-area" *ngIf="user.username == place.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
+            [routerLink]="['/places/edit', place.owner, place.id]">
+            <mat-icon>add_box</mat-icon><span>Edit Place</span>
         </div>
     </div>
     </div>

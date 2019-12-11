@@ -105,6 +105,7 @@ insert into places values
 ('14', '0', '0', 'BEEN', 'Corinth Canal',  'Corinth Canal', 'sandystoh', '2016-07-02 00:00:00', '37.93419810', '22.98436750', 'GR', '3', 'sandystoh/2154e0b20643ea7bd6a831acf017f18f', 'aa', 'bb', '2019-12-09 14:31:07', '1')
 
 
+
 -- Mongo
 -- db.getCollection('countries').createIndex({code2l: 1})
 -- db.getCollection('countries').createIndex({name: 1})

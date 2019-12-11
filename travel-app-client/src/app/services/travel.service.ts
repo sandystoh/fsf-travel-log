@@ -128,4 +128,15 @@ export class TravelService {
 
     return this.http.post<any>('/api/journeys', formData).toPromise();
   }
+
+  editJourney(editedJourney, fileRef: ElementRef) {
+    const formData = new FormData();
+    formData.set('journeyImage', fileRef.nativeElement.files[0]);
+
+    Object.keys(editedJourney).forEach(key => {
+      formData.set(key, editedJourney[key])}
+      );
+
+    return this.http.post<any>('/api/journeys/update', formData).toPromise();
+  }
 }

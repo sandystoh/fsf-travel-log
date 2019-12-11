@@ -29,6 +29,7 @@ import { JourneyCardComponent } from './components/helpers/journey-card.componen
 import { PlaceReorderComponent } from './components/helpers/place-reorder.component';
 import { JourneyMapComponent } from './components/helpers/journey-map.component';
 import { PlacesEditComponent } from './components/places/places-edit.component';
+import { JourneyEditComponent } from './components/journeys/journey-edit.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { PlacesEditComponent } from './components/places/places-edit.component';
     JourneyCardComponent,
     PlaceReorderComponent,
     JourneyMapComponent,
-    PlacesEditComponent
+    PlacesEditComponent,
+    JourneyEditComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +63,7 @@ import { PlacesEditComponent } from './components/places/places-edit.component';
     PrimeNGModule
   ],
   entryComponents: [
-    JourneyFormComponent, JourneyMapComponent
+    JourneyFormComponent, JourneyMapComponent, JourneyEditComponent
   ],
   providers: [AuthService, TravelService,
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}}

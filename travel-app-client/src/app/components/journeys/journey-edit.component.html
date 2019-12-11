@@ -1,0 +1,60 @@
+<form [formGroup]="journeyForm" (ngSubmit)="onSubmit(journeyForm)" class="journey-form">
+        <div  fxLayout="column" fxLayoutGap="2vw">
+            <div class="smythe headtext">Edit a Journey</div>
+    <mat-form-field class="full-width">
+            <input matInput placeholder="Journey Title *" formControlName="title">
+            <mat-hint *ngIf="journeyForm.touched && !!f.title.hasError('required')">
+                Please enter a Journey Title</mat-hint>
+            <mat-error *ngIf="journeyForm.touched && !!f.title.hasError('maxlength')">
+                    Title should not exceed 120 characters</mat-error> 
+    </mat-form-field>
+    
+    <div class="center">
+    <mat-button-toggle-group formControlName="type"> 
+            <mat-button-toggle value="BEEN" class="smythe type-button">I Have Been Here!</mat-button-toggle>
+            <mat-button-toggle value="DREAM" class="smythe type-button">Dreaming About It!</mat-button-toggle>
+    </mat-button-toggle-group><br>
+    <mat-hint class="hint">Warning: Changing this will change all Places in Journey to the same type</mat-hint>
+    </div>
+    
+    <br>
+      <label for="placeImage">Upload a Cover Image (Optional):</label>
+      <input placeholder="image" type="file" accept='image/*' (change)="preview(imageFile.files)" name="journeyImage" id="journeyImage" class="muli" #imageFile>
+      <span style="color:red;" *ngIf="message">{{message}}</span>
+      <img [src]="imgURL" width="100%" *ngIf="imgURL">
+    
+    <br>
+    Fill in Details:
+    <mat-form-field class="full-width">
+        <input matInput readonly [matDatepicker]="date" (dateChange)="setEndDate()" (focus)="date.open()" placeholder="{{ f.type.value == 'BEEN' ? 'Date Started *' : 'Planned Date'}}" formControlName="date" >
+        <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
+        <button mat-button *ngIf="f.date.value" matSuffix mat-icon-button (click)="f.date.setValue('')">
+            <mat-icon>close</mat-icon>
+          </button>
+        <mat-datepicker #date></mat-datepicker>
+        <mat-hint *ngIf="!!f.title.value &&  f.type.value == 'BEEN' && !f.date.value">
+            Please enter a start date (or best guess!)</mat-hint>
+    </mat-form-field>
+    
+    <mat-form-field class="full-width">
+        <input matInput readonly [matDatepicker]="end_date" [min]="f.date.value" (focus)="end_date.open()" placeholder="{{ f.type.value == 'BEEN' ? 'Date Ended *' : 'Planned End Date'}}" formControlName="end_date" >
+        <mat-datepicker-toggle matSuffix [for]="end_date"></mat-datepicker-toggle>
+        <button mat-button *ngIf="f.end_date.value" matSuffix mat-icon-button (click)="f.end_date.setValue('')">
+            <mat-icon>close</mat-icon>
+          </button>
+        <mat-datepicker #end_date></mat-datepicker>
+        <mat-hint *ngIf="!!f.title.value &&  f.type.value == 'BEEN' && !f.end_date.value">
+            Please enter an end date (or best guess!)</mat-hint>
+    </mat-form-field>
+    
+    <mat-form-field  class="full-width">
+        <textarea matInput rows="5" placeholder="{{ f.type.value == 'BEEN' ? 'Description' : 'Plans'}}" formControlName="description"></textarea>
+    </mat-form-field>
+    
+    <div fxLayout="row column" fxLayoutAlign="space-evenly" fxLayoutGap="2vw">
+    <button mat-raised-button color="warn" type="reset">Reset</button>
+    <button mat-raised-button color="accent" type="submit" 
+    [disabled]="this.journeyForm.invalid || (f.type.value == 'BEEN' && !(f.date.value && f.end_date.value))">Edit</button>
+    </div>
+    </div>
+    </form>

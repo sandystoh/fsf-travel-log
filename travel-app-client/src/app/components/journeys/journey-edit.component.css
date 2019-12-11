@@ -1,0 +1,66 @@
+.mat-form-field, .mat-select, h2, h4 {
+    font-family: 'Muli', sans-serif; 
+ }
+
+ .journey-form{
+     font-size: 1.5rem;
+     font-family: 'Smythe', sans-serif;
+     text-align: left;
+ }
+
+ .type-button {
+     font-size: 1.2rem;
+     font-weight: 700;
+ }
+
+ .full-width {
+     width: 100%;
+ }
+ 
+ .submit-button {
+     width: 20vw;
+ }
+ 
+ .mat-card {
+     background-color: rgba(255,255,255,0.8);
+ }
+
+ .mat-form-field {
+     font-size: 1rem;
+     font-family: 'Muli', sans-serif;
+ }
+ 
+ .mat-hint {
+     color: red;
+     font-size: 0.9em;
+ }
+ 
+ .mat-button-toggle-checked{
+     background-color: rgb(255,193,7,0.8);
+ }
+ 
+ .center{
+     width: 100%;
+     text-align: center;
+ }
+
+.headtext {
+    font-size: 3rem;
+    text-align: center;
+}
+
+.hint {
+    font-family: "Muli", sans-serif;
+    font-size: 0.8rem;
+    margin: 0 auto;
+}
+
+ @media only screen and (max-width: 500px) {
+    .mat-form-field {
+        font-size: 1rem;
+    }
+    .place-card{
+        font-size: 1.3rem;
+    } 
+   }
+ 
