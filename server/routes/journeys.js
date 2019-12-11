@@ -14,9 +14,12 @@ const travel = require('../db/travelutil');
 
 module.exports = function(app, conns) {
 
-    const getJourneysByUser = mydb.mkQuery(`select * from journeys where owner = ? and id in (
+    const getJourneysByUser = mydb.mkQuery(`select * from journeys where owner = ? limit ? offset ?`, conns.mysql)
+    const countJourneysByUser = mydb.mkQuery(`select count(*) as count from journeys where owner = ?`, conns.mysql)
+
+    const getJourneysByUserCountry = mydb.mkQuery(`select * from journeys where owner = ? and id in (
         select distinct(journey_id) from places where owner = ? and country like ?) limit ? offset ?`, conns.mysql)
-    const countJourneysByUser = mydb.mkQuery(`select count(*) as count from journeys where owner = ? and id in (
+    const countJourneysByUserCountry = mydb.mkQuery(`select count(*) as count from journeys where owner = ? and id in (
         select distinct(journey_id) from places where owner = ? and country like ?)`, conns.mysql)
 
     // Get all Journeys for particular user (pagination: limit/offset) (with country filter)
@@ -25,8 +28,10 @@ module.exports = function(app, conns) {
         const limit = parseInt(req.query.limit) || 20;
         const offset = parseInt(req.query.offset) || 0;
         const country = req.query.country || '%';
-        p0 = countJourneysByUser([user, user, country] );
-        p1 = getJourneysByUser([user, user, country, limit, offset] );
+        p0 = countJourneysByUser([user] );
+        p1 = getJourneysByUser([user, limit, offset] );
+        //p0 = countJourneysByUserCountry([user, user, country] );
+        //p1 = getJourneysByUserCountry([user, user, country, limit, offset] );
 
         Promise.all([p0, p1]).then(r => {
             console.log(r);
@@ -110,7 +115,7 @@ module.exports = function(app, conns) {
                 let w = waypoints.map(v => {
                     return { ...v, alpha: alpha[(v.journey_order-1) % 26] }
                 });
-                const qs = `size=600x400&format=png&key=${conns.gmaps}`
+                const qs = `size=500x500&format=png&key=${conns.gmaps}`
                 let markers = '';
                 let path = '&path=weight:3';
                 for (let i = 0; i < w.length; i++){

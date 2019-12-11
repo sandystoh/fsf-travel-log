@@ -15,5 +15,6 @@
                 <div class="detail-gold" *ngIf="journey.type == 'SEEN'">Dreams</div>
                 {{journey.description}}
             </div>
+            <div class="map-image"><img [src]="'/api/journey/map/'+journey.id"></div>
         </div>
         </div>

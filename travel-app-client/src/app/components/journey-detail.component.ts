@@ -35,7 +35,7 @@ export class JourneyDetailComponent implements OnInit {
       // let url_string = `../../assets/images/placeholder.jpeg`;
       this.journey.url = '';
       if(this.journey.image_url !== null && this.journey.image_url != '')  {
-        let url_string = `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/places/${this.journey.image_url}`;
+        let url_string = `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/journeys/${this.journey.image_url}`;
         this.journey.url = this.sanitizer.bypassSecurityTrustStyle(`url(${url_string}) no-repeat`);
       }
     }); 

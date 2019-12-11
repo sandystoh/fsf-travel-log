@@ -2,7 +2,7 @@ import {Injectable, ElementRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { MapResponse, Country, Place, Journey, PlacesResponse, JourneyResponse } from '../models';
+import { MapResponse, Country, Place, Journey, PlacesResponse, JourneyResponse, JourneysResponse } from '../models';
 import { NgForm } from '@angular/forms';
 
 @Injectable()
@@ -62,19 +62,6 @@ export class TravelService {
     );
   }
 
-  getPlaceTitles(username): Promise<String[]> {
-    return this.http.get<String[]>('/api/places/titles/'+username).toPromise();
-  } 
-  
-  getCountryList(): Promise<Country[]> {
-    return this.http.get<Country[]>('/api/countries').toPromise();
-  }
-
-  getJourneyList(username, type): Promise<Journey[]> {
-    const params = new HttpParams().set('type', type);
-    return this.http.get<Journey[]>('/api/journeys/list/' + username, {params}).toPromise();
-  }
-
   getPlaceById(id) {
     return this.http.get<Place>('/api/place/' + id).toPromise();
   }
@@ -88,6 +75,32 @@ export class TravelService {
       );
 
     return this.http.post<any>('/api/places', formData).toPromise();
+  }
+
+  getPlaceTitles(username): Promise<String[]> {
+    return this.http.get<String[]>('/api/places/titles/'+username).toPromise();
+  } 
+  
+  getCountryList(): Promise<Country[]> {
+    return this.http.get<Country[]>('/api/countries').toPromise();
+  }
+
+  getJourneyList(username, type): Promise<Journey[]> {
+    const params = new HttpParams().set('type', type);
+    return this.http.get<Journey[]>('/api/journeys/list/' + username, {params}).toPromise();
+  }
+
+  getJourneys(username, limit, offset): Promise<JourneysResponse> {
+    const params = new HttpParams()
+      .set('limit', limit)
+      .set('offset', offset);
+    return (
+      this.http.get<JourneysResponse>('/api/journeys/'+ username, { params })
+        .toPromise()
+        .catch(error => {
+          return (Promise.reject(error))
+        })
+    );
   }
 
   getJourneyById(id) {

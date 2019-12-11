@@ -25,6 +25,7 @@ import { PlaceDetailComponent } from './components/place-detail.component';
 import { JourneyDetailComponent } from './components/journey-detail.component';
 import { PlaceCardComponent } from './components/helpers/place-card.component';
 import { JourneysListComponent } from './components/journeys-list.component';
+import { JourneyCardComponent } from './components/helpers/journey-card.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { JourneysListComponent } from './components/journeys-list.component';
     PlaceDetailComponent,
     JourneyDetailComponent,
     PlaceCardComponent,
-    JourneysListComponent
+    JourneysListComponent,
+    JourneyCardComponent
   ],
   imports: [
     BrowserModule,

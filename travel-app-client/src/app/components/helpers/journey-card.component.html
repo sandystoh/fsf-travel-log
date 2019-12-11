@@ -1,0 +1,16 @@
+<mat-card class="place-card-b" [routerLink]="['/journey/'+j.id]" [style.background]="j.url">
+    <div class="overlay"></div>
+    <div class="card-title">{{j.title}}</div>
+    <div class="card-info">        
+        <div *ngIf="j.date">
+        <span>{{j.date | date: "mediumDate"}} </span>
+        <span *ngIf="j.end_date"> - {{ j.end_date | date: "mediumDate"}}</span></div>
+    </div> 
+    <div class="card-subtitle" *ngIf="j.id !== 0">{{j.num_places}} Places</div>
+    <div class="icon-area" fxLayoutAlign="space-evenly center">
+        <span *ngIf="j.type == 'BEEN'" class="detail-gold" title="BEEN"><mat-icon>cloud_done</mat-icon></span>
+        <span *ngIf="j.type == 'DREAM'" class="detail-gold" title="DREAM"><mat-icon>cloud_queue</mat-icon></span>
+        <div *ngIf="j.end_date" fxLayoutAlign="center center" fxLayoutGap="5px"><span class="detail-gold"><mat-icon>access_time</mat-icon></span><span>{{j.duration}} Days</span></div>
+        <div fxLayoutGap="3px"><span class="licon icon-dat"></span>{{j.date | date: 'MMMM yyyy'}}</div>
+    </div>
+</mat-card>

@@ -50,6 +50,10 @@ export class JourneyFormComponent implements OnInit {
    });
  } 
 
+ setEndDate() {
+   this.f.end_date.setValue(this.f.date.value);
+ }
+
  preview(files) {
   if (files.length === 0) {
     return;
@@ -77,6 +81,7 @@ onSubmit(form: NgForm) {
     title: v.title,
     owner: this.owner,
     date: (v.date) ? moment(v.date).format("YYYY-MM-DD HH:mm:ss") : null,
+    end_date: (v.end_date) ? moment(v.end_date).format("YYYY-MM-DD HH:mm:ss") : null,
     description: v.description,
     num_places: 0
   };

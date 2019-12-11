@@ -24,7 +24,7 @@
 <br>
 Fill in Details:
 <mat-form-field class="full-width">
-    <input matInput readonly [matDatepicker]="date" (focus)="date.open()" placeholder="{{ f.type.value == 'BEEN' ? 'Date Started *' : 'Planned Date'}}" formControlName="date" >
+    <input matInput readonly [matDatepicker]="date" (dateChange)="setEndDate()" (focus)="date.open()" placeholder="{{ f.type.value == 'BEEN' ? 'Date Started *' : 'Planned Date'}}" formControlName="date" >
     <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
     <button mat-button *ngIf="f.date.value" matSuffix mat-icon-button (click)="f.date.setValue('')">
         <mat-icon>close</mat-icon>
@@ -35,7 +35,7 @@ Fill in Details:
 </mat-form-field>
 
 <mat-form-field class="full-width">
-    <input matInput readonly [matDatepicker]="end_date" (focus)="end_date.open()" placeholder="{{ f.type.value == 'BEEN' ? 'Date Ended *' : 'Planned End Date'}}" formControlName="end_date" >
+    <input matInput readonly [matDatepicker]="end_date" [min]="f.date.value" (focus)="end_date.open()" placeholder="{{ f.type.value == 'BEEN' ? 'Date Ended *' : 'Planned End Date'}}" formControlName="end_date" >
     <mat-datepicker-toggle matSuffix [for]="end_date"></mat-datepicker-toggle>
     <button mat-button *ngIf="f.date.value" matSuffix mat-icon-button (click)="f.end_date.setValue('')">
         <mat-icon>close</mat-icon>

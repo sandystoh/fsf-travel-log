@@ -1,1 +1,29 @@
-<p>journeys-list works!</p>
+<div class="place-bg">
+    <div class="headertext" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1vw">
+        <div>My Journeys </div>
+    </div>
+
+<div *ngIf="isLoading" style="margin-top:30px;" fxLayoutAlign="center">
+    <mat-spinner color="accent"></mat-spinner>
+</div>
+
+<div *ngIf="!isLoading && !journeys.length && !isError" style="margin-top:30px;" class="count-area" fxLayoutAlign="center">
+    No Results for that search! Please try again!
+</div>
+
+<div *ngIf="!isLoading && isError" style="margin-top:30px;" class="count-area" fxLayoutAlign="center">
+    Sorry we've hit a problem! Please try again in a bit!
+</div>
+
+<div *ngIf="!isLoading && !isError" class="results-area" fxLayout="row column" fxLayoutAlign="space-evenly">
+<div *ngFor="let j of journeys">
+  <app-journey-card [j]="j"></app-journey-card>
+</div>
+</div>
+
+<div class="button-area" fxLayout="row" fxLayoutAlign="center" *ngIf="!isLoading && journeys.length && !isError">
+    <button mat-raised-button color="accent" [disabled]="offset <= 0" (click)="back()">Previous</button>
+    <div class="count-area"> {{ this.offset + 1 }} to {{ this.top }} of {{ this.numResults }} Places</div>
+    <button mat-raised-button color="accent" [disabled]="!showNext" (click)="next()">Next</button>
+</div>
+</div>

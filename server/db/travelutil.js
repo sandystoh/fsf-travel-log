@@ -5,9 +5,10 @@ const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
 
-const journeys_columns = "title, owner, type, date, description, image_url";
+const journeys_columns = "title, owner, type, date, end_date, description, image_url";
 const insertJourney = mydb.trQuery(sql.writeInsert('journeys', journeys_columns));
 const uploadJourneyImageToS3 = mydb.s3Upload('sandy-fsf-2019', 'journeys');
+const uploadJourneyThumbnailToS3 = mydb.s3UploadFilePath('sandy-fsf-2019', 'journeys/thumbnails');
     // Transaction with Journey (MySQL) + Image (S3)
     function mkJourneys() {
         return (status) => {
@@ -19,16 +20,26 @@ const uploadJourneyImageToS3 = mydb.s3Upload('sandy-fsf-2019', 'journeys');
             }
             const connection = status.connection;
             b.date = (b.date !== 'null') ? b.date : null;
-            const params = [b.title, b.owner, b.type, b.date, b.description, filepath];
+            const params = [b.title, b.owner, b.type, b.date, b.end_date, b.description, filepath];
             return insertJourney({params, connection})
             .then(s => {
                 s.insertId = s.result.insertId;
                 if(f) {
                     s.file = f, s.filepath = filepath;
                     s.s3 = status.conns.s3;
-                    return uploadJourneyImageToS3(s).then(r => {
+                    return sharp(f.path).resize(500).toFormat("jpeg").jpeg({ quality: 90 }).toBuffer()
+                    .then( data => {
+                        fs.writeFileSync(path.join(__dirname,'..',`/resized/${f.filename}.jpg`), data);
+                        s2 = {path: path.join(__dirname,'..',`/resized/${f.filename}.jpg`), filepath, s3: status.conns.s3}
+                        return uploadJourneyThumbnailToS3(s2);
+                    })
+                    .then(() => {
+                        fs.unlink(path.join(__dirname,'..',`/resized/${f.filename}.jpg`),()=>{ });
+                        return uploadJourneyImageToS3(s);
+                    })
+                    .then(() => {
                         return Promise.resolve(s.insertId);
-                    });
+                    })
                 }
                 else return Promise.resolve(s.insertId);
             }); 
@@ -54,7 +65,16 @@ const deleteJourneyImageFromS3 = mydb.s3Delete('sandy-fsf-2019', 'journeys');
                 if(f) {
                     s.file = f, s.filepath = filepath;
                     s.s3 = status.conns.s3;
-                    return uploadJourneyImageToS3(s);
+                    return sharp(f.path).resize(500).toFormat("jpeg").jpeg({ quality: 90 }).toBuffer()
+                    .then( data => {
+                        fs.writeFileSync(path.join(__dirname,'..',`/resized/${f.filename}.jpg`), data);
+                        s2 = {path: path.join(__dirname,'..',`/resized/${f.filename}.jpg`), filepath, s3: status.conns.s3}
+                        return uploadJourneyThumbnailToS3(s2);
+                    })
+                    .then(() => {
+                        fs.unlink(path.join(__dirname,'..',`/resized/${f.filename}.jpg`),()=>{ });
+                        return uploadJourneyImageToS3(s);
+                    })
                 }
                 else return Promise.resolve();
             })

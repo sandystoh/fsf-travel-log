@@ -54,6 +54,11 @@ export interface Place {
     prev_id?: number;
 }
 
+export interface JourneysResponse {
+    count: number;
+    journeys: Journey[];
+}
+
 export interface JourneyResponse {
     places: Place[];
     journey: Journey;
@@ -66,6 +71,7 @@ export interface Journey {
     type: string;
     description?: string;
     date?: string;
+    end_date?: string; //date
     num_places: number;
     image_url?: string;
     last_updated?: string;
@@ -74,4 +80,5 @@ export interface Journey {
     year?: string;
 
     url?: SafeStyle;
+    duration: number;
 }
