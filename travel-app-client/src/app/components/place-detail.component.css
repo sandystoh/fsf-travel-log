@@ -22,7 +22,6 @@
 }
 
 .place-detail {
-    padding: 15px;
     min-width: 450px;
 }
 
@@ -81,7 +80,6 @@
     }
 
     .place-detail {
-        min-width: unset;
         width: 100vw;
     }
 

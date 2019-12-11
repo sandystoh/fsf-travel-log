@@ -66,7 +66,7 @@ export class JourneysListComponent implements OnInit {
     this.travelSvc.getJourneys(this.username, this.increment, this.offset).then(r => {
       console.log(r);
       this.journeys = r.journeys.map(v => {
-        let url_string = `../../assets/images/placeholder.jpeg`;
+        let url_string = `../../assets/images/placeholder-journey.jpg`;
         if(v.image_url !== null && v.image_url != '') url_string = `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/journeys/thumbnails/${v.image_url}`;
         return {
           ...v,

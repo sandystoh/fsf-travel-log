@@ -46,6 +46,7 @@ export interface Place {
     last_updated?: string;
     active?: number;
 
+    alpha?: string;
     url?: SafeStyle;
     journey_title?: string;
     journey_count?: number;
