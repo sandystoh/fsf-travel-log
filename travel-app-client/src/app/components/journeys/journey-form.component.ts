@@ -21,6 +21,7 @@ export class JourneyFormComponent implements OnInit {
   owner: string;
   @ViewChild('imageFile', {static: false})
   imageFile: ElementRef;
+  isSubmitted = false;
   
   imagePath;
   imgURL: any;
@@ -72,6 +73,7 @@ export class JourneyFormComponent implements OnInit {
 }
 
 onSubmit(form: NgForm) {
+  this.isSubmitted = true;
   const v = this.journeyForm.getRawValue();
   console.log(this.imageFile.nativeElement.files[0]); // undefined if no file
   console.log(moment(v.date).toISOString());
@@ -87,6 +89,7 @@ onSubmit(form: NgForm) {
   };
   console.log(save);
   this.travelSvc.createJourney(save, this.imageFile).then((r) => {
+    this.isSubmitted = false;
     console.log(r);
     this.dialogRef.close({insertId: r.insertId});
   }).catch(err => console.log(err));

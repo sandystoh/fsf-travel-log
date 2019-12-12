@@ -55,4 +55,6 @@
     [disabled]="this.journeyForm.invalid || (f.type.value == 'BEEN' && !(f.date.value && f.end_date.value))">Create</button>
     </div>
     </div>
+
+    <div class="loading detail-white" *ngIf="isSubmitted" fxLayout="column" fxLayoutAlign="center center"><mat-spinner color="accent"></mat-spinner><br> Loading Please Wait...</div>
     </form>

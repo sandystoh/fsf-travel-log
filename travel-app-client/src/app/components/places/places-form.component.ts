@@ -24,6 +24,7 @@ export class PlacesFormComponent implements OnInit {
   today: any;
   lat: number;
   lng: number;
+  isSubmitted = false;
   @ViewChild('auto', {static: false}) private auto: AutocompleteComponent;
   
   @ViewChild('imageFile', {static: false})
@@ -43,8 +44,10 @@ export class PlacesFormComponent implements OnInit {
     this.travelSvc.getCountryList().then(c => {
       this.countries = c;
     });
-    this.getJourneyList('BEEN');
     this.journey = parseInt(this.route.snapshot.queryParams['journey']);
+    this.getJourneyList('BEEN').then(() => {
+      this.selectJourney(this.journey); 
+    });
     this.type = this.route.snapshot.queryParams['type'];
     console.log(this.journey);
     if(this.journey) {
@@ -83,7 +86,7 @@ export class PlacesFormComponent implements OnInit {
       console.log('>>>', result.insertId);
       this.getJourneyList(this.f.type.value).then(() => {
             this.placeForm.patchValue({
-            journey: result.insertId
+              journey: result.insertId
           });
       }); 
     }
@@ -105,6 +108,14 @@ export class PlacesFormComponent implements OnInit {
 
  changeType(e) {
    this.getJourneyList(e.value);
+ }
+
+ selectJourney(e) {
+   console.log(e);
+   if (e !== 0) {
+      let j = this.journeys.find(o => o.id == e ); 
+      if (this.f.date.value == "" && j.date != '0000-00-00 00:00:00') this.f.date.setValue(j.date);
+   }
  }
 
  getPlace(p) {
@@ -145,6 +156,7 @@ reset() {
 }
 
 onSubmit(form: NgForm) {
+  this.isSubmitted = true;
   const v = this.placeForm.getRawValue();
   console.log(this.imageFile.nativeElement.files[0]); // undefined if no file
   console.log(moment(v.date).toISOString());
@@ -168,6 +180,7 @@ onSubmit(form: NgForm) {
   };
   this.travelSvc.createPlace(save, this.imageFile).then((r) => {
     console.log(r);
+    this.isSubmitted = false;
     this.router.navigate(['/place/' + r.insertId]); 
   }).catch(err => console.log(err)); 
 }

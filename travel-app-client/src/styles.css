@@ -13,6 +13,10 @@ html, body {
     width: 100vw !important;
 }
 
+.inspect {
+  border: 1px solid #f00 !important;
+}
+
 body {
     font-family: 'Smythe', sans-serif;
     background-color:#000;
@@ -98,9 +102,20 @@ body {
   }
 
   .action-buttons {
-    width: 95vw;
     max-width: 900px;
   }
+
+ .loading {
+   position: absolute;
+   left: 0;
+   bottom: 0;
+   width: 100vw;
+   height: 110vh;
+   text-align: center;
+   vertical-align: center;
+   color: #fff;
+   background-color: rgba(50,50,50,0.7);
+ }
 
 @media only screen and (max-width: 450px) {
     .headertext {
