@@ -65,7 +65,8 @@ import { ConfirmDialogComponent } from './components/helpers/confirm-dialog.comp
     PrimeNGModule
   ],
   entryComponents: [
-    JourneyFormComponent, JourneyMapComponent, JourneyEditComponent, ConfirmDialogComponent
+    JourneyFormComponent, JourneyMapComponent, JourneyEditComponent, 
+    ConfirmDialogComponent, PlaceReorderComponent
   ],
   providers: [AuthService, TravelService,
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}}

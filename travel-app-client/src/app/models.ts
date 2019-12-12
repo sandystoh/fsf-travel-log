@@ -53,6 +53,7 @@ export interface Place {
     country_name?: string;
     next_id?: number;
     prev_id?: number;
+    changed?: boolean;
 }
 
 export interface JourneysResponse {

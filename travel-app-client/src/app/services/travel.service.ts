@@ -144,6 +144,11 @@ export class TravelService {
     return this.http.post<any>('/api/journeys/update', formData).toPromise();
   }
 
+  reorderJourneyPlaces(id, places: Place[]) {
+    console.log(places);
+    return this.http.post('/api/journey/reorder/'+ id, {places}).toPromise();
+  }
+
   deleteJourney(id, removeChild) {
     const params = new HttpParams().set('remove_child', removeChild);
     return this.http.delete('/api/journey/' + id, {params}).toPromise();

@@ -1,1 +1,27 @@
-<p>place-reorder works!</p>
+<div class="reorder-area">
+<div fxLayout="row column" fxLayoutAlign="flex-start center">
+    <div class="map-image"><img [src]="'/api/journey/map/'+data.journey_id+'?nocache='+random" style='height: 100%; width: 100%; object-fit: contain'></div>
+    <div  class="map-legend">
+        <div *ngFor="let p of newPlaces">
+        <div class="legend-entries">
+                <div fxLayout="row" fxLayoutGap="2vw">
+                <div class="box-alpha" fxLayoutAlign="center center">{{p.journey_order}}</div>
+                <span class="legend-title">{{p.title}}</span>
+                <div class="star-area" fxLayout="column" fxLayoutAlign="space-evenly">
+                    <div><button class="arrow-button" [disabled]="p.journey_order == newPlaces.length" (click)="downOne(p.journey_order)" mat-icon-button><mat-icon>arrow_downward</mat-icon></button>
+                        <button class="arrow-button" [disabled]="p.journey_order == 1"  (click)="upOne(p.journey_order)" mat-icon-button><mat-icon>arrow_upward</mat-icon></button></div>
+                    <div *ngIf="p.date != '0000-00-00 00:00:00'"><span class="detail-gold">{{p.date | date: "mediumDate"}}</span></div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><br>
+
+
+<div fxLayoutAlign="space-evenly">
+        <button type="button" (click)="close()" mat-raised-button color="warn">Cancel</button>
+        <button type="button" (click)="confirm()" mat-raised-button color="accent">Reorder</button>
+    </div>
+    
+</div>

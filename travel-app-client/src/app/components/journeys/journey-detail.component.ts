@@ -9,6 +9,7 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { JourneyFormComponent } from '../journeys/journey-form.component';
 import { JourneyEditComponent } from './journey-edit.component';
 import { ConfirmDialogComponent } from '../helpers/confirm-dialog.component';
+import { PlaceReorderComponent } from '../helpers/place-reorder.component';
 
 @Component({
   selector: 'app-journey-detail',
@@ -37,6 +38,7 @@ export class JourneyDetailComponent implements OnInit {
   }
 
   getJourney(id) {
+    this.random = (new Date()).getTime();
     this.travelSvc.getJourneyById(id).then(r => {
       console.log(r);
       this.places = r.places;
@@ -70,6 +72,22 @@ export class JourneyDetailComponent implements OnInit {
       height: '95vh',
       disableClose: false,
       data: {places: this.places}
+    });
+  }
+
+  openReorderDialog() {
+    const reorderDialogRef = this.dialog.open(PlaceReorderComponent, {
+      width: '85vw',
+      maxWidth: '500px',
+      height: '70vh',
+      disableClose: false,
+      data: {places: this.places, journey_id: this.journey.id}
+    });
+    reorderDialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+      if(result) {
+        this.getJourney(this.id);
+      }
     });
   }
 

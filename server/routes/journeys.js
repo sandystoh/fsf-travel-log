@@ -180,11 +180,26 @@ module.exports = function(app, conns) {
         const updateJourney = mydb.mkTransaction(travel.editJourneys(), conns.mysql);
         updateJourney({body: b, file: f, conns: conns})  
         .then(status => {
-            resp.status(201).json({message: `Record ${b.title} updated`});
+            resp.status(200).json({message: `Record ${b.title} updated`});
         })
         .catch(err => {
             resp.status(500).json({error: err.error});
         });
+    });
+
+    const changePlaceOrder = mydb.mkQuery(`
+    INSERT INTO places (id, journey_order) VALUES ? ON DUPLICATE KEY UPDATE journey_order=VALUES(journey_order)`, conns.mysql);
+    app.post('/api/journey/reorder/:id', express.json(), (req, resp) => {
+        console.log(req.body);
+        const change = req.body.places.map(v => { return [v.id, v.journey_order]});
+        changePlaceOrder([change]).catch(e=> console.log(e))
+        .then(() => {
+            resp.status(200).json({message: `Records updated`});
+        })
+        .catch(err => {
+            resp.status(500).json({error: err.error});
+        });
+
     });
 
     // Deactivate Journey by Journey ID 

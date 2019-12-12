@@ -32,8 +32,9 @@
             <div class="detail-white box-area" *ngIf="places.length" fxLayoutGap="1vw" fxLayoutAlign="center"
                 (click)="openJourneyMapDialog()">
                 <mat-icon>map</mat-icon><span>Full Map</span></div>
-            <div class="detail-white box-area" *ngIf="places.length" fxLayoutGap="1vw" fxLayoutAlign="center">
-                <mat-icon>compare_arrows</mat-icon><span>Reorder Places</span></div>
+            <div class="detail-white box-area" *ngIf="places.length > 1" fxLayoutGap="1vw" fxLayoutAlign="center"
+                (click)="openReorderDialog()">
+                <mat-icon>compare_arrows</mat-icon><span>Sort Places</span></div>
         </div>
         <div fxLayout="row column" fxLayoutAlign="flex-start">
         <div *ngIf="places.length" class="map-image"><img [src]="'/api/journey/map/'+journey.id+'?nocache='+random" style='height: 100%; width: 100%; object-fit: contain'></div>
