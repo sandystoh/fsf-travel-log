@@ -66,7 +66,8 @@ export class JourneyMapComponent implements OnInit, AfterViewInit {
     }
 
     onResize() {
-      google.maps.event.trigger(this.map, "resize");
+      // google.maps.event.trigger(this.map, "resize");
+      this.initMap(); 
     }
 
     closeDialog() {

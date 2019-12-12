@@ -9,7 +9,6 @@
 }
 
 .place-image {
-    width: 100vw;
     min-height: 500px;
     background: url('../../../assets/images/globe-background.jpg') no-repeat;
     background-size: contain !important;
@@ -59,7 +58,6 @@
 }
 
 .place-description {
-    width: 80vw;
     max-width: 800px;
     margin: 20px auto;
     padding: 20px;
