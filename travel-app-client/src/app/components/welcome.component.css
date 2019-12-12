@@ -56,7 +56,7 @@
 }
 
 .menu-box {
-    width: 260px;
+    width: 261px;
     max-width: 25vw;
     border: 1px solid white;
     background: linear-gradient(to bottom, rgba(249,166,2, 1), rgb(249,166,2, 0.5));
@@ -81,7 +81,7 @@
 }
 
 .info-box {
-    width: 260px;
+    width: 261px;
     max-width: 25vw;
     border: 1px solid white;
     background: linear-gradient(to bottom, rgba(42, 157, 244, 1), rgb(42, 157, 244, 0)) !important;

@@ -8,11 +8,11 @@
         <div fxLayout="row" class="menu-area">
         <div class="menu-box" fxLayoutAlign="center center" >
                 <span>Add Journey</span></div>
-        <div class="menu-box" fxLayoutAlign="center center" >
+        <div class="menu-box" fxLayoutAlign="center center" (click)="addPlace()">
                 <span>Add Place</span></div>   
-        <div class="menu-box" fxLayoutAlign="center center" >
+        <div class="menu-box" fxLayoutAlign="center center" (click)="getJourneysList()">
                 <span>Journeys</span></div>
-        <div class="menu-box" fxLayoutAlign="center center" >
+        <div class="menu-box" fxLayoutAlign="center center" (click)="getPlacesList()">
                 <span>Places</span></div>         
         </div>
         <div fxLayout="row" class="info-area" *ngIf="resp">

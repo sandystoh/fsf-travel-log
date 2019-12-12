@@ -14,8 +14,8 @@ const travel = require('../db/travelutil');
 
 module.exports = function(app, conns) {
 
-    const getJourneysByUser = mydb.mkQuery(`select * from journeys where owner = ? limit ? offset ?`, conns.mysql)
-    const countJourneysByUser = mydb.mkQuery(`select count(*) as count from journeys where owner = ?`, conns.mysql)
+    const getJourneysByUser = mydb.mkQuery(`select * from journeys where owner = ? and active = 1 limit ? offset ?`, conns.mysql)
+    const countJourneysByUser = mydb.mkQuery(`select count(*) as count from journeys where owner = ? and active = 1`, conns.mysql)
 
     const getJourneysByUserCountry = mydb.mkQuery(`select * from journeys where owner = ? and id in (
         select distinct(journey_id) from places where owner = ? and country like ?) limit ? offset ?`, conns.mysql)

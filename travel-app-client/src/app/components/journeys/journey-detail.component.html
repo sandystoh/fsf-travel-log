@@ -3,13 +3,13 @@
         <div class="place-detail">
             <div class="detail-gold">Journey</div>
             <div class="detail-title">{{journey.title}}</div>
-            <div fxLayoutAlign="center center" fxLayoutGap="2vw">
+            <div class="info-icons" fxLayoutAlign="center center" fxLayoutGap="2vw">
             <span *ngIf="journey.type == 'BEEN'" class="detail-gold" title="BEEN"><mat-icon>cloud_done</mat-icon></span>
             <span *ngIf="journey.type == 'DREAM'" class="detail-gold" title="DREAM"><mat-icon>cloud_queue</mat-icon></span>
             <div><span class="licon icon-dat"></span>{{journey.date | date: "mediumDate"}}
                 <span *ngIf="journey.end_date"> - {{ journey.end_date | date: "mediumDate"}}</span></div>
         </div>
-        <div class="action-buttons" fxLayout="row column" fxLayoutAlign="space-evenly center">
+        <div class="action-buttons journey-buttons" fxLayout="row column" fxLayoutAlign="center center">
                 <div class="detail-white box-area" *ngIf="user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
                 (click)="openJourneyEditDialog()">
                 <mat-icon>add_box</mat-icon><span>Edit Journey</span></div>
@@ -32,7 +32,7 @@
             <div class="detail-white box-area" *ngIf="places.length" fxLayoutGap="1vw" fxLayoutAlign="center"
                 (click)="openJourneyMapDialog()">
                 <mat-icon>map</mat-icon><span>Full Map</span></div>
-            <div class="detail-white box-area" *ngIf="places.length > 1" fxLayoutGap="1vw" fxLayoutAlign="center"
+            <div class="detail-white box-area" *ngIf="places.length > 1 && user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
                 (click)="openReorderDialog()">
                 <mat-icon>compare_arrows</mat-icon><span>Sort Places</span></div>
         </div>
@@ -54,5 +54,11 @@
             </div>
         </div>
         </div>
+    </div>
+    <div *ngIf="places.length" class="place-title detail-gold">Places in this journey</div>
+    <div class="results-area" fxLayout="row column" fxLayoutAlign="space-evenly">
+    <div *ngFor="let p of places">
+        <app-place-card [p]="p"></app-place-card>
+    </div>
     </div>
 </div>

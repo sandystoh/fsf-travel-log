@@ -23,6 +23,7 @@ export class JourneyDetailComponent implements OnInit {
   places: Place[];
   user: User;
   random = (new Date()).getTime();
+  countries: any;
   
   constructor(private router: Router, private route: ActivatedRoute, private authSvc: AuthService,
               private travelSvc: TravelService, private sanitizer: DomSanitizer,
@@ -39,10 +40,21 @@ export class JourneyDetailComponent implements OnInit {
 
   getJourney(id) {
     this.random = (new Date()).getTime();
-    this.travelSvc.getJourneyById(id).then(r => {
+    this.travelSvc.getCountryList().then(c => {
+      this.countries = c;
+      return this.travelSvc.getJourneyById(id) 
+    }).then(r => {
       console.log(r);
-      this.places = r.places;
       this.journey = r.journey;
+      this.places = r.places.map(v => {
+        let url_string = `../../assets/images/placeholder.jpeg`;
+        if(v.image_url !== null && v.image_url != '') url_string = `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/places/thumbnails/${v.image_url}`;
+        return {
+        ...v,
+        journey_title: this.journey.title,
+        url: this.sanitizer.bypassSecurityTrustStyle(`url(${url_string}) no-repeat`),
+        country_name: this.countries.find(o => o.code === v.country).name } 
+      });
     }).then(() => {
       // let url_string = `../../assets/images/placeholder.jpeg`;
       this.journey.url = '';
