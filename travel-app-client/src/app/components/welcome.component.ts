@@ -4,6 +4,8 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TravelService } from '../services/travel.service';
 import { MapResponse } from '../models';
+import { MatDialog } from '@angular/material';
+import { JourneyFormComponent } from './journeys/journey-form.component';
 declare var jQuery: any;
 declare var jvm: any;
 
@@ -19,7 +21,7 @@ export class WelcomeComponent implements OnInit {
   visitData = {};
   markers = [];
 
-  constructor(private router: Router, private route: ActivatedRoute,
+  constructor(private router: Router, private route: ActivatedRoute, public dialog: MatDialog, 
               private travelSvc: TravelService, private authSvc: AuthService) { }
 
   ngOnInit() {
@@ -42,6 +44,19 @@ export class WelcomeComponent implements OnInit {
 
   getJourneysList() {
     this.router.navigate(['/journeys/'+this.user.username]);
+  }
+
+  openJourneyDialog(): void {
+    const dialogRef = this.dialog.open(JourneyFormComponent, {
+      width: '85vw',
+      height: '80vh',
+      disableClose: false,
+      data: {fromPlacesForm: false}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) this.router.navigate(['/journey', result.insertId]);
+    });
   }
 
   getMapData() {

@@ -6,7 +6,7 @@
 <div class="header">Globe Trotters<br></div>
     <div class="map-bg">
         <div fxLayout="row" class="menu-area">
-        <div class="menu-box" fxLayoutAlign="center center" >
+        <div class="menu-box" fxLayoutAlign="center center" (click)="openJourneyDialog()">
                 <span>Add Journey</span></div>
         <div class="menu-box" fxLayoutAlign="center center" (click)="addPlace()">
                 <span>Add Place</span></div>   
@@ -17,7 +17,7 @@
         </div>
         <div fxLayout="row" class="info-area" *ngIf="resp">
                 <div class="info-box" fxLayoutAlign="center center" >
-                        <span>Welcome<br>Sandy!</span></div>
+                        <span>Welcome<br><span *ngIf="user">{{user.displayName}}!</span></span></div>
                 <div class="info-box" fxLayoutAlign="center center" >
                     <span class="large-num">{{resp.countryCount}}</span>
                     <span>countries visited</span></div>
