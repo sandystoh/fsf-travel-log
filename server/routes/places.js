@@ -49,17 +49,18 @@ module.exports = function(app, conns) {
     });
 
     const getPlacesMapByUser = mydb.mkQuery(`Select id, title, lat, lng, image_url, date, rating from places p
-    where owner = ?`, conns.mysql)
-    const getCountryVisits = mydb.mkQuery(`Select country, count(*) as count from places p where owner = ? group by country`, conns.mysql)
-    
+    where owner = ? and active = 1`, conns.mysql)
+    const getCountryVisits = mydb.mkQuery(`Select country, count(*) as count from places p where owner = ? and active = 1 group by country`, conns.mysql)
+    const getJourneyCount = mydb.mkQuery(`Select count(*) as count from journeys where owner = ? and active = 1`, conns.mysql)
+
     // Get all Places for particular user for display on map
     app.get('/api/places/map/:user', (req, resp) => {
         const p0 = getPlacesMapByUser([req.params.user]);
-        const p1 = getCountryVisits([req.params.user])
-        Promise.all([p0, p1]).then(r => {
-            console.log(r[1]);
+        const p1 = getCountryVisits([req.params.user]);
+        const p2 = getJourneyCount([req.params.user]);
+        Promise.all([p0, p1, p2]).then(r => {
+            let j = r[2].result;
             const visitData = {}
-            
             r[1].result.map(v => {
                 visitData[v.country] = v.count
             });
@@ -73,7 +74,7 @@ module.exports = function(app, conns) {
                     rating: v.rating
                 }
             });
-            resp.status(200).json({visitData, places});
+            resp.status(200).json({visitData, places, placesCount: r[0].result.length, journeyCount: j[0].count ,countryCount: r[1].result.length});
             })
             .catch(error => {
                 resp.status(500).json({error: "Database Error "+ error.error});

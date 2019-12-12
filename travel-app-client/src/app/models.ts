@@ -14,7 +14,7 @@ export interface User {
 
 export interface MapResponse {
     visitData: Object;
-    places: Object[];
+    places: Place[];
 }
 
 export interface Country {

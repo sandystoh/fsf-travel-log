@@ -44,9 +44,10 @@ export class PlacesFormComponent implements OnInit {
     this.travelSvc.getCountryList().then(c => {
       this.countries = c;
     });
+
     this.journey = parseInt(this.route.snapshot.queryParams['journey']);
     this.getJourneyList('BEEN').then(() => {
-      this.selectJourney(this.journey); 
+      if(this.journey) this.selectJourney(this.journey); 
     });
     this.type = this.route.snapshot.queryParams['type'];
     console.log(this.journey);

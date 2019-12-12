@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { User } from '../models';
-import { Router } from '@angular/router';
+import { Component, OnInit, ElementRef } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { TravelService } from '../services/travel.service';
+import { MapResponse } from '../models';
+declare var jQuery: any;
+declare var jvm: any;
 
 @Component({
   selector: 'app-welcome',
@@ -11,12 +15,17 @@ import { Router } from '@angular/router';
 export class WelcomeComponent implements OnInit {
 
   user: User;
+  resp: any;
+  visitData = {};
+  markers = [];
 
-  constructor(private authSvc: AuthService, private router: Router) {  }
+  constructor(private router: Router, private route: ActivatedRoute,
+              private travelSvc: TravelService, private authSvc: AuthService) { }
 
   ngOnInit() {
     this.user = this.authSvc.getUser();
-    console.log(">> in Welcome Component", this.user)
+    console.log(">> in Welcome Component", this.user);
+    this.getMapData();
   }
 
   getMap() {
@@ -35,4 +44,51 @@ export class WelcomeComponent implements OnInit {
     this.router.navigate(['/journeys/'+this.user.username]);
   }
 
+  getMapData() {
+    this.travelSvc.getMap(this.user.username).then( (r: MapResponse) => {
+      console.log(r);
+      this.resp = r;
+      this.visitData = r.visitData;
+      this.markers = r.places;
+      jQuery('#world-map').vectorMap({
+        map: 'world_mill',
+        scaleColors: ['#C8EEFF', '#0071A4'],
+        normalizeFunction: 'polynomial',
+        hoverOpacity: 0.7,
+        hoverColor: false,
+        markerStyle: {
+          initial: {
+            fill: '#F4DC00',
+            stroke: '#383f47'
+          }
+        },
+        backgroundColor: '#2a9df4',
+        series: {
+          regions: [{
+            values: this.visitData,
+            scale: ['#EBEBEB', '#FFBC42'],
+            normalizeFunction: 'polynomial'
+          }]
+        },
+        onRegionTipShow: function(e, el, code){
+          if (r.visitData && r.visitData[code]) {
+            el.html(el.html()+'<br>(Visited - '+ r.visitData[code]+')').css("fontSize","1rem"); ;
+          }
+        },
+        markers: this.markers,
+        onMarkerTipShow: function(event, label, code) {
+          if(r.places[code].image_url)
+          label.html("<div style=\"font-size:1.3rem;\">"+ label.html()+
+          "<br><img width=\"150px\" src=\"https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/places/thumbnails/"+r.places[code].image_url+"\"></div>").css("fontFamily","Smythe");              
+          else label.html("<div style=\"font-size:1.3rem;\">"+ label.html()+"</div>").css("fontFamily","Smythe"); 
+        },
+        onMarkerClick: (event, index) => {
+            // alter the weburl
+            console.log(r.places[index]);
+            setTimeout(()=> { Array.from(document.getElementsByClassName("jvectormap-tip")).forEach((el) => { el.style.display = 'none' }); },100);
+            this.router.navigate(['/place', r.places[index].id]);
+        }
+      }); 
+    })
+  }
 }
