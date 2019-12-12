@@ -191,6 +191,7 @@ module.exports = function(app, conns) {
     // http://localhost:3000/api/journey/1?remove_child=true -- need to state whether to remove children
     app.delete('/api/journey/:id', // **** add token to write private
     (req, resp) => {
+        console.log('params', req.query)
         const removeJourney = mydb.mkTransaction(travel.rmJourneys(), conns.mysql);
         removeJourney({id:req.params.id, remove_child: req.query.remove_child, conns}).then(r => {
             resp.status(200).json({message: "Delete Successful"});

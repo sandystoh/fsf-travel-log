@@ -30,6 +30,7 @@ import { PlaceReorderComponent } from './components/helpers/place-reorder.compon
 import { JourneyMapComponent } from './components/helpers/journey-map.component';
 import { PlacesEditComponent } from './components/places/places-edit.component';
 import { JourneyEditComponent } from './components/journeys/journey-edit.component';
+import { ConfirmDialogComponent } from './components/helpers/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { JourneyEditComponent } from './components/journeys/journey-edit.compone
     PlaceReorderComponent,
     JourneyMapComponent,
     PlacesEditComponent,
-    JourneyEditComponent
+    JourneyEditComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -63,7 +65,7 @@ import { JourneyEditComponent } from './components/journeys/journey-edit.compone
     PrimeNGModule
   ],
   entryComponents: [
-    JourneyFormComponent, JourneyMapComponent, JourneyEditComponent
+    JourneyFormComponent, JourneyMapComponent, JourneyEditComponent, ConfirmDialogComponent
   ],
   providers: [AuthService, TravelService,
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}}

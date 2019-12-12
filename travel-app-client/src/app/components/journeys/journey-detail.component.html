@@ -12,8 +12,10 @@
         <div class="action-buttons" fxLayout="row column" fxLayoutAlign="space-evenly center">
                 <div class="detail-white box-area" *ngIf="user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
                 (click)="openJourneyEditDialog()">
-                <mat-icon>add_box</mat-icon><span>Edit Journey</span>
-            </div>
+                <mat-icon>add_box</mat-icon><span>Edit Journey</span></div>
+                <div class="detail-white box-area" *ngIf="user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
+                (click)="deleteJourney()">
+                <mat-icon>delete_forever</mat-icon><span>Delete Journey</span></div>
         </div>
         <div [style.background]="journey.url" *ngIf="journey.url" class="place-image"></div>
         <div class="place-description" *ngIf="journey.description !== ''">

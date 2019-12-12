@@ -210,7 +210,7 @@ const deletePlaceThumbnailFromS3 = mydb.s3Delete('sandy-fsf-2019', 'places/thumb
     }
 
 const selectPlaceForDelete = mydb.trQuery(`Select * from places where id = ? for update`);
-const deactivatePlace = mydb.trQuery(`Update places set journey_order = 0, active = 0 where id = ?`);
+const deactivatePlace = mydb.trQuery(`Update places set journey_id = 0, journey_order = 0, active = 0 where id = ?`);
 const updateOrder = mydb.trQuery('Update places set journey_order = journey_order-1 where journey_id = ? and journey_order > ? and active = 1');
 const updateJourneyCount = mydb.trQuery('Update journeys set num_places = num_places-1, refresh_map = 1 where id = ?');
 
@@ -240,8 +240,9 @@ const updateJourneyCount = mydb.trQuery('Update journeys set num_places = num_pl
         }
     }
 
-const deactivateJourney = mydb.trQuery(`Update journeys set active = 0 where id = ?`);
-const deactivatePlacesByJourneyId = mydb.trQuery(`Update places set journey_order = 0, active = 0 where journey_id = ? and active = 1`);
+const deactivateJourney = mydb.trQuery(`Update journeys set num_places = 0, active = 0 where id = ?`);
+const deactivatePlacesByJourneyId = mydb.trQuery(`Update places set journey_id = 0, journey_order = 0, active = 0 where journey_id = ? and active = 1`);
+const untagPlacesFromJourney = mydb.trQuery(`Update places set journey_id = 0, journey_order = 0 where journey_id = ? and active = 1`);
 
 // Transaction to Deactivate Journey
 function rmJourneys() {
@@ -251,7 +252,9 @@ function rmJourneys() {
         const connection = status.connection;
         return deactivateJourney({params: [id], connection})
         .then(r => {
-            if(!remove_child) return Promise.resolve();
+            if(!remove_child) {
+                return untagPlacesFromJourney({params: [id], connection});
+            }
             return deactivatePlacesByJourneyId({params: [id], connection});
         })
     }

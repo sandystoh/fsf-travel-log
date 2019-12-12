@@ -1,0 +1,13 @@
+<div class="confirm-dialog">
+<h1 mat-dialog-title>Confirm Delete</h1>
+<div class="confirm-dialog-content" fxLayout="column" fxLayoutGap="2vw">
+    <div>{{data.recordType}}: {{data.title}} will be deleted permanently.</div>
+    <mat-checkbox class="confirm-dialog confirm-dialog-content" *ngIf="data.recordType == 'Journey'" [(ngModel)]="removeChild">
+      Also Delete Places in Journey</mat-checkbox>
+      (If unchecked, Places will be active but not part of a Journey)
+</div>
+<div mat-dialog-actions fxLayoutAlign="space-evenly">
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button (click)="confirm()" cdkFocusInitial>Confirm</button>
+</div>
+</div>

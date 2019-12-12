@@ -5,9 +5,10 @@ import { Place, Journey, User } from '../../models';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
 import { JourneyMapComponent } from '../helpers/journey-map.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { JourneyFormComponent } from '../journeys/journey-form.component';
 import { JourneyEditComponent } from './journey-edit.component';
+import { ConfirmDialogComponent } from '../helpers/confirm-dialog.component';
 
 @Component({
   selector: 'app-journey-detail',
@@ -23,12 +24,13 @@ export class JourneyDetailComponent implements OnInit {
   random = (new Date()).getTime();
   
   constructor(private router: Router, private route: ActivatedRoute, private authSvc: AuthService,
-              private travelSvc: TravelService, private sanitizer: DomSanitizer, public dialog: MatDialog) { }
+              private travelSvc: TravelService, private sanitizer: DomSanitizer,
+              public dialog: MatDialog, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.user = this.authSvc.getUser();
     this.route.params.subscribe(params => {
-      this.id = +params['id'];
+      this.id = +params.id;
       console.log(this.id);
       this.getJourney(this.id);
    });
@@ -37,7 +39,7 @@ export class JourneyDetailComponent implements OnInit {
   getJourney(id) {
     this.travelSvc.getJourneyById(id).then(r => {
       console.log(r);
-      this.places = r.places
+      this.places = r.places;
       this.journey = r.journey;
     }).then(() => {
       // let url_string = `../../assets/images/placeholder.jpeg`;
@@ -56,7 +58,7 @@ export class JourneyDetailComponent implements OnInit {
       disableClose: false,
       data: {owner: this.journey.owner, journey: this.journey, places: this.places, fromPlacesForm: false}
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       this.getJourney(this.id);
     });
@@ -68,6 +70,36 @@ export class JourneyDetailComponent implements OnInit {
       height: '95vh',
       disableClose: false,
       data: {places: this.places}
+    });
+  }
+
+  deleteJourney() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '500px',
+      maxHeight: '80vw',
+      maxWidth: '90vw',
+      data: {id: this.journey.id, title: this.journey.title, recordType: 'Journey'}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed', result);
+      if (result && result.confirm) {
+        return this.travelSvc.deleteJourney(this.journey.id, result.remove_child)
+        .then(() => {
+          this.openSnackBar('Delete Successful', 'OK');
+          this.router.navigate(['/journeys', this.journey.owner]);
+        })
+        .catch((e) => {
+          console.log(e);
+          this.openSnackBar('Something went Wrong!', 'Try Again');
+        });
+      }
+    });
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
     });
   }
 

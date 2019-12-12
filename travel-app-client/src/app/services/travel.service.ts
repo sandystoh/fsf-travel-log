@@ -88,10 +88,14 @@ export class TravelService {
     return this.http.post<any>('/api/places/update', formData).toPromise();
   }
 
+  deletePlace(id) {
+    return this.http.delete('/api/place/' + id).toPromise();
+  }
+
   getPlaceTitles(username): Promise<String[]> {
-    return this.http.get<String[]>('/api/places/titles/'+username).toPromise();
-  } 
-  
+    return this.http.get<string[]>('/api/places/titles/' + username).toPromise();
+  }
+
   getCountryList(): Promise<Country[]> {
     return this.http.get<Country[]>('/api/countries').toPromise();
   }
@@ -138,5 +142,10 @@ export class TravelService {
       );
 
     return this.http.post<any>('/api/journeys/update', formData).toPromise();
+  }
+
+  deleteJourney(id, removeChild) {
+    const params = new HttpParams().set('remove_child', removeChild);
+    return this.http.delete('/api/journey/' + id, {params}).toPromise();
   }
 }

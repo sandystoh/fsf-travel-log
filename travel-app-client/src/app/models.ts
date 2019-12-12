@@ -34,8 +34,8 @@ export interface Place {
     type: string; // BEEN, DREAM
     title: string; // limit 128
     location_name: string; // limit 256
-    owner: string // limit 128
-    date?: string; //date
+    owner: string; // limit 128
+    date?: string; // date
     lat?: number;
     lng?: number;
     country: string; // limit 2
@@ -72,11 +72,11 @@ export interface Journey {
     type: string;
     description?: string;
     date?: string;
-    end_date?: string; //date
+    end_date?: string; // date
     num_places?: number;
     image_url?: string;
     last_updated?: string;
-    active?: Boolean;
+    active?: boolean;
     month?: string;
     year?: string;
 
