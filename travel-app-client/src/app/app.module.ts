@@ -31,6 +31,8 @@ import { JourneyMapComponent } from './components/helpers/journey-map.component'
 import { PlacesEditComponent } from './components/places/places-edit.component';
 import { JourneyEditComponent } from './components/journeys/journey-edit.component';
 import { ConfirmDialogComponent } from './components/helpers/confirm-dialog.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -62,7 +64,8 @@ import { ConfirmDialogComponent } from './components/helpers/confirm-dialog.comp
     HttpClientModule,
     MaterialModule,
     FlexLayoutModule,
-    PrimeNGModule
+    PrimeNGModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   entryComponents: [
     JourneyFormComponent, JourneyMapComponent, JourneyEditComponent, 
