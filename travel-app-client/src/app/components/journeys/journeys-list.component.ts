@@ -1,10 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { Journey, Country } from '../../models';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Journey, Country, User } from '../../models';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TravelService } from '../../services/travel.service';
 import * as moment from 'moment';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
+import { MatAutocompleteTrigger } from '@angular/material';
 
 @Component({
   selector: 'app-journeys-list',
@@ -13,9 +17,10 @@ import * as moment from 'moment';
 })
 export class JourneysListComponent implements OnInit {
   username: String;
+  user: User;
   journeys: Journey[] = [];
   countries: Country[];
-  // q = '';
+  q = '';
   increment = 12;
   offset = 0;
   top = 0;
@@ -25,12 +30,18 @@ export class JourneysListComponent implements OnInit {
   isError = false;
   pageStatus="all";
 
+  search = new FormControl();
+  filteredOptions: Observable<string[]>;
+  options = [];
+  @ViewChild(MatAutocompleteTrigger, {static: false}) autocomplete: MatAutocompleteTrigger;
+
   constructor(private router: Router, private route: ActivatedRoute,
               private authSvc: AuthService, private travelSvc: TravelService,
               private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
     this.username = this.route.snapshot.params['user'];
+    this.user = this.authSvc.getUser();
     this.init();
   }
 
@@ -45,11 +56,7 @@ export class JourneysListComponent implements OnInit {
     this.travelSvc.getCountryList().then(c => {
       this.countries = c;
       this.getJourneys();
-  })
-  .catch(e => { console.log(e); this.isLoading = false; this.isError = true; }); 
-    /* For Search/Autocomplete
-
-      this.travelSvc.getPlaceTitles(this.username).then(p => {
+      this.travelSvc.getJourneyTitles(this.username).then(p => {
         console.log(p);
         this.options = p;
         this.filteredOptions = this.search.valueChanges
@@ -57,9 +64,40 @@ export class JourneysListComponent implements OnInit {
           startWith(''),
           map(value => this._filter(value))
         );
-        
+      });
       }).catch(e => { console.log(e); this.isLoading = false; this.isError = true; });
-*/
+  }
+
+  clickSearchButton() {
+    console.log(this.search.value);
+    this.offset = 0;
+    this.loadReset();
+    this.q = this.search.value;
+    this.pageStatus = "search";
+    if(this.q === '') this.getJourneys();
+    else this.searchJourneys();
+  }
+
+  refreshAll() {
+    this.q = '';
+    this.pageStatus = "all";
+    this.offset = 0;
+    if (this.isError) this.init();
+    else {
+      this.loadReset();
+      this.getJourneys();
+    }
+  }
+  
+  clearField() {
+    this.search.setValue('');
+    this.autocomplete.openPanel();
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
 
   getJourneys() {
@@ -75,6 +113,20 @@ export class JourneysListComponent implements OnInit {
         }
       });
       
+      this.numResults = r.count;
+      this.getTop();
+      this.isLoading = false;
+    }).catch(e => { console.log(e); this.isLoading = false; this.isError = true; });
+  }
+
+  searchJourneys() {
+    this.travelSvc.searchJourneys(this.username, this.q, this.increment, this.offset).then(r => {
+      console.log(r);
+      this.journeys = r.journeys.map(v => { return {
+        ...v,
+        url: this.sanitizer.bypassSecurityTrustStyle(`url(https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/journeys/thumbnails/${v.image_url}) no-repeat`)
+      }
+    });
       this.numResults = r.count;
       this.getTop();
       this.isLoading = false;

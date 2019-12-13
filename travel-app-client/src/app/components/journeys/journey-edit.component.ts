@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { Journey } from '../../models';
 import { TravelService } from '../../services/travel.service';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-journey-edit',
@@ -18,13 +19,15 @@ export class JourneyEditComponent implements OnInit, AfterContentChecked {
   owner: string;
   @ViewChild('imageFile', {static: false})
   imageFile: ElementRef;
-  
+  isSubmitted = false;
+
   imagePath;
   imgURL: any;
   message: string;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef:MatDialogRef<JourneyEditComponent>,
-              private travelSvc: TravelService, private cd: ChangeDetectorRef, private router: Router) { }
+              private travelSvc: TravelService, private cd: ChangeDetectorRef, private router: Router,
+              private snackbar: MatSnackBar) { }
 
   ngOnInit() { 
     this.journeyForm = this.createFormGroup();
@@ -82,6 +85,7 @@ export class JourneyEditComponent implements OnInit, AfterContentChecked {
 }
 
 onSubmit(form: NgForm) {
+  this.isSubmitted = true;
   const v = this.journeyForm.getRawValue();
   console.log(this.imageFile.nativeElement.files[0]); // undefined if no file
   console.log(moment(v.date).toISOString());
@@ -101,9 +105,20 @@ onSubmit(form: NgForm) {
   console.log('save',save);
   this.travelSvc.editJourney(save, this.imageFile).then((r) => {
     console.log(r);
+    this.openSnackBar('Journey Updated Successfully', 'OK');
     this.dialogRef.close(true);
-  }).catch(err => console.log(err)); 
+    this.isSubmitted = false;
+  }).catch(err => {
+    console.log(err);
+    this.isSubmitted = false;
+    this.openSnackBar('Error. Please Try Again!', 'OK');
+  });
 }
 
+openSnackBar(message: string, action: string) {
+  this.snackbar.open(message, action, {
+    duration: 2000,
+  });
+}
 }
 

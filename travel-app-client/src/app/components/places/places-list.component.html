@@ -1,6 +1,8 @@
 <div class="place-bg">
 <div class="headertext" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1vw">
-    <div>Places I've Been </div>
+  <div fxLayout="column">
+    <div>Places </div>
+    <div class="small-title">Experienced by: {{username}}</div></div>  
     <button mat-mini-fab color="primary" type="button" (click)="refreshAll()" ><mat-icon>autorenew</mat-icon></button>
 </div>
 

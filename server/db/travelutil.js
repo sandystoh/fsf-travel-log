@@ -20,6 +20,7 @@ const uploadJourneyImageToS3 = mydb.s3Upload('sandy-fsf-2019', 'journeys');
             const connection = status.connection;
             b.date = (b.date !== 'null') ? b.date : null;
             const params = [b.title, b.owner, b.type, b.date, b.end_date, b.description, filepath];
+            console.log('PARAMS', params);
             return insertJourney({params, connection})
             .then(s => {
                 s.insertId = s.result.insertId;

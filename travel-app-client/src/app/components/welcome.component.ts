@@ -51,7 +51,7 @@ export class WelcomeComponent implements OnInit {
       width: '85vw',
       height: '80vh',
       disableClose: false,
-      data: {fromPlacesForm: false}
+      data: {owner: this.user.username, fromPlacesForm: false}
     });
 
     dialogRef.afterClosed().subscribe(result => {

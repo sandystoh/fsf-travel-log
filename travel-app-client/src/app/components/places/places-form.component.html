@@ -36,6 +36,18 @@
                 <mat-error *ngIf="placeForm.touched && !!f.title.hasError('maxlength')">
                         Place Name should not exceed 120 characters</mat-error>
             </mat-form-field>
+            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="3vw">
+                <mat-form-field class="full-width">
+                    <mat-label>Add to Journey (Optional)</mat-label>
+                    <mat-select formControlName="journey" (valueChange)="selectJourney($event)" name="journey" placeholder="Journey">
+                      <mat-option value="0">Untag from Journey</mat-option>
+                      <mat-option *ngFor="let j of journeys" [value]="j.id"> {{(j.date) ? j.title + " (" + j.month + " " + j.year +")" : j.title}} </mat-option>
+                    </mat-select>
+                    <mat-hint style="color:#000">
+                        Only Journeys matching your BEEN/ DREAM type will be shown</mat-hint>  
+                </mat-form-field>
+                <button mat-mini-fab type="button" color="accent" (click)="openJourneyDialog()"><mat-icon>add_circle_outline</mat-icon></button>
+                </div>
             <mat-form-field class="full-width">
                     <input matInput readonly [matDatepicker]="date" (focus)="date.open()" placeholder="{{ f.type.value == 'BEEN' ? 'Date Visited' : 'Planned Date'}}" formControlName="date" >
                     <mat-datepicker-toggle matSuffix [for]="date"></mat-datepicker-toggle>
@@ -54,18 +66,6 @@
         
         <br>
         Fill in Details:
-        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="3vw">
-            <mat-form-field class="full-width">
-                <mat-label>Add to Journey (Optional)</mat-label>
-                <mat-select formControlName="journey" (valueChange)="selectJourney($event)" name="journey" placeholder="Journey">
-                  <mat-option value="0">Untag from Journey</mat-option>
-                  <mat-option *ngFor="let j of journeys" [value]="j.id"> {{(j.date) ? j.title + " (" + j.month + " " + j.year +")" : j.title}} </mat-option>
-                </mat-select>
-                <mat-hint style="color:#000">
-                    Only Journeys matching your BEEN/ DREAM type will be shown</mat-hint>  
-            </mat-form-field>
-            <button mat-mini-fab type="button" color="accent" (click)="openJourneyDialog()"><mat-icon>add_circle_outline</mat-icon></button>
-            </div>
         
         <div fxLayout="row" fxLayoutAlign="flex-start center" fxLayoutGap="2vw">
             <span class="muli" style="font-size:1rem">Rating: </span>

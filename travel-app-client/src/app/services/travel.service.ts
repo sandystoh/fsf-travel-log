@@ -14,12 +14,8 @@ export class TravelService {
   }
 
   getMap(username): Promise<MapResponse> {
-    const token = this.authSvc.getUser().token;
-    console.log(">>> token", token)
-    const headers = new HttpHeaders()
-      .set('Authorization', `Bearer ${token}`)
     return (
-      this.http.get<MapResponse>('/api/places/map/'+ username, { headers })
+      this.http.get<MapResponse>('/api/places/map/'+ username)
         .toPromise()
         .catch(error => {
           return (Promise.reject(error))
@@ -28,15 +24,11 @@ export class TravelService {
   }
 
   getPlaces(username, limit, offset): Promise<PlacesResponse> {
-    const token = this.authSvc.getUser().token;
-    console.log(">>> token", token)
-    const headers = new HttpHeaders()
-      .set('Authorization', `Bearer ${token}`);
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset);
     return (
-      this.http.get<PlacesResponse>('/api/places/'+ username, { headers, params })
+      this.http.get<PlacesResponse>('/api/places/'+ username, { params })
         .toPromise()
         .catch(error => {
           return (Promise.reject(error))
@@ -45,16 +37,12 @@ export class TravelService {
   }
 
   searchPlaces(username, q, limit, offset) {
-    const token = this.authSvc.getUser().token;
-    console.log(">>> token", token)
-    const headers = new HttpHeaders()
-      .set('Authorization', `Bearer ${token}`);
     const params = new HttpParams()
       .set('q', q)
       .set('limit', limit)
       .set('offset', offset);
     return (
-      this.http.get<PlacesResponse>('/api/places/search/'+ username, { headers, params })
+      this.http.get<PlacesResponse>('/api/places/search/'+ username, { params })
         .toPromise()
         .catch(error => {
           return (Promise.reject(error))
@@ -96,6 +84,10 @@ export class TravelService {
     return this.http.get<string[]>('/api/places/titles/' + username).toPromise();
   }
 
+  getJourneyTitles(username): Promise<String[]> {
+    return this.http.get<string[]>('/api/journeys/titles/' + username).toPromise();
+  }
+
   getCountryList(): Promise<Country[]> {
     return this.http.get<Country[]>('/api/countries').toPromise();
   }
@@ -118,11 +110,30 @@ export class TravelService {
     );
   }
 
+  searchJourneys(username, q, limit, offset) {
+    const params = new HttpParams()
+      .set('q', q)
+      .set('limit', limit)
+      .set('offset', offset);
+    return (
+      this.http.get<JourneysResponse>('/api/journeys/search/'+ username, { params })
+        .toPromise()
+        .catch(error => {
+          return (Promise.reject(error))
+        })
+    );
+  }
+
   getJourneyById(id) {
     return this.http.get<JourneyResponse>('/api/journey/' + id).toPromise();
   }
 
   createJourney(save: Journey, fileRef: ElementRef) {
+    const token = this.authSvc.getUser().token;
+    console.log(">>> token", token)
+    const headers = new HttpHeaders()
+      .set('Authorization', `Bearer ${token}`);
+    
     const formData = new FormData();
     formData.set('journeyImage', fileRef.nativeElement.files[0]);
 

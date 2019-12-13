@@ -34,7 +34,7 @@
         <div class="detail-gold" *ngIf="place.type == 'SEEN'">Dreams</div>
         {{place.description}}
     </div>
-    <div class="place-description" *ngIf="place.private_notes">
+    <div class="place-description" *ngIf="user.username == place.owner && place.private_notes">
             <div class="description-title detail-gold" >Private Notes</div>
             {{place.private_notes}}
     </div>

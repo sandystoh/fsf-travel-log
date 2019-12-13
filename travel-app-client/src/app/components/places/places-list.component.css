@@ -9,6 +9,11 @@
     padding-bottom: 30px;
 }
 
+.small-title {
+  color: #BDA26B;
+  font-size: 1.5rem;
+}
+
 .place-area{
     background: linear-gradient(to bottom, rgba(50,50,50,0.5), rgba(50,50,50,0.3));
 }

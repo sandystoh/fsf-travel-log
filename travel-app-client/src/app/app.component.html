@@ -3,14 +3,35 @@
             <div class="full_width" fxLayout="row" fxLayoutAlign="space-between">
               <a class="home"  [routerLink]="['/welcome']">
                   <div fxLayout="row" fxLayoutAlign="flex-start center" fxLayoutGap="1vw">
-                    <img src="assets/images/travel-icon.png" height="40px"> 
+                    <img src="assets/images/yak-icon.png" height="40px"> 
                     <div>Travel Yak</div>
                   </div></a>
                   <div fxLayout="row" *ngIf="isAuth" fxLayoutAlign="center">
-                    <div><mat-icon class="avatar-icon">account_circle</mat-icon></div>
-                    <div class="smythe avatar"> {{ displayName }}</div> 
+                    <div><mat-icon class="avatar-icon web">account_circle</mat-icon></div>
+                    <div class="smythe avatar web"> {{ displayName }}</div> 
                     <div class="logout-btn" (click)="logout()"><mat-icon>exit_to_app</mat-icon></div>
-                  </div>
+                    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                      <mat-icon>menu</mat-icon>
+                    </button>                
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="openJourneyDialog()">
+                        <mat-icon>add_box</mat-icon>
+                        <span>Add Journey</span>
+                      </button>
+                      <button mat-menu-item  (click)="addPlace()">
+                        <mat-icon>add_circle</mat-icon>
+                        <span>Add Place</span>
+                      </button>
+                      <button mat-menu-item  (click)="getJourneysList()">
+                        <mat-icon>flight</mat-icon>
+                        <span>Journeys</span>
+                      </button>
+                      <button mat-menu-item  (click)="getPlacesList()">
+                        <mat-icon>house</mat-icon>
+                        <span>Places</span>
+                      </button>
+                    </mat-menu>
+                    </div>
            </div>
           </mat-toolbar>
           <router-outlet (activate)="isAuthenticated()"></router-outlet>

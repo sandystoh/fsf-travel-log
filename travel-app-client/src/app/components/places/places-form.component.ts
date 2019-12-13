@@ -5,7 +5,7 @@ import { Place, Country, Journey } from '../../models';
 import { TravelService } from '../../services/travel.service';
 import * as moment from 'moment';
 import { AutocompleteComponent } from '../helpers/autocomplete.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { JourneyFormComponent } from '../journeys/journey-form.component';
 
 @Component({
@@ -35,7 +35,8 @@ export class PlacesFormComponent implements OnInit {
   message: string;
   
   constructor(private router:Router, private route:ActivatedRoute,
-              private travelSvc: TravelService, public dialog: MatDialog) { }
+              private travelSvc: TravelService, public dialog: MatDialog, 
+              private snackbar: MatSnackBar) { }
 
   ngOnInit() {
     this.placeForm = this.createFormGroup();
@@ -182,8 +183,17 @@ onSubmit(form: NgForm) {
   this.travelSvc.createPlace(save, this.imageFile).then((r) => {
     console.log(r);
     this.isSubmitted = false;
+    this.openSnackBar('Place Added Successfully', 'OK');
     this.router.navigate(['/place/' + r.insertId]); 
-  }).catch(err => console.log(err)); 
+  }).catch(err => { 
+    this.isSubmitted = false;
+    this.openSnackBar('Error. Please Try Again!', 'OK');
+  });
 }
 
+openSnackBar(message: string, action: string) {
+  this.snackbar.open(message, action, {
+    duration: 2000,
+  });
+}
 }

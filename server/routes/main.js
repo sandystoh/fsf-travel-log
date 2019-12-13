@@ -27,6 +27,34 @@ module.exports = function(app, conns) {
         });
     });
 
+    const searchJourneysByUser = mydb.mkQuery(`Select * from journeys j where 
+    owner = ? and title like ? order by title limit ? offset ?`, conns.mysql)
+    const countJourneySearch = mydb.mkQuery(`Select count(*) as count from journeys j where 
+    owner = ? and title like ? order by title`, conns.mysql)
+    
+    // Search within a User's Journeys/Places for query string within titles (with country filter)
+    app.get('/api/journeys/search/:user', (req, resp) => {
+        const limit = parseInt(req.query.limit) || 12;
+        const offset = parseInt(req.query.offset) || 0;
+        // matches exact string if country is provided, otherwise matches all countries
+        const country = req.query.country || '%'; 
+        let q = '';
+        if (req.query.q) q = `%${req.query.q}%`;
+        else resp.status(404).json({error: "Invalid Request"});
+        
+        p0 = countJourneySearch([req.params.user, q])
+        p1 = searchJourneysByUser([req.params.user, q, limit, offset]);
+        
+        Promise.all([p0, p1]).then(r => {
+            const count = r[0].result[0].count;
+            resp.status(200).json({journeys: r[1].result, count}); 
+            // returns empty array + count 0 if none, handled by client
+         })
+         .catch(error => {
+             resp.status(500).json({error: "Database Error "+ error.error});
+         });
+    }); 
+
     const searchByUser = mydb.mkQuery(`Select p.*, j.title as journey_title from places p
     left join journeys j on p.journey_id = j.id where 
     p.owner = ? and (p.title like ? or j.title like ?) and p.country like ? order by title

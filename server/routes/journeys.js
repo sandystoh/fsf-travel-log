@@ -14,11 +14,11 @@ const travel = require('../db/travelutil');
 
 module.exports = function(app, conns) {
 
-    const getJourneysByUser = mydb.mkQuery(`select * from journeys where owner = ? and active = 1 limit ? offset ?`, conns.mysql)
+    const getJourneysByUser = mydb.mkQuery(`select * from journeys where owner = ? and active = 1  order by title limit ? offset ?`, conns.mysql)
     const countJourneysByUser = mydb.mkQuery(`select count(*) as count from journeys where owner = ? and active = 1`, conns.mysql)
 
     const getJourneysByUserCountry = mydb.mkQuery(`select * from journeys where owner = ? and id in (
-        select distinct(journey_id) from places where owner = ? and country like ?) limit ? offset ?`, conns.mysql)
+        select distinct(journey_id) from places where owner = ? and country like ?) order by title limit ? offset ?`, conns.mysql)
     const countJourneysByUserCountry = mydb.mkQuery(`select count(*) as count from journeys where owner = ? and id in (
         select distinct(journey_id) from places where owner = ? and country like ?)`, conns.mysql)
 
@@ -53,6 +53,20 @@ module.exports = function(app, conns) {
         const type = req.query.type;
         getJourneySummaryByUser([user, type] ).then(r => {
             resp.status(200).json(r.result);
+         })
+         .catch(error => {
+             resp.status(500).json({error: "Database Error "+ error.error});
+         });
+    });
+
+    const getJourneyTitlesByUser = mydb.mkQuery(`Select title from journeys where owner = ? and active = 1
+    order by title`, conns.mysql)
+     
+    // Get all Journeys for particular user - names only for autocomplete
+    app.get('/api/journeys/titles/:user', (req, resp) => {
+        getJourneyTitlesByUser([req.params.user]).then(r => {
+            const titles = r.result.map(v => v.title);
+            resp.status(200).json(titles);
          })
          .catch(error => {
              resp.status(500).json({error: "Database Error "+ error.error});

@@ -5,7 +5,7 @@ import { Place, Country, Journey } from '../../models';
 import { TravelService } from '../../services/travel.service';
 import * as moment from 'moment';
 import { AutocompleteComponent } from '../helpers/autocomplete.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { JourneyFormComponent } from '../journeys/journey-form.component';
 
 @Component({
@@ -32,9 +32,11 @@ export class PlacesEditComponent implements OnInit {
   imagePath;
   imgURL: any;
   message: string;
+  isSubmitted = false;
 
   constructor(private router:Router, private route:ActivatedRoute,
-              private travelSvc: TravelService, public dialog: MatDialog) { }
+              private travelSvc: TravelService, public dialog: MatDialog, 
+              private snackbar: MatSnackBar) { }
 
   ngOnInit() {
     this.placeForm = this.createFormGroup();
@@ -141,6 +143,7 @@ export class PlacesEditComponent implements OnInit {
 }
 
 onSubmit(form: NgForm) {
+  this.isSubmitted = true;
   const v = this.placeForm.getRawValue();
   console.log(this.imageFile.nativeElement.files[0]); // undefined if no file
   console.log(moment(v.date).toISOString());
@@ -162,8 +165,18 @@ onSubmit(form: NgForm) {
   };
   this.travelSvc.editPlace(edited, this.imageFile).then((r) => {
     console.log(r);
+    this.isSubmitted = false;
+    this.openSnackBar('Place Updated Successfully', 'OK');
     this.router.navigate(['/place', this.place.id]); 
-  }).catch(err => console.log(err));
+  }).catch(err => {
+    this.isSubmitted = false;
+    this.openSnackBar('Error. Please Try Again!', 'OK');
+  });
 }
 
+openSnackBar(message: string, action: string) {
+  this.snackbar.open(message, action, {
+    duration: 2000,
+  });
+}
 }

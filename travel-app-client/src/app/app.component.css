@@ -50,6 +50,12 @@ a:visited {
     margin: 5px 0px;
 }
 
-@media only screen and (max-width: 450px) {
+.web {
+    display: block;
+}
 
+@media only screen and (max-width: 450px) {
+    .web {
+        display: none;
+    }
 }

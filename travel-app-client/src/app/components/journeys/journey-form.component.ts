@@ -4,6 +4,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import * as moment from 'moment';
 import { Journey } from '../../models';
 import { TravelService } from '../../services/travel.service';
+import { MatSnackBar } from '@angular/material';
 
 export interface DialogData {
   owner: string;
@@ -28,7 +29,7 @@ export class JourneyFormComponent implements OnInit {
   message: string;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef:MatDialogRef<JourneyFormComponent>,
-              private travelSvc: TravelService) { }
+              private travelSvc: TravelService, private snackbar: MatSnackBar) { }
 
   ngOnInit() { 
     this.journeyForm = this.createFormGroup();
@@ -91,8 +92,19 @@ onSubmit(form: NgForm) {
   this.travelSvc.createJourney(save, this.imageFile).then((r) => {
     this.isSubmitted = false;
     console.log(r);
+    this.openSnackBar('Journey Added Successfully', 'OK');
     this.dialogRef.close({insertId: r.insertId});
-  }).catch(err => console.log(err));
+  }).catch(err => {
+    console.log(err);
+    this.isSubmitted = false;
+    this.openSnackBar('Error. Please Try Again!', 'OK');
+  });
+}
+
+openSnackBar(message: string, action: string) {
+  this.snackbar.open(message, action, {
+    duration: 2000,
+  });
 }
 
 }
