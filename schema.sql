@@ -6,7 +6,9 @@ create table users (
 	username varchar(20) not null,
     password varchar(128) not null,
     email varchar(128),
-    display_name varchar(128),    
+    display_name varchar(128),
+    google_id varchar(128),
+    google_token varchar(256),
     primary key(username)
 );
 
@@ -82,7 +84,10 @@ insert into users (username, password, email, display_name)
 values ('sandystoh', sha2('sandystoh', 256), 'sandystoh@gmail.com', 'Sandy');
 insert into users (username, password, email, display_name) 
 values ('fred', sha2('fred', 256), 'fred@gmail.com', 'Fred');
+insert into users (username, password, email, display_name) 
+values ('fbsandy', sha2('fbsandy', 256), 'fbsandy@gmail.com', 'fbsandy');
 
+/*
 insert into journeys values
 ('1', 'United States', 'sandystoh', 'BEEN', 'USA Trip 2016', '2016-05-01 00:00:00', '2016-05-10 00:00:00',  '6', 'sandystoh/55ec9e0cafc45c59c5038175baf62c6e', '2019-12-05 00:00:00', 1, 0),
 ('2', 'New Zealand', 'sandystoh', 'BEEN', 'NZ Trip 2017', '2017-01-01 00:00:00', '2017-01-20 00:00:00', '6', 'sandystoh/69b5f7b1e503bf5d25abe629554aee3f', '2019-12-05 00:00:00', 1, 0),
@@ -103,20 +108,21 @@ insert into places values
 ('12', '2', '6', 'BEEN', 'Queenstown', 'Queenstown', 'sandystoh', '2017-01-06 00:00:00', '-45.03120000', '168.6626000', 'NZ', '3', 'sandystoh/4d1e3f5745ae8cb4d83040dd85fc6fd3', 'Lovely Place 4!', 'Got Lost in the Hobbit Holes!', '2019-11-05 00:00:00', '1'),
 ('13', '1', '3', 'BEEN', 'Monument Valley', 'Monument Valley', 'sandystoh', '2016-07-02 00:00:00', '36.99800000', '-110.09850000', 'US', '5', '', 'Lovely Place!', 'Got Lost in the Desert!', '2019-12-09 14:08:42', '1'),
 ('14', '0', '0', 'BEEN', 'Corinth Canal',  'Corinth Canal', 'sandystoh', '2016-07-02 00:00:00', '37.93419810', '22.98436750', 'GR', '3', 'sandystoh/2154e0b20643ea7bd6a831acf017f18f', 'aa', 'bb', '2019-12-09 14:31:07', '1')
-
-/*
-'1', 'United States 2015', 'sandystoh', 'BEEN', 'Driving Trip around the beautiful National Parks of Utah and Arizona.', '2015-07-05 00:00:00', '2015-07-20 00:00:00', '7', 'sandystoh/7ca31c1e21114baaf180baff0cf6d631', '2019-12-12 01:33:03', '1', '0'
-'2', 'New Zealand 2013', 'sandystoh', 'BEEN', 'There and Back Again!', '2013-11-10 00:00:00', '2013-11-25 00:00:00', '1', 'sandystoh/35cb10eef644fb59692c22eb3d8e04ed', '2019-12-12 01:44:54', '1', '1'
-
-'1', '1', '1', 'BEEN', 'Bryce Canyon National Park', 'Bryce Canyon National Park', 'sandystoh', '2015-07-08 00:00:00', '37.59303770', '-112.18708950', 'US', '4', 'sandystoh/be953e83fe41e495f1d9a2b24f76df8a', 'Amazingly alien landscapes', '', '2019-12-12 01:35:20', '1'
-'2', '2', '1', 'BEEN', 'Cape Reinga', 'Cape Reinga', 'sandystoh', '2013-11-12 00:00:00', '-34.42877860', '172.68048700', 'NZ', '3', 'sandystoh/025dfe83de071549a9b29fa10e8c4904', 'The end of the world!', '', '2019-12-12 01:45:55', '1'
-'3', '1', '2', 'BEEN', 'Horseshoe Bend', 'Horseshoe Bend', 'sandystoh', '2015-07-05 00:00:00', '36.87915980', '-111.51042350', 'US', '5', 'sandystoh/71fbbae2b7accaf17999db9a2f04d941', 'Nearly went over the cliff trying to take photos!', '', '2019-12-12 02:03:26', '1'
-'4', '1', '3', 'BEEN', 'Antelope Canyon', 'Antelope Canyon', 'sandystoh', '2015-07-08 00:00:00', '36.86191030', '-111.37433020', 'US', '5', 'sandystoh/85b3eefa81c1b1700169fdf7456d0b20', 'Magical', '', '2019-12-12 02:05:57', '1'
-'5', '1', '4', 'BEEN', 'Monument Valley', 'Oljato-Monument Valley', 'sandystoh', '2015-07-09 00:00:00', '37.00424540', '-110.17347850', 'US', '4', 'sandystoh/0ad22897286cee413086b4886695e488', 'Into the West', '', '2019-12-12 10:07:40', '1'
-'6', '1', '5', 'BEEN', 'Arches National Park', 'Arches National Park', 'sandystoh', '2015-07-11 00:00:00', '38.73308100', '-109.59251390', 'US', '5', 'sandystoh/bb6c98acdce52db965de01ad44d59fed', 'Amazing!', '', '2019-12-12 02:12:46', '1'
-'7', '1', '6', 'BEEN', 'Canyonlands National Park', 'Canyonlands National Park', 'sandystoh', '2015-07-11 00:00:00', '38.32686930', '-109.87825920', 'US', '3', 'sandystoh/5b2384150f6cebc2582c0a6e7c277a63', 'Wow', '', '2019-12-12 02:14:38', '1'
-'8', '1', '7', 'BEEN', 'Zion National Park', 'Zion National Park', 'sandystoh', '2015-07-07 00:00:00', '37.29820220', '-113.02630050', 'US', '5', 'sandystoh/64ff57758eea5d3e0464648d2cdc9397', 'Out of this world.', '', '2019-12-12 02:17:41', '1'
 */
+insert into journeys values
+('1', 'United States 2015', 'sandystoh', 'BEEN', 'Driving Trip around the beautiful National Parks of Utah and Arizona.', '2015-07-05 00:00:00', '2015-07-20 00:00:00', '7', 'sandystoh/7ca31c1e21114baaf180baff0cf6d631', '2019-12-12 01:33:03', '1', '0'),
+('2', 'New Zealand 2013', 'sandystoh', 'BEEN', 'There and Back Again!', '2013-11-10 00:00:00', '2013-11-25 00:00:00', '1', 'sandystoh/35cb10eef644fb59692c22eb3d8e04ed', '2019-12-12 01:44:54', '1', '1');
+insert into places values
+('1', '1', '1', 'BEEN', 'Bryce Canyon National Park', 'Bryce Canyon National Park', 'sandystoh', '2015-07-08 00:00:00', '37.59303770', '-112.18708950', 'US', '4', 'sandystoh/be953e83fe41e495f1d9a2b24f76df8a', 'Amazingly alien landscapes', '', '2019-12-12 01:35:20', '1'),
+('2', '2', '1', 'BEEN', 'Cape Reinga', 'Cape Reinga', 'sandystoh', '2013-11-12 00:00:00', '-34.42877860', '172.68048700', 'NZ', '3', 'sandystoh/025dfe83de071549a9b29fa10e8c4904', 'The end of the world!', '', '2019-12-12 01:45:55', '1'),
+('3', '1', '2', 'BEEN', 'Horseshoe Bend', 'Horseshoe Bend', 'sandystoh', '2015-07-05 00:00:00', '36.87915980', '-111.51042350', 'US', '5', 'sandystoh/71fbbae2b7accaf17999db9a2f04d941', 'Nearly went over the cliff trying to take photos!', '', '2019-12-12 02:03:26', '1'),
+('4', '1', '3', 'BEEN', 'Antelope Canyon', 'Antelope Canyon', 'sandystoh', '2015-07-08 00:00:00', '36.86191030', '-111.37433020', 'US', '5', 'sandystoh/85b3eefa81c1b1700169fdf7456d0b20', 'Magical', '', '2019-12-12 02:05:57', '1'),
+('5', '1', '4', 'BEEN', 'Monument Valley', 'Oljato-Monument Valley', 'sandystoh', '2015-07-09 00:00:00', '37.00424540', '-110.17347850', 'US', '4', 'sandystoh/0ad22897286cee413086b4886695e488', 'Into the West', '', '2019-12-12 10:07:40', '1'),
+('6', '1', '5', 'BEEN', 'Arches National Park', 'Arches National Park', 'sandystoh', '2015-07-11 00:00:00', '38.73308100', '-109.59251390', 'US', '5', 'sandystoh/bb6c98acdce52db965de01ad44d59fed', 'Amazing!', '', '2019-12-12 02:12:46', '1'),
+('7', '1', '6', 'BEEN', 'Canyonlands National Park', 'Canyonlands National Park', 'sandystoh', '2015-07-11 00:00:00', '38.32686930', '-109.87825920', 'US', '3', 'sandystoh/5b2384150f6cebc2582c0a6e7c277a63', 'Wow', '', '2019-12-12 02:14:38', '1'),
+('8', '1', '7', 'BEEN', 'Zion National Park', 'Zion National Park', 'sandystoh', '2015-07-07 00:00:00', '37.29820220', '-113.02630050', 'US', '5', 'sandystoh/64ff57758eea5d3e0464648d2cdc9397', 'Out of this world.', '', '2019-12-12 02:17:41', '1'),
+('9', '2', '2', 'BEEN', 'Hobbiton', 'Hobbiton', 'sandystoh', '2013-11-13 00:00:00', '-37.81088030', '175.77646070', 'NZ', '4', 'sandystoh/ccb97e4e87cd0ff8df46de5e6eef0af9', 'Drank ale at the green dragon!', '', '2019-12-12 13:55:03', '1');
+
 
 -- Mongo
 -- db.getCollection('countries').createIndex({code2l: 1})

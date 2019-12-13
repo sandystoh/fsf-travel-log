@@ -80,7 +80,7 @@ export class WelcomeComponent implements OnInit {
         backgroundColor: '#2a9df4',
         series: {
           regions: [{
-            values: this.visitData,
+            values: r.visitData,
             scale: ['#EBEBEB', '#FFBC42'],
             normalizeFunction: 'polynomial'
           }]
@@ -90,7 +90,7 @@ export class WelcomeComponent implements OnInit {
             el.html(el.html()+'<br>(Visited - '+ r.visitData[code]+')').css("fontSize","1rem"); ;
           }
         },
-        markers: this.markers,
+        markers: r.places,
         onMarkerTipShow: function(event, label, code) {
           if(r.places[code].image_url)
           label.html("<div style=\"font-size:1.3rem;\">"+ label.html()+
@@ -100,7 +100,8 @@ export class WelcomeComponent implements OnInit {
         onMarkerClick: (event, index) => {
             // alter the weburl
             console.log(r.places[index]);
-            setTimeout(()=> { Array.from(document.getElementsByClassName("jvectormap-tip")).forEach((el) => { el.style.display = 'none' }); },100);
+            // Array.from(document.getElementsByClassName("jvectormap-tip")).forEach((el) => { el.style.display = 'none' });
+            setTimeout(()=> { (document.getElementsByClassName("jvectormap-tip")[0] as HTMLElement).style.display = 'none' },100 );
             this.router.navigate(['/place', r.places[index].id]);
         }
       }); 

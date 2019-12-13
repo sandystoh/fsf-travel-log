@@ -1,7 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
-const mydb = require('../db/mydbutil');
+const mydb = require('./mydbutil');
 
 const initializePassport = function(conns) {
     const FIND_USER = 'select count(*) as user_count from users where username = ? and password = sha2(?, 256)';
