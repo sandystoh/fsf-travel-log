@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../helpers/confirm-dialog.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-place-detail',
@@ -22,7 +23,7 @@ export class PlaceDetailComponent implements OnInit {
   constructor(private router: Router, private route: ActivatedRoute,
               private travelSvc: TravelService, private authSvc: AuthService,
               private sanitizer: DomSanitizer, public dialog: MatDialog,
-              private snackBar: MatSnackBar) { }
+              private snackBar: MatSnackBar, private location: Location) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -31,6 +32,10 @@ export class PlaceDetailComponent implements OnInit {
       this.getPlace(this.id);
    });
     this.user = this.authSvc.getUser();
+  }
+
+  back() {
+    this.location.back();
   }
 
   getPlace(id) {

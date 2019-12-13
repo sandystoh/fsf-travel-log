@@ -1,9 +1,12 @@
 <div class="place-bg">
 <div class="headertext" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="1vw">
+  <button style="position: absolute; top: 100px; left: 30px" mat-mini-fab color="accent" type="button" (click)="backClicked()" ><mat-icon>arrow_back</mat-icon></button>
+  <button mat-mini-fab color="primary" type="button" (click)="refreshAll()" ><mat-icon>autorenew</mat-icon></button>
+
   <div fxLayout="column">
     <div>Places </div>
     <div class="small-title">Experienced by: {{username}}</div></div>  
-    <button mat-mini-fab color="primary" type="button" (click)="refreshAll()" ><mat-icon>autorenew</mat-icon></button>
+    <button mat-mini-fab color="accent" *ngIf="user.username.toString() == username.toString()" type="button" (click)="addPlace()" ><mat-icon>add</mat-icon></button>
 </div>
 
 <form class="search-form">

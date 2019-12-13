@@ -9,6 +9,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { MatAutocompleteTrigger } from '@angular/material';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-journeys-list',
@@ -37,7 +38,7 @@ export class JourneysListComponent implements OnInit {
 
   constructor(private router: Router, private route: ActivatedRoute,
               private authSvc: AuthService, private travelSvc: TravelService,
-              private sanitizer: DomSanitizer) { }
+              private sanitizer: DomSanitizer, private location: Location) { }
 
   ngOnInit() {
     this.username = this.route.snapshot.params['user'];
@@ -133,6 +134,10 @@ export class JourneysListComponent implements OnInit {
     }).catch(e => { console.log(e); this.isLoading = false; this.isError = true; });
   }
 
+
+  backClicked() {
+    this.location.back();
+  }
 
   back() {
     this.loadReset();;

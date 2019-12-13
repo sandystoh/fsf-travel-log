@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { AutocompleteComponent } from '../helpers/autocomplete.component';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { JourneyFormComponent } from '../journeys/journey-form.component';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-places-form',
@@ -36,7 +37,7 @@ export class PlacesFormComponent implements OnInit {
   
   constructor(private router:Router, private route:ActivatedRoute,
               private travelSvc: TravelService, public dialog: MatDialog, 
-              private snackbar: MatSnackBar) { }
+              private snackbar: MatSnackBar, private location: Location) { }
 
   ngOnInit() {
     this.placeForm = this.createFormGroup();
@@ -56,6 +57,10 @@ export class PlacesFormComponent implements OnInit {
       this.f.type.setValue(this.type);
       this.f.journey.setValue(this.journey);
     }
+  }
+
+  backClicked() {
+    this.location.back();
   }
 
   get f() { return this.placeForm.controls; }

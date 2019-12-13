@@ -2,12 +2,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { TravelService } from '../../services/travel.service';
-import { Place, Country } from '../../models';
+import { Place, Country, User } from '../../models';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { FormControl } from '@angular/forms';
 import { Observable} from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
 import { MatAutocompleteTrigger } from '@angular/material';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-places-list',
@@ -28,6 +29,7 @@ export class PlacesListComponent implements OnInit {
   isLoading = true;
   isError = false;
   pageStatus="all";
+  user: User;
 
   search = new FormControl();
   filteredOptions: Observable<string[]>;
@@ -36,12 +38,18 @@ export class PlacesListComponent implements OnInit {
 
   constructor(private router: Router, private route: ActivatedRoute,
               private authSvc: AuthService, private travelSvc: TravelService,
-              private sanitizer: DomSanitizer) { }
+              private sanitizer: DomSanitizer, private location: Location) { }
 
   ngOnInit() {
     this.username = this.route.snapshot.params['user'];
+    this.user = this.authSvc.getUser();
     this.init();
   }
+
+  backClicked() {
+    this.location.back();
+  }
+
 
   init() {
     this.loadReset();
@@ -134,6 +142,10 @@ export class PlacesListComponent implements OnInit {
   clearField() {
     this.search.setValue('');
     this.autocomplete.openPanel();
+  }
+
+  addPlace() {
+    this.router.navigate(['/places/add/'+this.user.username]);
   }
 
   searchPlaces() {

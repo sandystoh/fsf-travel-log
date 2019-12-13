@@ -6,10 +6,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
 import { JourneyMapComponent } from '../helpers/journey-map.component';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { JourneyFormComponent } from '../journeys/journey-form.component';
 import { JourneyEditComponent } from './journey-edit.component';
 import { ConfirmDialogComponent } from '../helpers/confirm-dialog.component';
 import { PlaceReorderComponent } from '../helpers/place-reorder.component';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-journey-detail',
@@ -27,7 +27,7 @@ export class JourneyDetailComponent implements OnInit {
   
   constructor(private router: Router, private route: ActivatedRoute, private authSvc: AuthService,
               private travelSvc: TravelService, private sanitizer: DomSanitizer,
-              public dialog: MatDialog, private snackBar: MatSnackBar) { }
+              public dialog: MatDialog, private snackBar: MatSnackBar, private location: Location) { }
 
   ngOnInit() {
     this.user = this.authSvc.getUser();
@@ -36,6 +36,10 @@ export class JourneyDetailComponent implements OnInit {
       console.log(this.id);
       this.getJourney(this.id);
    });
+  }
+
+  back() {
+    this.location.back();
   }
 
   getJourney(id) {
