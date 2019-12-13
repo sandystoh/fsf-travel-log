@@ -6,13 +6,22 @@
                     <img src="assets/images/yak-icon.png" height="40px"> 
                     <div>Travel Yak</div>
                   </div></a>
+                  
                   <div fxLayout="row" *ngIf="isAuth" fxLayoutAlign="center">
-                    <div><mat-icon class="avatar-icon web">account_circle</mat-icon></div>
-                    <div class="smythe avatar web"> {{ displayName }}</div> 
-                    <div class="logout-btn" (click)="logout()"><mat-icon>exit_to_app</mat-icon></div>
-                    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
                       <mat-icon>menu</mat-icon>
-                    </button>                
+                    </button>    
+                    <div><mat-icon class="avatar-icon web">account_circle</mat-icon></div>
+                    <div class="smythe avatar web" [matMenuTriggerFor]="profile"> {{ displayName }}</div> 
+                    <mat-menu #profile="matMenu">
+                      <button mat-menu-item (click)="linkToGoogle()">
+                        <mat-icon>person_add</mat-icon>
+                        <span>Link to Google</span>
+                      </button>
+                      </mat-menu>
+                      
+                    <div class="logout-btn" (click)="logout()"><mat-icon>exit_to_app</mat-icon></div>
+            
                     <mat-menu #menu="matMenu">
                       <button mat-menu-item (click)="openJourneyDialog()">
                         <mat-icon>add_box</mat-icon>

@@ -10,6 +10,11 @@ import { JourneyEditComponent } from './journey-edit.component';
 import { ConfirmDialogComponent } from '../helpers/confirm-dialog.component';
 import { PlaceReorderComponent } from '../helpers/place-reorder.component';
 import {Location} from '@angular/common';
+import * as jspdf from 'jspdf';
+import html2canvas from 'html2canvas';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-journey-detail',
@@ -129,6 +134,15 @@ export class JourneyDetailComponent implements OnInit {
         });
       }
     });
+  }
+
+  saveToDrive() {
+    this.travelSvc.sendJourneyImageToGoogle(this.id).then(() => {
+      this.openSnackBar('Upload Successful', 'OK');
+    }).catch((e) => {
+          console.log(e);
+          this.openSnackBar('Something went Wrong!', 'Try Again');
+        });
   }
 
   openSnackBar(message: string, action: string) {

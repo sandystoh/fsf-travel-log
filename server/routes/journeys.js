@@ -6,6 +6,8 @@ const uuid = require('uuid');
 const fs = require('fs');
 const moment = require('moment');
 const request = require('request-promise');
+const { google } = require('googleapis')
+const jwt = require('jsonwebtoken');
 
 const db = require('../db/dbutil');
 const mydb = require('../db/mydbutil');
@@ -218,7 +220,7 @@ module.exports = function(app, conns) {
 
     // Deactivate Journey by Journey ID 
     // http://localhost:3000/api/journey/1?remove_child=true -- need to state whether to remove children
-    app.delete('/api/journey/:id', // **** add token to write private
+    app.delete('/api/journey/:id', 
     (req, resp) => {
         console.log('params', req.query)
         const removeJourney = mydb.mkTransaction(travel.rmJourneys(), conns.mysql);
@@ -228,5 +230,73 @@ module.exports = function(app, conns) {
             .catch(error => {
                 resp.status(500).json({error: "Database Error "+ error.error});
             });
+    });
+
+    const getGoogleToken = mydb.mkQuery('select google_token from users where username = ?', conns.mysql);
+     const getJourneyImage = mydb.s3Get('sandy-fsf-2019', 'journeys');
+    // Save Journey Image to Google Drive
+    app.get('/api/journey/saveimage/:id', 
+     (req, resp) => {
+        const id = req.params.id;
+        const authorization = req.get('Authorization');
+        if (!(authorization && authorization.startsWith('Bearer ')))
+            return resp.status(403).json({ message: 'not authorized' })
+        const tokenStr = authorization.substring('Bearer '.length);
+        
+        try {
+            var decoded = jwt.verify(tokenStr, conns.secret);
+            console.log('decoded', decoded);
+            getGoogleToken([decoded.sub])
+            .then(r => {
+                if(!r.result[0].google_token) {
+                    resp.redirect('/auth/google')
+                }
+                else {
+                    const gToken = r.result[0].google_token;
+                    resp.json({message: 'placeholder'+ gToken})
+                    
+                    let j;
+                    getJourneyById([id]).then(r => {
+                        j = r.result[0];
+                        return getJourneyImage({s3: conns.s3, filename: r.result[0].image_url})
+                    })
+                    .then(r => {
+                        const oauth2Client = new google.auth.OAuth2()
+                        oauth2Client.setCredentials({
+                            'access_token': gToken
+                        });
+
+                        const suffix = (new Date()).getTime();
+                        fs.writeFileSync(`temp/${suffix}.jpg`, r.Body);
+
+                        const drive = google.drive({
+                            version: 'v3',
+                            auth: oauth2Client
+                        });
+                        //move file to google drive
+                        const driveResponse = drive.files.create({
+                            requestBody: {
+                                name: j.title,
+                                mimeType: r.ContentType
+                            },
+                            media: {
+                                mimeType: r.ContentType,
+                                body: fs.createReadStream(`temp/${suffix}.jpg`)
+                            }
+                        });
+                        driveResponse.then(data => {
+                            fs.unlink(`temp/${suffix}.jpg`,()=> {});
+                            if (data.status == 200) resp.status(200).json({message: "Image Uploaded"}); 
+                            else resp.status(500).json({error: "Database Error "+ error.error});
+                        }).catch(err => { resp.status(500).json({error: "Database Error "+ error.error}); })         
+                    })
+                    .catch(error => {
+                        resp.status(500).json({error: "Database Error "+ error.error});
+                    });
+                } 
+            })
+        } catch(err) {
+            resp.status(404).send(err);
+        }
     });
 }

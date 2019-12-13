@@ -1,5 +1,6 @@
-<div class="detail-area">
-    <button style="float:left" mat-mini-fab color="accent" type="button" (click)="back()" ><mat-icon>arrow_back</mat-icon></button>
+<button class="web" style="position: absolute; top: 100px; left: 30px" mat-mini-fab color="accent" type="button" (click)="back()" ><mat-icon>arrow_back</mat-icon></button>
+
+<div class="detail-area" id="detail-pdf">
 
     <div fxLayout="column" fxLayoutAlign="center center" *ngIf="journey">
         <div class="place-detail">
@@ -20,6 +21,9 @@
                 <mat-icon>delete_forever</mat-icon><span>Delete Journey</span></div>
         </div>
         <div [style.background]="journey.url" *ngIf="journey.url" class="place-image"></div>
+        <div class="detail-white box-area-2" *ngIf="user.username == journey.owner && journey.url" fxLayoutGap="1vw" fxLayoutAlign="center"
+        (click)="saveToDrive()"><mat-icon>cloud_upload</mat-icon><span>Save Image to Google Drive</span></div>
+
         <div class="place-description" *ngIf="journey.description !== ''">
             <div class="description-title detail-gold" >Memories</div>
             <div class="detail-gold" *ngIf="journey.type == 'SEEN'">Dreams</div>

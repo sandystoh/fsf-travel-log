@@ -2,8 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
 import { User } from './models';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { JourneyFormComponent } from './components/journeys/journey-form.component';
+import { TravelService } from './services/travel.service';
 
 
 @Component({
@@ -17,7 +18,8 @@ export class AppComponent {
   displayName = '';
 
   constructor(private authSvc: AuthService, private router: Router,
-              public dialog: MatDialog) {
+              public dialog: MatDialog, private travelSvc: TravelService,
+              private snackbar: MatSnackBar) {
     this.isAuthenticated();
   }
 
@@ -46,6 +48,20 @@ export class AppComponent {
   getJourneysList() {
     this.router.navigate(['/journeys/'+this.user.username]);
   }
+
+  linkToGoogle() {
+    this.travelSvc.linkGoogle().then(() => {
+      this.openSnackBar('Successfully Linked!', 'OK');
+    }).catch(e => {
+      this.openSnackBar('Error. Please Try Again!', 'OK');
+  });
+}
+
+openSnackBar(message: string, action: string) {
+  this.snackbar.open(message, action, {
+    duration: 2000,
+  });
+}
 
   openJourneyDialog(): void {
     const dialogRef = this.dialog.open(JourneyFormComponent, {

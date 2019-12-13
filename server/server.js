@@ -12,8 +12,10 @@ else { config = require('./db/public-config'); }
 const { loadConfig, testConnections } = require('./db/initdb');
 const conns = loadConfig(config);
 
-const { initializePassport } = require('./db/passport');
-const passport = initializePassport(conns);
+// const { initializePassport } = require('./db/passport');
+// const passport = initializePassport(conns);
+const passport = require('passport');
+require('./db/passport')(passport, conns); 
 
 const PORT = parseInt(process.argv[2] || process.env.APP_PORT || process.env.PORT) || 3000;
 
@@ -33,7 +35,8 @@ app.use(passport.session())
 
 app.use(express.static(__dirname + '/public'));
 
-require('./routes/authenticate')(app, conns, passport);
+require('./routes/authenticate.js')(app, passport, conns);
+// require('./routes/authenticate')(app, conns, passport);
 require('./routes/main')(app, conns);
 require('./routes/places')(app, conns);
 require('./routes/journeys')(app, conns);

@@ -4,6 +4,8 @@ const multer = require('multer');
 const upload = multer({ dest: path.join(__dirname, '..', '/uploads') });
 const uuid = require('uuid');
 const fs = require('fs');
+const { google } = require('googleapis')
+const jwt = require('jsonwebtoken');
 
 const db = require('../db/dbutil');
 const mydb = require('../db/mydbutil');
@@ -182,4 +184,69 @@ module.exports = function(app, conns) {
             });
     });
 
+    const getGoogleToken = mydb.mkQuery('select google_token from users where username = ?', conns.mysql);
+     const getPlaceImage = mydb.s3Get('sandy-fsf-2019', 'places');
+    // Save Place Image to Google Drive
+    app.get('/api/place/saveimage/:id', 
+     (req, resp) => {
+        const id = req.params.id;
+        const authorization = req.get('Authorization');
+        if (!(authorization && authorization.startsWith('Bearer ')))
+            return resp.status(403).json({ message: 'not authorized' })
+        const tokenStr = authorization.substring('Bearer '.length);
+        
+        try {
+            var decoded = jwt.verify(tokenStr, conns.secret);
+            getGoogleToken([decoded.sub])
+            .then(r => {
+                if(!r.result[0].google_token) {
+                    resp.redirect('/auth/google')
+                }
+                else {
+                    let j;
+                    const gToken = r.result[0].google_token;       
+                    getPlaceById([id]).then(r => {
+                        j = r.result[0];
+                        return getPlaceImage({s3: conns.s3, filename: r.result[0].image_url})
+                    })
+                    .then(r => {
+                        console.log(r); console.log(gToken);
+                        const oauth2Client = new google.auth.OAuth2()
+                        oauth2Client.setCredentials({
+                            'access_token': gToken
+                        });
+                        const suffix = (new Date()).getTime();
+                        fs.writeFileSync(`temp/${suffix}.jpg`, r.Body);
+
+                        const drive = google.drive({
+                            version: 'v3',
+                            auth: oauth2Client
+                        });
+                        //move file to google drive
+                        console.log(j.title, r.ContentType);
+                        const driveResponse = drive.files.create({
+                            requestBody: {
+                                name: j.title,
+                                mimeType: r.ContentType
+                            },
+                            media: {
+                                mimeType: r.ContentType,
+                                body: fs.createReadStream(`temp/${suffix}.jpg`)
+                            }
+                        });
+                        driveResponse.then(data => {
+                            fs.unlink(`temp/${suffix}.jpg`,()=> {});
+                            if (data.status == 200) resp.status(200).json({message: "Image Uploaded"}); 
+                            else resp.status(500).json({error: "Database Error "+ error.error});
+                        }).catch(err => { resp.status(500).json({error: "Database Error "+ error.error}); })           
+                    })
+                    .catch(error => {
+                        resp.status(500).json({error: "Database Error "+ error.error});
+                    });
+                } 
+            })
+        } catch(err) {
+            resp.status(404).send(err);
+        }
+    });
 }

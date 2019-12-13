@@ -84,5 +84,9 @@
     .detail-title {
         max-width: 100vw;
     }
+
+    .web{
+        display:none;
+    }
     
 }

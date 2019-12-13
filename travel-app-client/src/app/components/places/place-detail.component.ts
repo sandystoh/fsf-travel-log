@@ -74,6 +74,15 @@ export class PlaceDetailComponent implements OnInit {
     });
   }
 
+  saveToDrive() {
+    this.travelSvc.sendPlaceImageToGoogle(this.id).then(() => {
+      this.openSnackBar('Upload Successful', 'OK');
+    }).catch((e) => {
+          console.log(e);
+          this.openSnackBar('Something went Wrong!', 'Try Again');
+        });
+  }
+
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 2000,

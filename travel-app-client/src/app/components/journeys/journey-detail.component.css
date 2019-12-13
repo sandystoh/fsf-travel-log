@@ -140,4 +140,8 @@
         min-height: 200px;
         height: calc(100vh - 500px);
     }
+
+    .web {
+        display:none;
+    }
 }

@@ -164,4 +164,28 @@ export class TravelService {
     const params = new HttpParams().set('remove_child', removeChild);
     return this.http.delete('/api/journey/' + id, {params}).toPromise();
   }
+
+  linkGoogle() {
+    const user = this.authSvc.getUser();
+    console.log(user);
+    const headers = new HttpHeaders()
+    .set('Authorization', `Bearer ${user.token}`)
+    return this.http.get('/api/link/google', {headers}).toPromise();
+  }
+
+  sendJourneyImageToGoogle(id) {
+    const user = this.authSvc.getUser();
+    console.log(user.token)
+    const headers = new HttpHeaders()
+    .set('Authorization', `Bearer ${user.token}`)
+    return this.http.get('/api/journey/saveimage/'+id, {headers}).toPromise();
+  }
+
+  sendPlaceImageToGoogle(id) {
+    const user = this.authSvc.getUser();
+    console.log(user.token)
+    const headers = new HttpHeaders()
+    .set('Authorization', `Bearer ${user.token}`)
+    return this.http.get('/api/place/saveimage/'+id, {headers}).toPromise();
+  }
 }
