@@ -8,8 +8,9 @@ import * as moment from 'moment';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { startWith, map } from 'rxjs/operators';
-import { MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger, MatDialog } from '@angular/material';
 import {Location} from '@angular/common';
+import { JourneyFormComponent } from './journey-form.component';
 
 @Component({
   selector: 'app-journeys-list',
@@ -36,7 +37,7 @@ export class JourneysListComponent implements OnInit {
   options = [];
   @ViewChild(MatAutocompleteTrigger, {static: false}) autocomplete: MatAutocompleteTrigger;
 
-  constructor(private router: Router, private route: ActivatedRoute,
+  constructor(private router: Router, private route: ActivatedRoute, public dialog: MatDialog,
               private authSvc: AuthService, private travelSvc: TravelService,
               private sanitizer: DomSanitizer, private location: Location) { }
 
@@ -88,6 +89,19 @@ export class JourneysListComponent implements OnInit {
       this.loadReset();
       this.getJourneys();
     }
+  }
+
+  openJourneyDialog(): void {
+    const dialogRef = this.dialog.open(JourneyFormComponent, {
+      width: '85vw',
+      height: '80vh',
+      disableClose: false,
+      data: {owner: this.user.username, fromPlacesForm: false}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) this.router.navigate(['/journey', result.insertId]);
+    });
   }
   
   clearField() {
