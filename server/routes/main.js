@@ -27,6 +27,22 @@ module.exports = function(app, conns) {
         });
     });
 
+    // Checks if username taken
+    const checkExistsByUsername = mydb.mkQuery(`Select count(*) as count from users where username = ?`, conns.mysql)
+    app.get('/api/checkuser/:username', (req, resp) => {
+        const username = req.params.username;
+        checkExistsByUsername([username])
+        .then(r => {
+            console.log(r.result)
+            if(r.result[0].count) 
+                resp.status(200).json({available: false});
+            resp.status(200).json({available: true});
+        })
+        .catch(err => {
+            resp.status(500).json({error: err});
+        });
+    })
+
     const searchJourneysByUser = mydb.mkQuery(`Select * from journeys j where 
     owner = ? and title like ? order by title limit ? offset ?`, conns.mysql)
     const countJourneySearch = mydb.mkQuery(`Select count(*) as count from journeys j where 

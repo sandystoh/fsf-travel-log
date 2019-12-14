@@ -1,7 +1,9 @@
+const express = require('express');
 const mydb = require('../db/mydbutil');
+const sql = require('../db/sqlutil');
 const fs = require('fs');
-const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+const multer  = require('multer');
+const upload = multer({ dest: 'uploads/' });
 const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
 
@@ -9,12 +11,10 @@ module.exports = function(app, passport, conns) {
 
     const GET_USER_DETAILS = 'select username, email, display_name from users where username = ?';
     const getUserDetails = mydb.mkQuery(GET_USER_DETAILS, conns.mysql);
-    // const saveJWToken = mydb.mkQuery('update users set jwt_token = ? where username = ?', conns.mysql)
 
     app.post('/api/authenticate', 
     passport.authenticate('local', {
         failureRedirect: '/error.html'
-        // ,session: false
     }),
     (req, resp) => {
         getUserDetails([ req.user ])
@@ -44,95 +44,84 @@ module.exports = function(app, passport, conns) {
                         resp.redirect('/')
                     }
                 })
-            }) 
-    }
-)
+            })
+            .catch(e => {
+                console.log(e);
+                resp.status(500).json({error: 'Database Error '+e});
+            });
+    });
+
+    const ADD_USER = `insert into users (username, password, email, display_name) 
+            values (? , SHA2(?, 256), ?, ?)`
+    const createUser = mydb.mkQuery(ADD_USER, conns.mysql);
+    app.post('/api/signup', express.json(),
+    (req, resp) => {
+        console.log(req.body.signup);
+        const u = req.body.signup;
+        createUser([u.username, u.password, u.email, u.display_name])
+            .then(r => {
+                const d = new Date()
+                const token = jwt.sign({
+                    sub: u.username,
+                    iss: 'fsf-travel-app',
+                    iat: d.getTime()/1000,
+                    exp: (d.getTime()/1000) + (60 * 60)
+                }, conns.secret);
+                req.session.token = token;
+                resp.format({
+                    'text/html': () => {
+                        resp.redirect('/');
+                    },
+                    'application/json': () => {
+                        return resp.status(200).json({
+                            token_type: 'Bearer',
+                            access_token: token,
+                            username: u.username,
+                            display_name: u.display_name
+                        })
+                    },
+                    'default': () => {
+                        resp.redirect('/')
+                    }
+                })
+            })
+            .catch(e => {
+                console.log(e);
+                resp.status(500).json({error: 'Database Error '+e});
+            });
+    });
 
     
     const getGoogleToken = mydb.mkQuery('select google_token from users where username = ?', conns.mysql);
-    app.get('/api/link/google', function (req, resp, next) {
+    app.get('/api/link/google',  
+     (req, resp) => {
         let username = '';
         const authorization = req.get('Authorization');
         if (!(authorization && authorization.startsWith('Bearer ')))
             return resp.status(403).json({ message: 'not authorized' })
         const tokenStr = authorization.substring('Bearer '.length);
-
         try {
             var decoded = jwt.verify(tokenStr, conns.secret);
             username = decoded.sub;
-            getGoogleToken([username])
-            .then(r => {
-                console.log('FIND USER TOKEN RESULT', r.result);
-                if(!r.result[0].google_token) {
-                    //resp.redirect('/auth/google')
-                    next();
-                }
-                else {
-                    const gToken = r.result[0].google_token;
-                    resp.status(200).json({message: 'token already created'})
-                }
-            })
-        } catch(err) {
-        resp.status(404).json({error: err});
-        }
-    },
-    passport.authorize('google', { scope: ['https://www.googleapis.com/auth/drive',
-    'https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/userinfo.email'] })
-    );
-
-    app.post('/upload', upload.single('mypdf'), function (req, resp, next) {
-    
-        if (!req.user) {
-            console.log('USER NOT LOGGED IN');
-            resp.redirect('/authenticate')
-        }
-        getGoogleToken([req.user.username])
+        getGoogleToken([username])
         .then(r => {
             console.log('FIND USER TOKEN RESULT', r.result);
-            if(r.result[0].google_token == null) {
-                resp.redirect('/auth/google')
-           }
+            if(!r.result[0].google_token) {
+                resp.redirect('/api/linkaccounts.html')
+            }
             else {
                 const gToken = r.result[0].google_token;
-                console.log('gtoken', gToken);
-                const oauth2Client = new google.auth.OAuth2()
-                oauth2Client.setCredentials({
-                    'access_token': gToken
-                });
-
-                const drive = google.drive({
-                    version: 'v3',
-                    auth: oauth2Client
-                });
-                console.log('HERE at drive', req.file);
-                //move file to google drive
-                const driveResponse = drive.files.create({
-                    requestBody: {
-                        name: req.file.filename,
-                        mimeType: req.file.mimetype
-                    },
-                    media: {
-                        mimeType: req.file.mimetype,
-                        body: fs.createReadStream(req.file.path)
-                    }
-                });
-                driveResponse.then(data => {
-
-                    if (data.status == 200) resp.redirect('/success.html?file=upload') // success
-                    else resp.redirect('/success.html?file=notupload') // unsuccess
-        
-                }).catch(err => { console.log(err) })
+                resp.status(200).json({message: 'token already created'})
             }
-        })
-    });
-
-	// LOGOUT ==============================
-	app.get('/logout', function(req, res) {
-		req.logout();
-		res.redirect('/');
+            })
+        } catch(err) {
+            console.log(err);
+            resp.status(302).redirect('/');
+            //   resp.status(404).json({error: err});
+        } 
     });
     
-    app.get('/auth/google',
+    app.get('/api/auth/google',
     passport.authorize('google', { scope: ['https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/userinfo.email'] })
     );

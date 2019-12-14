@@ -131,4 +131,8 @@ body {
     .headertext {
        font-size: 3rem;
     }
+
+    .web {
+      display: none;
+    }
 }

@@ -23,7 +23,7 @@
     border-radius: 15px;
     box-shadow: 2px 3px 3px #888888;
     -webkit-transform: scaleX(-1);
-  transform: scaleX(-1);
+    transform: scaleX(-1);
 }
 
 .full-width {
@@ -35,9 +35,10 @@
     font-family: 'Smythe', sans-serif;
 }
 
-.mat-hint {
+.mat-hint, .mat-error {
     color: red;
     font-size: 0.8rem;
+    font-family: 'Muli', sans-serif;
 }
 
 .invalid {
@@ -48,4 +49,31 @@
 
 .button-area {
     padding-top: 20px;
+}
+
+.login-area {
+    min-height: 400px;
+}
+
+.login-field {
+    width: 250px;
+    max-width: 90vw;
+}
+
+.sub-text {
+    cursor: pointer;
+    font-size: 1.4rem;
+    color: #1D8ECE;
+}
+
+.sub-text:hover {
+    color: #2E7788;
+}
+
+.shift {
+    padding-top: 30px;
+}
+
+.mat-icon {
+    font-size: 100%;
 }

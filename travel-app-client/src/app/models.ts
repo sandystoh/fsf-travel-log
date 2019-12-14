@@ -56,6 +56,10 @@ export interface Place {
     changed?: boolean;
 }
 
+export interface UsernameResponse {
+    available: boolean;
+}
+
 export interface JourneysResponse {
     count: number;
     journeys: Journey[];

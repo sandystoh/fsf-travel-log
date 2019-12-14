@@ -2,7 +2,7 @@ import {Injectable, ElementRef} from '@angular/core';
 import {Router} from '@angular/router';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { MapResponse, Country, Place, Journey, PlacesResponse, JourneyResponse, JourneysResponse } from '../models';
+import { MapResponse, Country, Place, Journey, PlacesResponse, JourneyResponse, JourneysResponse, UsernameResponse } from '../models';
 import { NgForm } from '@angular/forms';
 
 @Injectable()
@@ -169,13 +169,12 @@ export class TravelService {
     const user = this.authSvc.getUser();
     console.log(user);
     const headers = new HttpHeaders()
-    .set('Authorization', `Bearer ${user.token}`)
+    .set('Authorization', `Bearer ${user.token}`);
     return this.http.get('/api/link/google', {headers}).toPromise();
   }
 
   sendJourneyImageToGoogle(id) {
     const user = this.authSvc.getUser();
-    console.log(user.token)
     const headers = new HttpHeaders()
     .set('Authorization', `Bearer ${user.token}`)
     return this.http.get('/api/journey/saveimage/'+id, {headers}).toPromise();
@@ -183,9 +182,16 @@ export class TravelService {
 
   sendPlaceImageToGoogle(id) {
     const user = this.authSvc.getUser();
-    console.log(user.token)
     const headers = new HttpHeaders()
     .set('Authorization', `Bearer ${user.token}`)
     return this.http.get('/api/place/saveimage/'+id, {headers}).toPromise();
+  }
+
+  checkUsername(username): Promise<UsernameResponse> {
+    return this.http.get<UsernameResponse>('/api/checkuser/'+username).toPromise();
+  }
+
+  signup(signup) {
+    return this.http.post('/api/signup', {signup}).toPromise();
   }
 }

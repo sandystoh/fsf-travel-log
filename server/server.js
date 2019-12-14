@@ -22,7 +22,6 @@ const PORT = parseInt(process.argv[2] || process.env.APP_PORT || process.env.POR
 const app = express();
 app.use(morgan('tiny'));
 app.use(express.urlencoded({ extended: true }));
-
 app.use(session({
     secret: config.sessionSecret,
     name: 'session_id',
@@ -35,7 +34,7 @@ app.use(passport.session())
 
 app.use(express.static(__dirname + '/public'));
 
-require('./routes/authenticate.js')(app, passport, conns);
+require('./routes/authenticate')(app, passport, conns);
 // require('./routes/authenticate')(app, conns, passport);
 require('./routes/main')(app, conns);
 require('./routes/places')(app, conns);

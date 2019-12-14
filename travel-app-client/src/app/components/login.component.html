@@ -1,13 +1,14 @@
 <div class="login-form">
     <mat-card class="login-card">
-        <div fxLayout="row column" fxLayoutAlign="center center" fxLayoutGap="4vw">
-            <div fxLayout="column" fxLayoutGap="2vw">
-                    <div>Welcome to <br> Globe Trotters!</div>
-                    <div><img src="assets/images/login-icon.png" width="130px" class="rounded"></div>
-                    <div>Please Log in</div>
+        <div fxLayout="row column" class="login-area" fxLayoutAlign="center center" fxLayoutGap="4vw">
+            <div *ngIf="isLogin" fxLayout="column" fxLayoutGap="2vw">
+                    <div>Welcome to <br> Travel Yak!</div>
+                    <div><img src="assets/images/yak-cartoon.jpg" width="130px" class="rounded"></div>
+                    <div >Please Log in</div >
+                    <a (click)="isLogin = false" class="sub-text">Or Sign Up</a>
             </div>
-            <div>
-                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div *ngIf="isLogin">
+                <form  [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                         <mat-form-field class="full-width">
                                 <input matInput placeholder="Username" formControlName="username">
                                 <mat-hint *ngIf="loginForm.touched && !!f.username.hasError('required')">Username Required!</mat-hint>
@@ -25,6 +26,52 @@
                 <div class="invalid" *ngIf = "invalidLogin" >
                         User or Password is invalid. Please try again!
                 </div>
+            </div>
+            <div *ngIf="!isLogin">
+                <form  [formGroup]="signupForm" (ngSubmit)="onSignup()" class="full-width">
+                    <div fxLayoutAlign="center center" fxLayoutGap="2vw" class="full-width">
+                        <img src="assets/images/yak-icon.png" class="web" width="90px">
+                    <mat-form-field  class="login-field">
+                        <input matInput placeholder="Username" formControlName="username" (keyup)="checkUsername($event)">
+                        <mat-hint *ngIf="signupForm.touched && !!f2.username.hasError('required')">Username Required!</mat-hint>
+                        <mat-icon matSuffix *ngIf="isChecked && !isAvailable" style="color:red">cancel</mat-icon>
+                        <mat-icon matSuffix *ngIf="isAvailable" style="color:green">check_circle</mat-icon>
+                     </mat-form-field>
+
+                    </div>
+                    <div fxLayout="row column" fxLayoutap="2vw" fxLayoutAlign="space-evenly" class="full-width">
+                        <mat-form-field  class="login-field">
+                            <input matInput placeholder="Name" formControlName="display_name">
+                            <mat-hint *ngIf="signupForm.touched && !!f2.display_name.hasError('required')">Name Required!</mat-hint>
+                    </mat-form-field>
+                        <mat-form-field  class="login-field">
+                            <input matInput placeholder="email" formControlName="email">
+                            <mat-hint *ngIf="signupForm.touched && !!f2.email.hasError('required')">Email Required!</mat-hint>
+                            <mat-error *ngIf="signupForm.touched && !!f2.email.hasError('email')">Please enter a valid Email!</mat-error>
+                    </mat-form-field>     
+                        <mat-form-field class="login-field pwd">
+                                <input matInput placeholder="Password" type="password" formControlName="password">
+                                <mat-hint *ngIf="signupForm.touched && !!f2.password.hasError('required')">Password Required!</mat-hint>
+                                <mat-error *ngIf="signupForm.touched && f2.password.hasError('minlength')">Password must be at least 8 characters</mat-error>
+                                <mat-error *ngIf="signupForm.touched && f2.password.hasError('pattern')">Password must have at least 1  uppercase, lowercase, digit, special character (@,#,$)</mat-error>
+      
+                        </mat-form-field>
+                        <mat-form-field class="login-field pwd" >
+                            <input matInput placeholder="Re-Enter Password" type="password" formControlName="second_password">
+                            <mat-hint *ngIf="signupForm.touched && !!f2.second_password.hasError('required') && 
+                            !(f2.password.hasError('minlength') && f2.password.hasError('pattern'))">Please Re-Enter Password!</mat-hint>
+                        </mat-form-field>
+                        <mat-error class="shift" *ngIf="signupForm.hasError('matchPassword')">Passwords must match!</mat-error>
+                    </div>
+                    <div class="button-area" fxLayout="row" fxLayoutAlign="space-evenly">
+                        <button mat-raised-button color="warn" button type="reset">Reset</button>
+                        <button mat-raised-button color="accent" button type="submit" [disabled]="signupForm.invalid || !isAvailable">SignUp</button>
+                    </div>
+                </form>
+                <div class="invalid" *ngIf = "invalidLogin" >
+                        Something went wrong. Please try again!
+                </div>
+                <a (click)="isLogin = true" class="sub-text">Or Log In</a>
             </div>
         </div>
 
