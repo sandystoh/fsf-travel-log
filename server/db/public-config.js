@@ -9,7 +9,7 @@ module.exports = {
 		database: 'travel',
 		connectionLimit: 4,
 		ssl: {
-            ca: fs.readFileSync('D:/src/repos/ca-certificate-2.crt') // process.env.DB_CA
+            ca: process.env.DB_CA // fs.readFileSync('D:/src/repos/ca-certificate-2.crt') 
         }
 	},
 	s3: {
