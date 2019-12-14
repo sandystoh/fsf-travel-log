@@ -215,7 +215,8 @@ module.exports = function(app, conns) {
                             'access_token': gToken
                         });
                         const suffix = (new Date()).getTime();
-                        fs.writeFileSync(`temp/${suffix}.jpg`, r.Body);
+                        console.log('Path', path.join(__dirname, '..', `temp/${suffix}.jpg`));
+                        fs.writeFileSync(path.join(__dirname, '..', `temp/${suffix}.jpg`), r.Body);
 
                         const drive = google.drive({
                             version: 'v3',
@@ -230,18 +231,18 @@ module.exports = function(app, conns) {
                             },
                             media: {
                                 mimeType: r.ContentType,
-                                body: fs.createReadStream(`temp/${suffix}.jpg`)
+                                body: fs.createReadStream(path.join(__dirname, '..', `temp/${suffix}.jpg`))
                             }
                         });
                         driveResponse.then(data => {
                             console.log('Drive Response', data);
-                            fs.unlink(`../temp/${suffix}.jpg`,()=> {});
+                            fs.unlink(path.join(__dirname, '..', `temp/${suffix}.jpg`),()=> {});
                             if (data.status == 200) resp.status(200).json({message: "Image Uploaded"}); 
                             else resp.status(500).json({error: "Database Error"});
                         }).catch(err => { resp.status(500).json({error: "Database Error "+ err}); })           
                     })
                     .catch(error => {
-                        resp.status(500).json({error: "Database Error "+ error.error});
+                        resp.status(500).json({error: "Database Error "+ error});
                     });
                 } 
             })
