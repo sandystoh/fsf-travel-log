@@ -1,5 +1,5 @@
 var LocalStrategy    = require('passport-local').Strategy;
-var GoogleStrategy   = require('passport-google-oauth').OAuth2Strategy;
+var GoogleStrategy   = require('passport-google-oauth20').Strategy;
 
 const mydb = require('./mydbutil');
 
@@ -65,7 +65,7 @@ module.exports = function(passport, conns) {
         clientID        : conns.google.clientId,
         clientSecret    : conns.google.clientSecret,
         callbackURL     : 'https://serene-cove-28842.herokuapp.com/auth/google/callback',
-        passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
+        passReqToCallback : true 
     },
     function(req, accessToken, refreshToken, profile, done) {
         console.log('file', req.file);
