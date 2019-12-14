@@ -234,9 +234,10 @@ module.exports = function(app, conns) {
                             }
                         });
                         driveResponse.then(data => {
+                            console.log('Drive Response', data);
                             fs.unlink(`../temp/${suffix}.jpg`,()=> {});
                             if (data.status == 200) resp.status(200).json({message: "Image Uploaded"}); 
-                            else resp.status(500).json({error: "Database Error "+ error.error});
+                            else resp.status(500).json({error: "Database Error"});
                         }).catch(err => { resp.status(500).json({error: "Database Error "+ err}); })           
                     })
                     .catch(error => {
