@@ -100,6 +100,7 @@ module.exports = function(app, passport, conns) {
         if (!(authorization && authorization.startsWith('Bearer ')))
             return resp.status(403).json({ message: 'not authorized' })
         const tokenStr = authorization.substring('Bearer '.length);
+        console.log('tokenStr', tokenStr);
         try {
             var decoded = jwt.verify(tokenStr, conns.secret);
             username = decoded.sub;

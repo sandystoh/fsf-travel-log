@@ -35,9 +35,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use(express.static(__dirname + '/public'));
-
 require('./routes/authenticate')(app, passport, conns);
-// require('./routes/authenticate')(app, conns, passport);
 require('./routes/main')(app, conns);
 require('./routes/places')(app, conns);
 require('./routes/journeys')(app, conns);
