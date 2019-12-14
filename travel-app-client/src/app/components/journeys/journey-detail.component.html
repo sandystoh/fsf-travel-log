@@ -13,15 +13,15 @@
                 <span *ngIf="journey.end_date"> - {{ journey.end_date | date: "mediumDate"}}</span></div>
         </div>
         <div class="action-buttons journey-buttons" fxLayout="row column" fxLayoutAlign="center center">
-                <div class="detail-white box-area" *ngIf="user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
+                <div class="detail-white box-area" *ngIf="user && user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
                 (click)="openJourneyEditDialog()">
                 <mat-icon>add_box</mat-icon><span>Edit Journey</span></div>
-                <div class="detail-white box-area" *ngIf="user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
+                <div class="detail-white box-area" *ngIf="user && user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
                 (click)="deleteJourney()">
                 <mat-icon>delete_forever</mat-icon><span>Delete Journey</span></div>
         </div>
         <div [style.background]="journey.url" *ngIf="journey.url" class="place-image"></div>
-        <div class="detail-white box-area-2" *ngIf="user.username == journey.owner && journey.url" fxLayoutGap="1vw" fxLayoutAlign="center"
+        <div class="detail-white box-area-2" *ngIf="user && user.username == journey.owner && journey.url" fxLayoutGap="1vw" fxLayoutAlign="center"
         (click)="saveToDrive()"><mat-icon>cloud_upload</mat-icon><span>Save Image to Google Drive</span></div>
 
         <div class="place-description" *ngIf="journey.description !== ''">
@@ -31,14 +31,14 @@
         </div>
         <div *ngIf="places.length" class="description-title detail-gold">Map of Places</div>
         <div class="action-buttons" fxLayout="row column" fxLayoutAlign="space-evenly center">
-            <div class="detail-white box-area" *ngIf="user.username == journey.owner && journey.num_places < 25" fxLayoutGap="1vw" fxLayoutAlign="center"
+            <div class="detail-white box-area" *ngIf="user && user.username == journey.owner && journey.num_places < 25" fxLayoutGap="1vw" fxLayoutAlign="center"
                 [routerLink]="['/places/add', journey.owner]" [queryParams]="{journey: journey.id, type: journey.type}">
                 <mat-icon>add_box</mat-icon><span>Add Place</span>
             </div>
             <div class="detail-white box-area" *ngIf="places.length" fxLayoutGap="1vw" fxLayoutAlign="center"
                 (click)="openJourneyMapDialog()">
                 <mat-icon>map</mat-icon><span>Full Map</span></div>
-            <div class="detail-white box-area" *ngIf="places.length > 1 && user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
+            <div class="detail-white box-area" *ngIf="places.length > 1 && user && user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
                 (click)="openReorderDialog()">
                 <mat-icon>compare_arrows</mat-icon><span>Sort Places</span></div>
         </div>

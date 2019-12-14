@@ -19,13 +19,12 @@ const ROUTES: Routes = [
   { path: 'place/:id', component: PlaceDetailComponent},
   { path: 'journeys/:user', component: JourneysListComponent},
   { path: 'journey/:id', component: JourneyDetailComponent},
-  { path: 'places/add/:user', component: PlacesFormComponent}, //, canActivate: [AuthService]},
-  { path: 'places/edit/:user/:id', component: PlacesEditComponent}, //, canActivate: [AuthService]},
+  { path: 'places/add/:user', component: PlacesFormComponent, canActivate: [AuthService]},
+  { path: 'places/edit/:user/:id', component: PlacesEditComponent, canActivate: [AuthService]},
   { path: 'map/:user', component: MapComponent},
   { path: 'auto', component: AutocompleteComponent},
   { path: '**', redirectTo: '/', pathMatch: 'full' }
 ];
-// Feature Component Routes will be under localhost:4200/bgg/*
 
 @NgModule({
   imports: [RouterModule.forRoot(ROUTES, {

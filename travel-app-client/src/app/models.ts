@@ -8,8 +8,8 @@ export interface LoginResponse {
 
 export interface User {
     username: string;
-    displayName: string;
-    token: string;
+    displayName?: string;
+    token?: string;
 }
 
 export interface MapResponse {

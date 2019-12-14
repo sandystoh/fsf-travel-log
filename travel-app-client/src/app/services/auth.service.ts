@@ -28,7 +28,8 @@ export class AuthService implements CanActivate {
     this.token = localStorage.getItem('travel-token');
     this.username = localStorage.getItem('travel-username');
     this.displayName = localStorage.getItem('travel-name');
-    return ({username: this.username, displayName: this.displayName, token: this.token});
+    if(this.token) return ({username: this.username, displayName: this.displayName, token: this.token});
+    else return null;
   }
 
   authenticate(username: string, password: string): Promise<LoginResponse> {
