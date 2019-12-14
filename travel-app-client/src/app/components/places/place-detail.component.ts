@@ -51,9 +51,9 @@ export class PlaceDetailComponent implements OnInit {
         `${this.user.displayName} is planning a trip to ${this.place.title}. Join them!`;
       const img = `places/${this.place.image_url}`;
       const title = `Travel Yak: Travel to ${this.place.title} with ${this.user.displayName}`;
-      this.pagelink = `https://serene-cove-28842.herokuapp.com/place/${this.place.id}`;
+      this.pagelink = `https://serene-cove-28842.herokuapp.com/#/place/${this.place.id}`;
       console.log('link', this.pagelink);
-      this.meta.setSocialMediaTags(`https://serene-cove-28842.herokuapp.com/place/${this.place.id}`, title, desc, img )
+      this.meta.setSocialMediaTags(`https://serene-cove-28842.herokuapp.com/#/place/${this.place.id}`, title, desc, img )
     }).then(() => {
       // let url_string = `../../assets/images/placeholder.jpeg`;
       this.place.url = '';

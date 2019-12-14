@@ -199,7 +199,7 @@ module.exports = function(app, conns) {
             getGoogleToken([decoded.sub])
             .then(r => {
                 if(!r.result[0].google_token) {
-                    resp.redirect('/auth/google')
+                    resp.redirect('/api/auth/google')
                 }
                 else {
                     let j;

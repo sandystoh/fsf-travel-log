@@ -12,7 +12,7 @@
                       <mat-icon>menu</mat-icon>
                     </button>    
                     <div><mat-icon class="avatar-icon web">account_circle</mat-icon></div>
-                    <div class="smythe avatar web" [matMenuTriggerFor]="profile"> {{ displayName }}</div> 
+                    <div class="smythe avatar web" *ngIf="displayName" [matMenuTriggerFor]="profile"> {{ displayName }}</div> 
                     <mat-menu #profile="matMenu">
                       <button mat-menu-item (click)="linkToGoogle()">
                         <mat-icon>person_add</mat-icon>
