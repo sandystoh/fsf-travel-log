@@ -39,30 +39,31 @@
                      </mat-form-field>
 
                     </div>
-                    <div fxLayout="row column" fxLayoutap="2vw" fxLayoutAlign="space-evenly" class="full-width">
-                        <mat-form-field  class="login-field">
+                    <div fxLayout="row column" fxLayoutGap="3vw" fxLayoutAlign="center" class="full-width contain">
+                        <mat-form-field class="login-field">
                             <input matInput placeholder="Name" formControlName="display_name">
                             <mat-hint *ngIf="signupForm.touched && !!f2.display_name.hasError('required')">Name Required!</mat-hint>
                     </mat-form-field>
-                        <mat-form-field  class="login-field">
+                        <mat-form-field class="login-field">
                             <input matInput placeholder="email" formControlName="email">
                             <mat-hint *ngIf="signupForm.touched && !!f2.email.hasError('required')">Email Required!</mat-hint>
                             <mat-error *ngIf="signupForm.touched && !!f2.email.hasError('email')">Please enter a valid Email!</mat-error>
                     </mat-form-field>     
-                        <mat-form-field class="login-field pwd">
-                                <input matInput placeholder="Password" type="password" formControlName="password">
-                                <mat-hint *ngIf="signupForm.touched && !!f2.password.hasError('required')">Password Required!</mat-hint>
-                                <mat-error *ngIf="signupForm.touched && f2.password.hasError('minlength')">Password must be at least 8 characters</mat-error>
-                                <mat-error *ngIf="signupForm.touched && f2.password.hasError('pattern')">Password must have at least 1  uppercase, lowercase, digit, special character (@,#,$)</mat-error>
-      
-                        </mat-form-field>
-                        <mat-form-field class="login-field pwd" >
-                            <input matInput placeholder="Re-Enter Password" type="password" formControlName="second_password">
-                            <mat-hint *ngIf="signupForm.touched && !!f2.second_password.hasError('required') && 
-                            !(f2.password.hasError('minlength') && f2.password.hasError('pattern'))">Please Re-Enter Password!</mat-hint>
-                        </mat-form-field>
+                    <mat-form-field  class="login-field pwd">
+                            <input matInput placeholder="Password" type="password" formControlName="password">
+                            <mat-hint *ngIf="signupForm.touched && !!f2.password.hasError('required')">Password Required!</mat-hint>
+                            <mat-error *ngIf="signupForm.touched && f2.password.hasError('minlength')">Password must be at least 8 characters</mat-error>
+                            <mat-error *ngIf="signupForm.touched && f2.password.hasError('pattern')">Password must have at least 1  uppercase, lowercase, digit, special character (@,#,$)</mat-error>
+    
+                    </mat-form-field>
+                    <mat-form-field  class="login-field pwd" >
+                        <input matInput placeholder="Re-Enter Password" type="password" formControlName="second_password">
+                        <mat-hint *ngIf="signupForm.touched && !!f2.second_password.hasError('required') && 
+                        !(f2.password.hasError('minlength') && f2.password.hasError('pattern'))">Please Re-Enter Password!</mat-hint>
+                    </mat-form-field>
+                    <div></div>
+                        </div>
                         <mat-error class="shift" *ngIf="signupForm.hasError('matchPassword')">Passwords must match!</mat-error>
-                    </div>
                     <div class="button-area" fxLayout="row" fxLayoutAlign="space-evenly">
                         <button mat-raised-button color="warn" button type="reset">Reset</button>
                         <button mat-raised-button color="accent" button type="submit" [disabled]="signupForm.invalid || !isAvailable">SignUp</button>
