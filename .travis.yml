@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - node
+dist: bionic
+sudo: required
+branches:
+  only:
+   - release
+deploy:
+  provider: heroku
+  skip_cleanup: true
+  api_key: $HEROKU_TOKEN
+  app: serene-cove-28842
+  on:
+    branch: release
+    repo: sandystoh/fsf-travel-log

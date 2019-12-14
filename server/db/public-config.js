@@ -9,7 +9,7 @@ module.exports = {
 		database: 'travel',
 		connectionLimit: 4,
 		ssl: {
-            ca: fs.readFileSync(process.env.DB_CA)
+            ca: fs.readFileSync('D:/src/repos/ca-certificate-2.crt') // process.env.DB_CA
         }
 	},
 	s3: {
@@ -22,5 +22,14 @@ module.exports = {
 	},
 	gmaps: {
 		key: process.env.GMAPS_KEY
-	}
+	},
+	fb: {
+		clientId: process.env.FB_ID,
+		clientSecret: process.env.FB_SECRET
+	},
+	google: {
+		clientId: process.env.GOOGLE_CLIENT_ID,
+		clientSecret: process.env.GOOGLE_CLIENT_SECRET
+	},
+	sessionSecret: process.env.SESSION_SECRET
 }

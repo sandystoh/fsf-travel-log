@@ -142,7 +142,7 @@ export class PlacesEditComponent implements OnInit {
   this.router.navigate(['/']);
 }
 
-onSubmit(form: NgForm) {
+onSubmit() {
   this.isSubmitted = true;
   const v = this.placeForm.getRawValue();
   console.log(this.imageFile.nativeElement.files[0]); // undefined if no file

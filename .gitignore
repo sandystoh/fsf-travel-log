@@ -2,6 +2,7 @@
 /server/package-lock.json
 /server/db/config.js
 /server/unit.js
+/server/.env
 
 /travel-app-client/node_modules
 /travel-app-client/package-lock.json

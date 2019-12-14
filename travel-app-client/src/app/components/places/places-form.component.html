@@ -4,7 +4,7 @@
 <div class="place-form">
     <mat-card class="place-card">
         
-        <form [formGroup]="placeForm" (ngSubmit)="onSubmit(placeForm)">
+        <form [formGroup]="placeForm" (ngSubmit)="onSubmit()">
             <div  fxLayout="column" fxLayoutGap="2vw">
         Search Location *
         <app-autocomplete #auto (setPlaceString)="getPlace($event)"></app-autocomplete>

@@ -73,7 +73,7 @@ export class JourneyFormComponent implements OnInit {
   };
 }
 
-onSubmit(form: NgForm) {
+onSubmit() {
   this.isSubmitted = true;
   const v = this.journeyForm.getRawValue();
   console.log(this.imageFile.nativeElement.files[0]); // undefined if no file

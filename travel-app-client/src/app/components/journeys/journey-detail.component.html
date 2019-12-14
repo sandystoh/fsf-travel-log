@@ -43,7 +43,7 @@
                 <mat-icon>compare_arrows</mat-icon><span>Sort Places</span></div>
         </div>
         <div fxLayout="row column" fxLayoutAlign="flex-start">
-        <div *ngIf="places.length" class="map-image"><img [src]="'/api/journey/map/'+journey.id+'?nocache='+random" style='height: 100%; width: 100%; object-fit: contain'></div>
+        <div *ngIf="places.length" class="map-image"><img [src]="mapImageUrl" style='height: 100%; width: 100%; object-fit: contain'></div>
         <div *ngIf="places.length"  class="map-legend">
             <div *ngFor="let p of places">
                 <div class="legend-entries" [routerLink]="['/place/',p.id]">

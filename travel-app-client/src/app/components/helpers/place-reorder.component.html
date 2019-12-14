@@ -5,7 +5,7 @@
         <div *ngFor="let p of newPlaces">
         <div class="legend-entries">
                 <div fxLayout="row" fxLayoutGap="2vw">
-                <div class="box-alpha" fxLayoutAlign="center center">{{p.journey_order}}</div>
+                <div class="box-alpha" fxLayoutAlign="center center">{{p.alpha}}</div>
                 <span class="legend-title">{{p.title}}</span>
                 <div class="star-area" fxLayout="column" fxLayoutAlign="space-evenly">
                     <div><button class="arrow-button" [disabled]="p.journey_order == newPlaces.length" (click)="downOne(p.journey_order)" mat-icon-button><mat-icon>arrow_downward</mat-icon></button>

@@ -12,7 +12,11 @@ const loadConfig = (config) => {
 		}),
 		mongodb: new MongoClient(config.mongodb.atlasurl, { useUnifiedTopology: true }),
 		secret: config.sessionSecret,
-		gmaps: config.gmaps.key
+		gmaps: config.gmaps.key,
+		google: {
+			clientId: config.google.clientId,
+			clientSecret: config.google.clientSecret
+		}
 	}
 };
 

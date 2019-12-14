@@ -162,7 +162,7 @@ reset() {
   this.placeForm.controls.type.setValue('BEEN');
 }
 
-onSubmit(form: NgForm) {
+onSubmit() {
   this.isSubmitted = true;
   const v = this.placeForm.getRawValue();
   console.log(this.imageFile.nativeElement.files[0]); // undefined if no file

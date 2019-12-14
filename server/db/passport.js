@@ -1,6 +1,5 @@
 var LocalStrategy    = require('passport-local').Strategy;
 var GoogleStrategy   = require('passport-google-oauth').OAuth2Strategy;
-const config = require('./config');
 
 const mydb = require('./mydbutil');
 
@@ -63,8 +62,8 @@ module.exports = function(passport, conns) {
     const writeGoogleIdToken = mydb.mkQuery('update users set google_id = ? , google_token = ? where username = ?', conns.mysql);
 
     passport.use(new GoogleStrategy({
-        clientID        : config.google.clientId,
-        clientSecret    : config.google.clientSecret,
+        clientID        : conns.google.clientId,
+        clientSecret    : conns.google.clientSecret,
         callbackURL     : 'http://localhost:3000/auth/google/callback',
         passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
     },

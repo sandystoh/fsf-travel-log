@@ -29,6 +29,7 @@ export class JourneyDetailComponent implements OnInit {
   user: User;
   random = (new Date()).getTime();
   countries: any;
+  mapImageUrl: string;
   
   constructor(private router: Router, private route: ActivatedRoute, private authSvc: AuthService,
               private travelSvc: TravelService, private sanitizer: DomSanitizer,
@@ -38,7 +39,6 @@ export class JourneyDetailComponent implements OnInit {
     this.user = this.authSvc.getUser();
     this.route.params.subscribe(params => {
       this.id = +params.id;
-      console.log(this.id);
       this.getJourney(this.id);
    });
   }
@@ -55,6 +55,7 @@ export class JourneyDetailComponent implements OnInit {
     }).then(r => {
       console.log(r);
       this.journey = r.journey;
+      this.mapImageUrl = '/api/journey/map/'+r.journey.id+'?nocache='+ this.random
       this.places = r.places.map(v => {
         let url_string = `../../assets/images/placeholder.jpeg`;
         if(v.image_url !== null && v.image_url != '') url_string = `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/places/thumbnails/${v.image_url}`;

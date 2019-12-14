@@ -89,8 +89,7 @@ module.exports = function(app, conns) {
       where p.journey_id = ? and p.journey_order = ?`, conns.mysql)
     
     // Get Place by Place ID - Join with Journey to get Journey Data (if applicable otherwise returns null)
-    app.get('/api/place/:id', // **** add token to read private
-    (req, resp) => {
+    app.get('/api/place/:id', (req, resp) => {
         let place;
         return getPlaceById([req.params.id])
         .then(r => {
@@ -101,12 +100,12 @@ module.exports = function(app, conns) {
             else return Promise.resolve(false);
         })
         .then(r => {
-            if(r) place.next_id = r.result[0].id;
+            if(r && r.result[0]) place.next_id = r.result[0].id;
             if(place.journey_id !== 0 && place.journey_order > 1)
                 return getPlaceIdByJourneyOrder([place.journey_id, place.journey_order - 1]);
             else return Promise.resolve(false);
         }).then(r => {
-            if(r) place.prev_id = r.result[0].id;
+            if(r && r.result[0]) place.prev_id = r.result[0].id;
             mydb.mongoFind({client: conns.mongodb, db: 'travel', collection: 'countries',  find: {code: `${place.country}` } })
             .then(r => {
                 place.country_name = r[0].name;
