@@ -47,7 +47,7 @@ export class PlaceDetailComponent implements OnInit {
       console.log(r);
       this.place = r;
 
-      this.fbLink = `https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fserene-cove-28842.herokuapp.com%2F%23%2F%2F%23%2Fplace%2F${this.place.id}&amp;src=sdkpreparse`;
+      this.fbLink = `https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fserene-cove-28842.herokuapp.com%2F%23%2Fplace%2F${this.place.id}&amp;src=sdkpreparse`;
 
       // For Meta Tags
       const desc = (r.type == 'BEEN') ? `${this.user.displayName} shares their experiences at ${this.place.title}!` : 

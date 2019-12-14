@@ -193,7 +193,7 @@ module.exports = function(app, conns) {
         if (!(authorization && authorization.startsWith('Bearer ')))
             return resp.status(403).json({ message: 'not authorized' })
         const tokenStr = authorization.substring('Bearer '.length);
-        
+        console.log('tokenStr', tokenStr);
         try {
             var decoded = jwt.verify(tokenStr, conns.secret);
             getGoogleToken([decoded.sub])
@@ -237,7 +237,7 @@ module.exports = function(app, conns) {
                             fs.unlink(`temp/${suffix}.jpg`,()=> {});
                             if (data.status == 200) resp.status(200).json({message: "Image Uploaded"}); 
                             else resp.status(500).json({error: "Database Error "+ error.error});
-                        }).catch(err => { resp.status(500).json({error: "Database Error "+ error.error}); })           
+                        }).catch(err => { resp.status(500).json({error: "Database Error "+ err}); })           
                     })
                     .catch(error => {
                         resp.status(500).json({error: "Database Error "+ error.error});

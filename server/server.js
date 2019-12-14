@@ -5,6 +5,7 @@ const fs = require('fs');
 const express = require('express');
 const morgan = require('morgan');
 const session = require('express-session');
+const cors = require('cors');
 
 let config;
 if (fs.existsSync('./db/config.js')) { config = require('./db/config'); }
@@ -21,6 +22,7 @@ const PORT = parseInt(process.argv[2] || process.env.APP_PORT || process.env.POR
 
 const app = express();
 app.use(morgan('tiny'));
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: config.sessionSecret,

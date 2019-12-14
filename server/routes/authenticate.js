@@ -122,7 +122,7 @@ module.exports = function(app, passport, conns) {
     });
     
     app.get('/api/auth/google',
-    passport.authorize('google', { scope: ['https://www.googleapis.com/auth/drive',
+    passport.authorize('google', { scope: ['https://www.googleapis.com/auth/drive', 
     'https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/userinfo.email'] })
     );
   
