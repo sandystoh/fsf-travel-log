@@ -8,6 +8,7 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../helpers/confirm-dialog.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Location} from '@angular/common';
+import { MetaTagService } from 'src/app/services/meta-tag.service';
 
 @Component({
   selector: 'app-place-detail',
@@ -23,7 +24,8 @@ export class PlaceDetailComponent implements OnInit {
   constructor(private router: Router, private route: ActivatedRoute,
               private travelSvc: TravelService, private authSvc: AuthService,
               private sanitizer: DomSanitizer, public dialog: MatDialog,
-              private snackBar: MatSnackBar, private location: Location) { }
+              private snackBar: MatSnackBar, private location: Location,
+              private meta: MetaTagService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -42,6 +44,13 @@ export class PlaceDetailComponent implements OnInit {
     this.travelSvc.getPlaceById(id).then(r => {
       console.log(r);
       this.place = r;
+
+      // For Meta Tags
+      const desc = (r.type == 'BEEN') ? `${this.user.displayName} shares their experiences at ${this.place.title}!` : 
+        `${this.user.displayName} is planning a trip to ${this.place.title}. Join them!`;
+      const img = `places/${this.place.image_url}`;
+      const title = `Travel Yak: Travel to ${this.place.title} with ${this.user.displayName}`;
+      this.meta.setSocialMediaTags(`http://localhost:4200/#/place/${this.place.id}`, title, desc, img )
     }).then(() => {
       // let url_string = `../../assets/images/placeholder.jpeg`;
       this.place.url = '';

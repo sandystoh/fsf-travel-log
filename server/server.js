@@ -31,6 +31,7 @@ app.use(session({
 
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(require('prerender-node'));
 
 app.use(express.static(__dirname + '/public'));
 
