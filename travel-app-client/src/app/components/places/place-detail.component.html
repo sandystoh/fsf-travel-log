@@ -26,7 +26,7 @@
             [routerLink]="['/places/edit', place.owner, place.id]">
             <mat-icon>add_box</mat-icon><span>Edit Place</span></div>
             <div class="fb-share-button" data-href="pagelink" data-layout="button_count" 
-            data-size="large"><a target="_blank" href="'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fserene-cove-28842.herokuapp.com%2F%23%2F%2F%23%2Fplace%2F'+place.id+&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+            data-size="large"><a target="_blank" [href]="fbLink" class="fb-xfbml-parse-ignore">Share</a></div>
             <div class="detail-white box-area" *ngIf="user && user.username == place.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
             (click)="deletePlace()">
             <mat-icon>delete_forever</mat-icon><span>Delete Place</span></div>
