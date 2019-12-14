@@ -107,7 +107,7 @@ module.exports = function(app, passport, conns) {
         .then(r => {
             console.log('FIND USER TOKEN RESULT', r.result);
             if(!r.result[0].google_token) {
-                resp.redirect('/api/linkaccounts.html')
+                resp.redirect('/api/auth/google')
             }
             else {
                 const gToken = r.result[0].google_token;
