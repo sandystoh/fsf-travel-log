@@ -51,10 +51,10 @@ export class PlaceDetailComponent implements OnInit {
       this.fbLink = `https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fserene-cove-28842.herokuapp.com%2F%23%2Fplace%2F${this.place.id}&amp;src=sdkpreparse`;
 
       // For Meta Tags
-      const desc = (r.type == 'BEEN') ? `${this.user.displayName} shares their experiences at ${this.place.title}!` : 
-        `${this.user.displayName} is planning a trip to ${this.place.title}. Join them!`;
+      const desc = (r.type == 'BEEN') ? `${this.place.owner} shares their experiences at ${this.place.title}!` : 
+        `${this.place.owner} is planning a trip to ${this.place.title}. Join them!`;
       const img = `places/${this.place.image_url}`;
-      const title = `Travel Yak: Travel to ${this.place.title} with ${this.user.displayName}`;
+      const title = `Travel Yak: Travel to ${this.place.title} with ${this.place.owner}`;
       this.pagelink = `https://serene-cove-28842.herokuapp.com/#/place/${this.place.id}`;
       console.log('link', this.pagelink);
       this.meta.setSocialMediaTags(`https://serene-cove-28842.herokuapp.com/#/place/${this.place.id}`, title, desc, img )
