@@ -15,16 +15,17 @@ const travel = require('../db/travelutil');
 module.exports = function(app, conns) {
 
     const getPlacesByUser = mydb.mkQuery(`Select p.*, j.title as journey_title from places p
-    left join journeys j on p.journey_id = j.id where p.owner = ? and country like ? and p.active = 1
+    left join journeys j on p.journey_id = j.id where p.owner = ? and country like ? and p.type = ? and p.active = 1
     order by title limit ? offset ? `, conns.mysql)
     
     // Get all Places for particular user (pagination: limit/offset)  (with country filter)
     app.get('/api/places/:user', (req, resp) => {
         const limit = parseInt(req.query.limit) || 12;
         const offset = parseInt(req.query.offset) || 0;
+        const type = req.query.type || 'BEEN';
         const country = req.query.country || '%';
-        p0 = sql.countWhere(conns.mysql, 'places', `owner = ? and country like ? and active = 1`, [req.params.user, country]);
-        p1 = getPlacesByUser([req.params.user, country, limit, offset]);
+        p0 = sql.countWhere(conns.mysql, 'places', `owner = ? and country like ? and type = ? and active = 1`, [req.params.user, country, type]);
+        p1 = getPlacesByUser([req.params.user, country, type, limit, offset]);
         
         Promise.all([p0, p1]).then(r => {
             const count = r[0].result[0].count;
@@ -51,9 +52,9 @@ module.exports = function(app, conns) {
     });
 
     const getPlacesMapByUser = mydb.mkQuery(`Select id, title, lat, lng, image_url, date, rating from places p
-    where owner = ? and active = 1`, conns.mysql)
-    const getCountryVisits = mydb.mkQuery(`Select country, count(*) as count from places p where owner = ? and active = 1 group by country`, conns.mysql)
-    const getJourneyCount = mydb.mkQuery(`Select count(*) as count from journeys where owner = ? and active = 1`, conns.mysql)
+    where owner = ? and type='BEEN' and active = 1`, conns.mysql)
+    const getCountryVisits = mydb.mkQuery(`Select country, count(*) as count from places p where owner = ? and type='BEEN' and active = 1 group by country`, conns.mysql)
+    const getJourneyCount = mydb.mkQuery(`Select count(*) as count from journeys where owner = ? and type='BEEN' and active = 1`, conns.mysql)
 
     // Get all Places for particular user for display on map
     app.get('/api/places/map/:user', (req, resp) => {

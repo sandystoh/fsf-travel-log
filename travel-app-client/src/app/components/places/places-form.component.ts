@@ -48,14 +48,17 @@ export class PlacesFormComponent implements OnInit {
     });
 
     this.journey = parseInt(this.route.snapshot.queryParams['journey']);
-    this.getJourneyList('BEEN').then(() => {
-      if(this.journey) this.selectJourney(this.journey); 
-    });
-    this.type = this.route.snapshot.queryParams['type'];
+       
     console.log(this.journey);
     if(this.journey) {
+      this.type = this.route.snapshot.queryParams['type'];
+      this.getJourneyList(this.type).then(() => {
+        this.f.journey.setValue(this.journey);
+        this.selectJourney(this.journey); 
+      });
       this.f.type.setValue(this.type);
-      this.f.journey.setValue(this.journey);
+    } else {
+      this.getJourneyList('BEEN');
     }
   }
 
@@ -110,7 +113,6 @@ export class PlacesFormComponent implements OnInit {
     });
     return Promise.resolve();
   })
-
  }
 
  changeType(e) {
@@ -122,6 +124,8 @@ export class PlacesFormComponent implements OnInit {
    if (e !== 0) {
       let j = this.journeys.find(o => o.id == e ); 
       if (this.f.date.value == "" && j.date != '0000-00-00 00:00:00') this.f.date.setValue(j.date);
+   } else {
+      this.f.date.value == "";
    }
  }
 

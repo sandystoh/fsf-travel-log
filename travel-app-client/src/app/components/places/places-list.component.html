@@ -21,6 +21,11 @@
         <button mat-mini-fab color="accent" (click)="clickSearchButton()" ><mat-icon>search</mat-icon></button>
       </form>
 
+      <mat-button-toggle-group [(ngModel)]="type" (change)="onToggle()">
+        <mat-button-toggle class="toggle" value="BEEN">BEEN</mat-button-toggle>
+        <mat-button-toggle class="toggle" value="DREAM">DREAM</mat-button-toggle>
+      </mat-button-toggle-group>
+
 <div *ngIf="isLoading" style="margin-top:30px;" fxLayoutAlign="center">
         <mat-spinner color="accent"></mat-spinner>
 </div>

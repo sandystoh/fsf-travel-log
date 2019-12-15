@@ -116,9 +116,9 @@ export class JourneyDetailComponent implements OnInit {
 
   deleteJourney() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '500px',
-      maxHeight: '80vh',
+      width: '350px',
       maxWidth: '90vw',
+      maxHeight: '60vh',
       data: {id: this.journey.id, title: this.journey.title, recordType: 'Journey'}
     });
 
@@ -152,7 +152,7 @@ export class JourneyDetailComponent implements OnInit {
 
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
-      duration: 2000,
+      duration: 3000,
     });
   }
 

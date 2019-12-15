@@ -23,10 +23,11 @@ export class TravelService {
     );
   }
 
-  getPlaces(username, limit, offset): Promise<PlacesResponse> {
+  getPlaces(username, limit, offset, type): Promise<PlacesResponse> {
     const params = new HttpParams()
       .set('limit', limit)
-      .set('offset', offset);
+      .set('offset', offset)
+      .set('type', type);
     return (
       this.http.get<PlacesResponse>('/api/places/'+ username, { params })
         .toPromise()
@@ -36,11 +37,12 @@ export class TravelService {
     );
   }
 
-  searchPlaces(username, q, limit, offset) {
+  searchPlaces(username, q, limit, offset, type) {
     const params = new HttpParams()
       .set('q', q)
       .set('limit', limit)
-      .set('offset', offset);
+      .set('offset', offset)
+      .set('type', type);
     return (
       this.http.get<PlacesResponse>('/api/places/search/'+ username, { params })
         .toPromise()
@@ -97,10 +99,11 @@ export class TravelService {
     return this.http.get<Journey[]>('/api/journeys/list/' + username, {params}).toPromise();
   }
 
-  getJourneys(username, limit, offset): Promise<JourneysResponse> {
+  getJourneys(username, limit, offset, type): Promise<JourneysResponse> {
     const params = new HttpParams()
       .set('limit', limit)
-      .set('offset', offset);
+      .set('offset', offset)
+      .set('type', type);
     return (
       this.http.get<JourneysResponse>('/api/journeys/'+ username, { params })
         .toPromise()
@@ -110,11 +113,12 @@ export class TravelService {
     );
   }
 
-  searchJourneys(username, q, limit, offset) {
+  searchJourneys(username, q, limit, offset, type) {
     const params = new HttpParams()
       .set('q', q)
       .set('limit', limit)
-      .set('offset', offset);
+      .set('offset', offset)
+      .set('type', type);
     return (
       this.http.get<JourneysResponse>('/api/journeys/search/'+ username, { params })
         .toPromise()

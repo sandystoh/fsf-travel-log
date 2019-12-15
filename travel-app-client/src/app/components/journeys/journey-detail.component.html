@@ -10,8 +10,8 @@
             <div class="info-icons" fxLayoutAlign="center center" fxLayoutGap="2vw">
             <span *ngIf="journey.type == 'BEEN'" class="detail-gold" title="BEEN"><mat-icon>cloud_done</mat-icon></span>
             <span *ngIf="journey.type == 'DREAM'" class="detail-gold" title="DREAM"><mat-icon>cloud_queue</mat-icon></span>
-            <div><span class="licon icon-dat"></span>{{journey.date | date: "mediumDate"}}
-                <span *ngIf="journey.end_date"> - {{ journey.end_date | date: "mediumDate"}}</span></div>
+            <div ><span class="licon icon-dat"></span><span *ngIf="journey.date != '0000-00-00 00:00:00'">{{journey.date | date: "mediumDate"}}</span>
+                <span *ngIf="journey.end_date != '0000-00-00 00:00:00'"> - {{ journey.end_date | date: "mediumDate"}}</span></div>
         </div>
         <div class="action-buttons journey-buttons" fxLayout="row column" fxLayoutAlign="center center">
                 <div class="detail-white box-area" *ngIf="user && user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"

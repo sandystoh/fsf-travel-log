@@ -70,7 +70,9 @@ export class PlaceDetailComponent implements OnInit {
 
   deletePlace() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '250px',
+      width: '350px',
+      maxWidth: '90vw',
+      maxHeight: '60vh',
       data: {id: this.place.id, title: this.place.title, recordType: 'Place'}
     });
 
@@ -103,7 +105,7 @@ export class PlaceDetailComponent implements OnInit {
 
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
-      duration: 2000,
+      duration: 3000,
     });
   }
 

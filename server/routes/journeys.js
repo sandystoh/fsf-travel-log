@@ -16,8 +16,8 @@ const travel = require('../db/travelutil');
 
 module.exports = function(app, conns) {
 
-    const getJourneysByUser = mydb.mkQuery(`select * from journeys where owner = ? and active = 1  order by title limit ? offset ?`, conns.mysql)
-    const countJourneysByUser = mydb.mkQuery(`select count(*) as count from journeys where owner = ? and active = 1`, conns.mysql)
+    const getJourneysByUser = mydb.mkQuery(`select * from journeys where owner = ? and type = ? and active = 1  order by title limit ? offset ?`, conns.mysql)
+    const countJourneysByUser = mydb.mkQuery(`select count(*) as count from journeys where owner = ? and type = ? and active = 1`, conns.mysql)
 
     const getJourneysByUserCountry = mydb.mkQuery(`select * from journeys where owner = ? and id in (
         select distinct(journey_id) from places where owner = ? and country like ?) order by title limit ? offset ?`, conns.mysql)
@@ -29,9 +29,10 @@ module.exports = function(app, conns) {
         const user = req.params.user;
         const limit = parseInt(req.query.limit) || 20;
         const offset = parseInt(req.query.offset) || 0;
+        const type = req.query.type || 'BEEN';
         const country = req.query.country || '%';
-        p0 = countJourneysByUser([user] );
-        p1 = getJourneysByUser([user, limit, offset] );
+        p0 = countJourneysByUser([user, type] );
+        p1 = getJourneysByUser([user, type, limit, offset] );
         //p0 = countJourneysByUserCountry([user, user, country] );
         //p1 = getJourneysByUserCountry([user, user, country, limit, offset] );
 

@@ -30,6 +30,7 @@ export class PlacesListComponent implements OnInit {
   isError = false;
   pageStatus="all";
   user: User;
+  type = 'BEEN';
 
   search = new FormControl();
   filteredOptions: Observable<string[]>;
@@ -75,6 +76,16 @@ export class PlacesListComponent implements OnInit {
     return this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
 
+  onToggle() {
+    console.log(this.type);
+    console.log(this.q);
+    this.offset = 0;
+    this.loadReset();
+    this.pageStatus = "search";
+    if(this.q === '') this.getPlaces();
+    else this.searchPlaces();
+  }
+
   back() {
     this.loadReset();;
     this.offset -= this.increment;
@@ -96,7 +107,7 @@ export class PlacesListComponent implements OnInit {
   }
 
   getPlaces() {
-    this.travelSvc.getPlaces(this.username, this.increment, this.offset).then(r => {
+    this.travelSvc.getPlaces(this.username, this.increment, this.offset, this.type).then(r => {
       console.log(r);
       this.places = r.places.map(v => {
         let url_string = `../../assets/images/placeholder.jpeg`;
@@ -124,7 +135,8 @@ export class PlacesListComponent implements OnInit {
 
   refreshAll() {
     this.q = '';
-    this.pageStatus = "all";
+    this.pageStatus = "all";    
+    this.search.setValue('');
     this.offset = 0;
     if (this.isError) this.init();
     else {
@@ -149,11 +161,14 @@ export class PlacesListComponent implements OnInit {
   }
 
   searchPlaces() {
-    this.travelSvc.searchPlaces(this.username, this.q, this.increment, this.offset).then(r => {
+    this.travelSvc.searchPlaces(this.username, this.q, this.increment, this.offset, this.type).then(r => {
       console.log(r);
-      this.places = r.places.map(v => { return {
+      this.places = r.places.map(v => {
+        let url_string = `../../assets/images/placeholder.jpeg`;
+        if(v.image_url !== null && v.image_url != '') url_string = `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/places/thumbnails/${v.image_url}`;
+        return {
         ...v,
-        url: this.sanitizer.bypassSecurityTrustStyle(`url(https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/places/thumbnails/${v.image_url}) no-repeat`),
+        url: this.sanitizer.bypassSecurityTrustStyle(`url(${url_string}) no-repeat`),
         country_name: this.countries.find(o => o.code === v.country).name } 
       });
       this.numResults = r.count;

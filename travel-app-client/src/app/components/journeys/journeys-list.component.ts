@@ -31,6 +31,7 @@ export class JourneysListComponent implements OnInit {
   isLoading = true;
   isError = false;
   pageStatus="all";
+  type = 'BEEN';
 
   search = new FormControl();
   filteredOptions: Observable<string[]>;
@@ -83,6 +84,7 @@ export class JourneysListComponent implements OnInit {
   refreshAll() {
     this.q = '';
     this.pageStatus = "all";
+    this.search.setValue('');
     this.offset = 0;
     if (this.isError) this.init();
     else {
@@ -116,7 +118,7 @@ export class JourneysListComponent implements OnInit {
   }
 
   getJourneys() {
-    this.travelSvc.getJourneys(this.username, this.increment, this.offset).then(r => {
+    this.travelSvc.getJourneys(this.username, this.increment, this.offset, this.type).then(r => {
       console.log(r);
       this.journeys = r.journeys.map(v => {
         let url_string = `../../assets/images/placeholder-journey.jpg`;
@@ -135,12 +137,16 @@ export class JourneysListComponent implements OnInit {
   }
 
   searchJourneys() {
-    this.travelSvc.searchJourneys(this.username, this.q, this.increment, this.offset).then(r => {
+    this.travelSvc.searchJourneys(this.username, this.q, this.increment, this.offset, this.type).then(r => {
       console.log(r);
-      this.journeys = r.journeys.map(v => { return {
-        ...v,
-        url: this.sanitizer.bypassSecurityTrustStyle(`url(https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/journeys/thumbnails/${v.image_url}) no-repeat`)
-      }
+      this.journeys = r.journeys.map(v => {
+        let url_string = `../../assets/images/placeholder-journey.jpg`;
+        if(v.image_url !== null && v.image_url != '') url_string = `https://sandy-fsf-2019.sgp1.digitaloceanspaces.com/journeys/thumbnails/${v.image_url}`;
+        return {
+          ...v,
+          duration: moment(v.end_date).diff(moment(v.date), 'days'),
+          url: this.sanitizer.bypassSecurityTrustStyle(`url(${url_string}) no-repeat`)
+        }
     });
       this.numResults = r.count;
       this.getTop();
@@ -148,6 +154,15 @@ export class JourneysListComponent implements OnInit {
     }).catch(e => { console.log(e); this.isLoading = false; this.isError = true; });
   }
 
+  onToggle() {
+    console.log(this.type);
+    console.log(this.q);
+    this.offset = 0;
+    this.loadReset();
+    this.pageStatus = "search";
+    if(this.q === '') this.getJourneys();
+    else this.searchJourneys();
+  }
 
   backClicked() {
     this.location.back();
