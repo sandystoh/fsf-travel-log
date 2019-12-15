@@ -30,6 +30,7 @@ export class JourneyDetailComponent implements OnInit {
   random = (new Date()).getTime();
   countries: any;
   mapImageUrl: string;
+  isSending = false;
   
   constructor(private router: Router, private route: ActivatedRoute, private authSvc: AuthService,
               private travelSvc: TravelService, private sanitizer: DomSanitizer,
@@ -116,7 +117,7 @@ export class JourneyDetailComponent implements OnInit {
   deleteJourney() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '500px',
-      maxHeight: '80vw',
+      maxHeight: '80vh',
       maxWidth: '90vw',
       data: {id: this.journey.id, title: this.journey.title, recordType: 'Journey'}
     });
@@ -138,12 +139,15 @@ export class JourneyDetailComponent implements OnInit {
   }
 
   saveToDrive() {
+    this.isSending = true;
     this.travelSvc.sendJourneyImageToGoogle(this.id).then(() => {
+      this.isSending = false;
       this.openSnackBar('Upload Successful', 'OK');
     }).catch((e) => {
+      this.isSending = false;
           console.log(e);
           this.openSnackBar('Something went Wrong!', 'Try Again');
-        });
+    });
   }
 
   openSnackBar(message: string, action: string) {

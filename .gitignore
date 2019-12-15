@@ -8,3 +8,5 @@
 /travel-app-client/package-lock.json
 /travel-app-client/src/environments/environment.ts
 /travel-app-client/src/environments/environment.prod.ts
+
+schema_data.sql

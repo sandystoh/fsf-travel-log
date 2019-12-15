@@ -20,7 +20,23 @@ module.exports = function(app, conns) {
             const countries = result.map(v => {
                 return { name: v.name, code: v.code, continent: v.continent }
             })
-            resp.status(200).json(countries);
+            // Content Negotiation
+            resp.format({
+                'text/html': () => {
+                    let countryStr = `<h1>List of Countries</h1><ul>`;
+                    for (let c of countries) {
+                        countryStr += `<li>${c.name} (${c.code})</li>`
+                    }
+                    countryStr += '</ul>'
+                    resp.status(200).type('text/html').send(countryStr);
+                },
+                'application/json': () => {
+                    resp.status(200).json(countries);
+                },
+                'default': () => {
+                    resp.status(200).json(countries);
+                }
+            });
         })
         .catch(err => {
             resp.status(500).json({error: err});

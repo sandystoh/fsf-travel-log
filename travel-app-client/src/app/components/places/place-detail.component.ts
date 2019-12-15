@@ -22,6 +22,7 @@ export class PlaceDetailComponent implements OnInit {
   user: User;
   pagelink: string;
   fbLink: string;
+  isSending = false;
 
   constructor(private router: Router, private route: ActivatedRoute,
               private travelSvc: TravelService, private authSvc: AuthService,
@@ -89,9 +90,12 @@ export class PlaceDetailComponent implements OnInit {
   }
 
   saveToDrive() {
+    this.isSending = true;
     this.travelSvc.sendPlaceImageToGoogle(this.id).then(() => {
+      this.isSending = false;
       this.openSnackBar('Upload Successful', 'OK');
     }).catch((e) => {
+      this.isSending = false;
           console.log(e);
           this.openSnackBar('Something went Wrong!', 'Try Again');
         });

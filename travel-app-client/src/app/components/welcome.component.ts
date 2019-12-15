@@ -98,10 +98,12 @@ export class WelcomeComponent implements OnInit {
           else label.html("<div style=\"font-size:1.3rem;\">"+ label.html()+"</div>").css("fontFamily","Smythe"); 
         },
         onMarkerClick: (event, index) => {
-            // alter the weburl
             console.log(r.places[index]);
-            // Array.from(document.getElementsByClassName("jvectormap-tip")).forEach((el) => { el.style.display = 'none' });
-            setTimeout(()=> { (document.getElementsByClassName("jvectormap-tip")[0] as HTMLElement).style.display = 'none' },100 );
+            const tooltips = document.querySelectorAll(".jvectormap-tip");
+            for (let i = 0; i < tooltips.length; i++) {
+              (<any>tooltips[i]).style.display = 'none';
+            }
+            // setTimeout(()=> {(Array.from(document.getElementsByClassName("jvectormap-tip")).forEach((el) => { el.style.display = 'none' }, 100 ));
             this.router.navigate(['/place', r.places[index].id]);
         }
       }); 

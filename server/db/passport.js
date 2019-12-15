@@ -64,7 +64,7 @@ module.exports = function(passport, conns) {
     passport.use(new GoogleStrategy({
         clientID        : conns.google.clientId,
         clientSecret    : conns.google.clientSecret,
-        callbackURL     : 'https://serene-cove-28842.herokuapp.com/auth/google/callback',
+        callbackURL     : 'http://localhost:3000/auth/google/callback', // 
         passReqToCallback : true 
     },
     function(req, accessToken, refreshToken, profile, done) {

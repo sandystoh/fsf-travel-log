@@ -1,6 +1,7 @@
 <button class="web" style="position: absolute; top: 100px; left: 30px" mat-mini-fab color="accent" type="button" (click)="back()" ><mat-icon>arrow_back</mat-icon></button>
 
 <div class="detail-area" id="detail-pdf">
+    <div class="loading2 detail-white" *ngIf="isSending" fxLayout="column" fxLayoutAlign="center center"><mat-spinner color="accent"></mat-spinner><br> Loading Please Wait...</div>
 
     <div fxLayout="column" fxLayoutAlign="center center" *ngIf="journey">
         <div class="place-detail">
