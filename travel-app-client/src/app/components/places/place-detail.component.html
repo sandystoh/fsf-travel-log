@@ -6,6 +6,8 @@
     <div class="place-detail">
         <div class="detail-title">{{place.title}}</div>
         <div class="detail-country detail-gold">{{place.country_name}}</div>
+        
+        <div class="detail-gold byline" *ngIf="place.journey_id == 0">by {{place.owner}}<br></div>
         <div *ngIf="place.journey_id != 0" class="detail-journey detail-gold">
             <div fxLayoutAlign="center center" fxLayoutGap="2vw">
             <button type="button" [disabled]="place.prev_id == 0" [routerLink]="['/place',place.prev_id]" mat-icon-button>
@@ -16,19 +18,19 @@
             </div>
             <span class="detail-white journey-link" [routerLink]="['/journey', place.journey_id]">{{place.journey_title}}</span>
         </div>
-        <div fxLayoutAlign="center center" fxLayoutGap="2vw">
+        <div style="margin-bottom: 10px" fxLayoutAlign="center center" fxLayoutGap="2vw">
         <div><span class="detail-gold"><mat-icon *ngFor="let h of ' '.repeat(place.rating).split('')" class="small">favorite</mat-icon></span></div>
         <span *ngIf="place.type == 'BEEN'" class="detail-gold" title="BEEN"><mat-icon>cloud_done</mat-icon></span>
         <span *ngIf="place.type == 'DREAM'" class="detail-gold" title="DREAM"><mat-icon>cloud_queue</mat-icon></span>
         <div *ngIf="place.date != '0000-00-00 00:00:00'"><span class="licon icon-dat"></span>{{place.date | date: "mediumDate"}}</div>
         </div>
-        <div class="action-buttons" fxLayout="row column" fxLayoutAlign="space-evenly center">
-            <div class="detail-white box-area" *ngIf="user && user.username == place.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
+        <div class="action-buttons" *ngIf="user && user.username == place.owner" fxLayout="row column" fxLayoutAlign="space-evenly center">
+            <div class="detail-white box-area" fxLayoutGap="1vw" fxLayoutAlign="center"
             [routerLink]="['/places/edit', place.owner, place.id]">
             <mat-icon>add_box</mat-icon><span>Edit Place</span></div>
             <div class="fb-share-button" data-href="pagelink" data-layout="button_count" 
-            data-size="large"><a target="_blank" [href]="fbLink" class="fb-xfbml-parse-ignore">Share</a></div>
-            <div class="detail-white box-area" *ngIf="user && user.username == place.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
+            data-size="large"><a target="_blank" style="color:#fff"  [href]="fbLink" class="fb-xfbml-parse-ignore">Share</a></div>
+            <div class="detail-white box-area" fxLayoutGap="1vw" fxLayoutAlign="center"
             (click)="deletePlace()">
             <mat-icon>delete_forever</mat-icon><span>Delete Place</span></div>
         </div>

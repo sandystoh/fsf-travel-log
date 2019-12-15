@@ -31,7 +31,9 @@ export class JourneyDetailComponent implements OnInit {
   countries: any;
   mapImageUrl: string;
   isSending = false;
-  
+  pagelink: string;
+  fbLink: string;
+
   constructor(private router: Router, private route: ActivatedRoute, private authSvc: AuthService,
               private travelSvc: TravelService, private sanitizer: DomSanitizer,
               public dialog: MatDialog, private snackBar: MatSnackBar, private location: Location) { }
@@ -56,6 +58,9 @@ export class JourneyDetailComponent implements OnInit {
     }).then(r => {
       console.log(r);
       this.journey = r.journey;
+      // See Place Description for Meta Tag Setting - Share Link is not showing dynamically set meta tags (prerender.io)
+      this.fbLink = `https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fserene-cove-28842.herokuapp.com%2F%23%2Fjourney%2F${this.journey.id}&amp;src=sdkpreparse`;
+
       this.mapImageUrl = '/api/journey/map/'+r.journey.id+'?nocache='+ this.random
       this.places = r.places.map(v => {
         let url_string = `../../assets/images/placeholder.jpeg`;

@@ -42,7 +42,7 @@ export class AuthService implements CanActivate {
       this.http.post('/api/authenticate', urlencoded.toString(), { headers })
         .toPromise()
         .then((result: LoginResponse) => {
-          console.info('>> returned: ', result)
+          // console.info('>> returned: ', result)
           this.token = result.access_token;
           localStorage.setItem('travel-token', this.token);
           localStorage.setItem('travel-username', result.username);

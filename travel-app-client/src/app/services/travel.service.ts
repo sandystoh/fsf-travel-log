@@ -134,7 +134,7 @@ export class TravelService {
 
   createJourney(save: Journey, fileRef: ElementRef) {
     const token = this.authSvc.getUser().token;
-    console.log(">>> token", token)
+    // console.log(">>> token", token)
     const headers = new HttpHeaders()
       .set('Authorization', `Bearer ${token}`);
     
@@ -144,7 +144,7 @@ export class TravelService {
     Object.keys(save).forEach(key => {
       formData.set(key, save[key])}
       );
-
+      console.log(formData);
     return this.http.post<any>('/api/journeys', formData).toPromise();
   }
 

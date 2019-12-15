@@ -5,7 +5,7 @@
 
     <div fxLayout="column" fxLayoutAlign="center center" *ngIf="journey">
         <div class="place-detail">
-            <div class="detail-gold">Journey</div>
+            <div class="detail-gold">Journey by {{journey.owner}}</div>
             <div class="detail-title">{{journey.title}}</div>
             <div class="info-icons" fxLayoutAlign="center center" fxLayoutGap="2vw">
             <span *ngIf="journey.type == 'BEEN'" class="detail-gold" title="BEEN"><mat-icon>cloud_done</mat-icon></span>
@@ -17,6 +17,8 @@
                 <div class="detail-white box-area" *ngIf="user && user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
                 (click)="openJourneyEditDialog()">
                 <mat-icon>add_box</mat-icon><span>Edit Journey</span></div>
+                <div class="fb-share-button" data-href="pagelink" data-layout="button_count" 
+                data-size="large"><a target="_blank" style="color:#fff"  [href]="fbLink" class="fb-xfbml-parse-ignore">Share</a></div>    
                 <div class="detail-white box-area" *ngIf="user && user.username == journey.owner" fxLayoutGap="1vw" fxLayoutAlign="center"
                 (click)="deleteJourney()">
                 <mat-icon>delete_forever</mat-icon><span>Delete Journey</span></div>

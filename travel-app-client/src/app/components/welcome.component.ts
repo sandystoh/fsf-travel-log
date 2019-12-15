@@ -26,7 +26,7 @@ export class WelcomeComponent implements OnInit {
 
   ngOnInit() {
     this.user = this.authSvc.getUser();
-    console.log(">> in Welcome Component", this.user);
+    // console.log(">> in Welcome Component", this.user);
     this.getMapData();
   }
 

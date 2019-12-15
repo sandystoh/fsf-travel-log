@@ -175,7 +175,7 @@ module.exports = function(app, conns) {
         console.log('FILE: ', f);
 
         const insertJourney = mydb.mkTransaction(travel.mkJourneys(), conns.mysql);
-        insertJourney({body: b, file: f, conns: conns})  
+        insertJourney({body: req.body, file: f, conns: conns})  
         .then(status => {
             resp.status(201).json({message: `Record ${b.title} inserted`, insertId: status.status});
         })
