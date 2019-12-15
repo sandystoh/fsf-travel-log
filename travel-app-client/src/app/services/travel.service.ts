@@ -194,4 +194,10 @@ export class TravelService {
   signup(signup) {
     return this.http.post('/api/signup', {signup}).toPromise();
   }
+
+  sendPayment(token) {
+    console.log('in send payment')
+    return this.http.post('/api/donate', {token}).toPromise();
+  }
+  
 }

@@ -43,6 +43,21 @@ module.exports = function(app, conns) {
         });
     })
 
+    
+    // Accepts Donations
+    app.get('/api/donate', (req, resp) => {
+        const token = req.body.token
+        console.log(token);
+        mydb.mongoWrite({client: conns.mongodb, db: 'travel', collection: 'payments', document: token})
+        .then(result => {
+            console.log(result);
+            resp.status(200).json(countries);
+        })
+        .catch(err => {
+            resp.status(500).json({error: err});
+        });
+    });
+
     const searchJourneysByUser = mydb.mkQuery(`Select * from journeys j where 
     owner = ? and title like ? order by title limit ? offset ?`, conns.mysql)
     const countJourneySearch = mydb.mkQuery(`Select count(*) as count from journeys j where 

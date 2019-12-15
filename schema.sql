@@ -12,7 +12,6 @@ create table users (
     primary key(username)
 );
 
--- drop table journeys;
 create table journeys (
 	id int auto_increment not null,
     title varchar(128) not null,
@@ -34,17 +33,6 @@ create table journeys (
         references users(username)
 );
 
-/*
-create table journeys_countries (
-	journey_id int not null,
-    country_code char(2) not null,
-    primary key(journey_id, country_code),
-    constraint fk_journeys
-    	foreign key(journey_id)
-        references journeys(id)
-); */
-
--- drop table places;
 create table places (
 	id int auto_increment not null,
     journey_id int,
@@ -102,11 +90,11 @@ insert into places values
 ('7', '1', '6', 'BEEN', 'Canyonlands National Park', 'Canyonlands National Park', 'sandystoh', '2015-07-11 00:00:00', '38.32686930', '-109.87825920', 'US', '3', 'sandystoh/5b2384150f6cebc2582c0a6e7c277a63', 'Wow', '', '2019-12-12 02:14:38', '1'),
 ('8', '1', '7', 'BEEN', 'Zion National Park', 'Zion National Park', 'sandystoh', '2015-07-07 00:00:00', '37.29820220', '-113.02630050', 'US', '5', 'sandystoh/64ff57758eea5d3e0464648d2cdc9397', 'Out of this world.', '', '2019-12-12 02:17:41', '1'),
 ('9', '2', '2', 'BEEN', 'Hobbiton', 'Hobbiton', 'sandystoh', '2013-11-13 00:00:00', '-37.81088030', '175.77646070', 'NZ', '4', 'sandystoh/ccb97e4e87cd0ff8df46de5e6eef0af9', 'Drank ale at the green dragon!', '', '2019-12-12 13:55:03', '1'),
-('10', '2', '2', 'BEEN', 'Bay of Islands', 'Bay of Islands', 'sandystoh', '2013-11-12 00:00:00', '-35.18437010', '174.16461630', 'NZ', '4', 'sandystoh/39dab235df9d167a1dbc346021eff92f', 'Swimming with the Dolphins!', '', '2019-12-13 21:31:10', '1'),
+('10', '2', '3', 'BEEN', 'Bay of Islands', 'Bay of Islands', 'sandystoh', '2013-11-12 00:00:00', '-35.18437010', '174.16461630', 'NZ', '4', 'sandystoh/39dab235df9d167a1dbc346021eff92f', 'Swimming with the Dolphins!', '', '2019-12-13 21:31:10', '1'),
 ('11', '3', '1', 'BEEN', 'La Sagrada Familia', 'La Sagrada Familia', 'sandystoh', '2017-04-24 00:00:00', '41.40362990', '2.17435580', 'ES', '5', 'sandystoh/21f05229aa80a30b7c26d36d2475c350', 'Awe Inspiring and humbling', '', '2019-12-13 21:55:15', '1'),
 ('12', '3', '2', 'BEEN', 'Zaragoza', 'Zaragoza', 'sandystoh', '2017-04-25 00:00:00', '41.64882260', '-0.88908530', 'ES', '4', 'sandystoh/1264073520670c12368879daa1cfd5ea', 'Modern traveling adventure wanderlust excursion blogger travelblogger design, darn pretty traveling design design pretty. Excursion cute design modern simple expedition modern, wanderlust cute traveling cute. Darn traveling traveler Travel expedition traveling, expedition colorful fun WordPress traveling design.\n', '', '2019-12-13 13:56:45', '1');
 
-
 -- Mongo
--- db.getCollection('countries').createIndex({code2l: 1})
+-- import countries_formatted.json
+-- db.getCollection('countries').createIndex({code: 1})
 -- db.getCollection('countries').createIndex({name: 1})

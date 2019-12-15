@@ -1,9 +1,5 @@
 const express = require('express');
 const mydb = require('../db/mydbutil');
-const sql = require('../db/sqlutil');
-const fs = require('fs');
-const multer  = require('multer');
-const upload = multer({ dest: 'uploads/' });
 const { google } = require('googleapis');
 const jwt = require('jsonwebtoken');
 
@@ -130,7 +126,7 @@ module.exports = function(app, passport, conns) {
     app.get('/auth/google/callback', 
     passport.authorize('google', { failureRedirect: '/' }),
     (req, resp) => {
-        resp.redirect('/content.html');
+        resp.redirect('/views/linksuccess.html');
     });
 }
 

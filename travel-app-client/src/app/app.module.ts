@@ -15,7 +15,6 @@ import { AuthService } from './services/auth.service';
 import { LoginComponent } from './components/login.component';
 import { PlacesListComponent } from './components/places/places-list.component';
 import { TravelService } from './services/travel.service';
-import { MapComponent } from './components/map.component';
 import { PlacesFormComponent } from './components/places/places-form.component';
 import { AutocompleteComponent } from './components/helpers/autocomplete.component';
 import { PrimeNGModule } from './primeng.module';
@@ -40,7 +39,6 @@ import { environment } from '../environments/environment';
     WelcomeComponent,
     LoginComponent,
     PlacesListComponent,
-    MapComponent,
     PlacesFormComponent,
     AutocompleteComponent,
     JourneyFormComponent,
